@@ -34,14 +34,13 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Logo de la Empresa
+
               const CircleAvatar(
                 radius: 60,
-                backgroundImage: AssetImage('assets/logo.png'),
+                backgroundImage: AssetImage('assets/img/logo.png'),
               ),
               const SizedBox(height: 32),
 
-              // Texto de bienvenida
               const Text(
                 'Bienvenido a Lomi Chef',
                 style: TextStyle(
@@ -52,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 8),
               const Text(
-                'Por favor inicia sesión para continuar',
+                'Por favor iniciá sesión para continuar',
                 style: TextStyle(fontSize: 16, color: Colors.grey),
                 textAlign: TextAlign.center,
               ),
@@ -64,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   labelText: 'Correo Electrónico',
-                  hintText: 'Ingrese su correo',
+                  hintText: 'Ingresá tu correo',
                   prefixIcon: const Icon(Icons.email, color: Color(0xff38c2a6)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -79,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Contraseña',
-                  hintText: 'Ingrese su contraseña',
+                  hintText: 'Ingresá tu contraseña',
                   prefixIcon:
                   const Icon(Icons.lock, color: Color(0xff38c2a6)),
                   border: OutlineInputBorder(
@@ -132,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    '¿No tienes cuenta? ',
+                    '¿No tenés cuenta? ',
                     style: TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                   GestureDetector(
@@ -140,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                       // Acción para registrarse
                     },
                     child: const Text(
-                      'Regístrate',
+                      'Registrate',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
