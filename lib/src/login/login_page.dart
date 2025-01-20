@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -8,13 +9,152 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center (
-        child: Text('Fast Food Delivery - Lomi Chef'),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: const Color(0xff38c2a6),
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'Login',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Logo de la Empresa
+              const CircleAvatar(
+                radius: 60,
+                backgroundImage: AssetImage('assets/logo.png'),
+              ),
+              const SizedBox(height: 32),
+
+              // Texto de bienvenida
+              const Text(
+                'Bienvenido a Lomi Chef',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff38c2a6),
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Por favor inicia sesión para continuar',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+
+              // Correo Electrónico
+              TextField(
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  labelText: 'Correo Electrónico',
+                  hintText: 'Ingrese su correo',
+                  prefixIcon: const Icon(Icons.email, color: Color(0xff38c2a6)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              //Contraseña
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Contraseña',
+                  hintText: 'Ingrese su contraseña',
+                  prefixIcon:
+                  const Icon(Icons.lock, color: Color(0xff38c2a6)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Botón de Login
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Acción de login
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff38c2a6),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    'Login',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              TextButton(
+                onPressed: () {
+                },
+                child: const Text(
+                  '¿Olvidaste tu contraseña?',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    '¿No tienes cuenta? ',
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      // Acción para registrarse
+                    },
+                    child: const Text(
+                      'Regístrate',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff38c2a6),
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
-  } //el build es el código que corre en la pantalla
+  }
 }

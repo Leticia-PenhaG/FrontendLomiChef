@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lomi_chef_to_go/src/login/login_page.dart';
 
+import 'src/utils/app_colors.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -19,10 +21,13 @@ class _MyAppState extends State<MyApp> {
       title: 'Fast Food Delivery- Lomi Chef',
       debugShowCheckedModeBanner: false,
       initialRoute: 'login',
-      routes: {
-        'login': (BuildContext context) => LoginPage()
-      },
+      routes: {'login': (BuildContext context) => LoginPage()},
+      theme: ThemeData(
+        primaryColor: AppColors.primaryColor,
+        appBarTheme: AppBarTheme(
+          backgroundColor: AppColors.primaryColor,
+        ),
+      ),
     );
   }
 }
-
