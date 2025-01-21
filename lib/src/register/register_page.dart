@@ -12,14 +12,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  // Controladores para los campos de texto
-  /*final TextEditingController emailController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();*/
-
   final RegisterController _controllerRegister = RegisterController();
 
   @override
@@ -136,14 +128,13 @@ class _RegisterPageState extends State<RegisterPage> {
     required TextEditingController controller,
     required String label,
     required IconData icon,
-    bool isPassword = false, // Indica si es un campo de contraseña
-    TextInputType inputType =
-        TextInputType.text, // Tipo de teclado (texto, email, teléfono, etc.)
+    bool isPassword = false,
+    TextInputType inputType = TextInputType.text,
   }) {
     return TextField(
       controller: controller,
-      obscureText: isPassword, // Enmascarar texto si es una contraseña
-      keyboardType: inputType, // Tipo de teclado según el contexto
+      obscureText: isPassword,
+      keyboardType: inputType,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon, color: const Color(0xff38c2a6)),
