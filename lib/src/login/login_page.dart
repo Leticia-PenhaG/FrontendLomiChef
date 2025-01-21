@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildLogo() {
     return const CircleAvatar(
-      radius: 60,
+      radius: 70,
       backgroundImage: AssetImage('assets/img/logo.png'),
     );
   }
