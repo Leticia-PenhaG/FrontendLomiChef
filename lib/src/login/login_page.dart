@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:lomi_chef_to_go/src/login/login_controller.dart';
 import '../utils/app_colors.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,6 +14,17 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final LoginController _controllerLogin = LoginController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      _controllerLogin.init(context);     //metodo para inicializar controladores
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -167,9 +180,7 @@ class _LoginPageState extends State<LoginPage> {
           style: TextStyle(fontSize: 14, color: AppColors.secondaryTextColor),
         ),
         GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, 'register');
-          },
+          onTap: _controllerLogin.goToRegisterPage,
           child: const Text(
             'Registrate',
             style: TextStyle(
