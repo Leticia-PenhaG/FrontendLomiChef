@@ -12,8 +12,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  /*final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();*/
   final LoginController _controllerLogin = LoginController();
 
   @override
@@ -98,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildEmailTextField() {
     return TextField(
-      controller: emailController,
+      controller: _controllerLogin.emailController,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         labelText: 'Correo Electrónico',
@@ -113,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildPasswordTextField() {
     return TextField(
-      controller: passwordController,
+      controller: _controllerLogin.passwordController,
       obscureText: true,
       decoration: InputDecoration(
         labelText: 'Contraseña',
@@ -132,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
       height: 50,
       child: ElevatedButton(
         onPressed: () {
-          // Lógica de login
+          _controllerLogin.login();
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryColor,
@@ -141,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         child: const Text(
-          'Login',
+          'Ingresar',
           style: TextStyle(
             fontSize: 18,
             color: Colors.white,

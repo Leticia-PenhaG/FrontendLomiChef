@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:lomi_chef_to_go/src/register/register_controller.dart';
 
 import '../utils/app_colors.dart';
 
@@ -11,12 +13,23 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   // Controladores para los campos de texto
-  final TextEditingController emailController = TextEditingController();
+  /*final TextEditingController emailController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();*/
+
+  final RegisterController _controllerRegister = RegisterController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      _controllerRegister.init(context); //inicializar controladores
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +44,8 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         title: const Text(
           'Registro',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(
+              fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
       body: SingleChildScrollView(
@@ -44,7 +58,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
               const Text(
                 'Creá tu cuenta',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xff38c2a6)),
+                style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff38c2a6)),
               ),
               const SizedBox(height: 8),
               const Text(
@@ -54,17 +71,38 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(height: 24),
 
               // Campos de texto
-              _buildTextField(controller: emailController, label: 'Correo Electrónico', icon: Icons.email),
+              _buildTextField(
+                  controller: _controllerRegister.emailController,
+                  label: 'Correo Electrónico',
+                  icon: Icons.email),
               const SizedBox(height: 16),
-              _buildTextField(controller: nameController, label: 'Nombre', icon: Icons.person),
+              _buildTextField(
+                  controller: _controllerRegister.nameController,
+                  label: 'Nombre',
+                  icon: Icons.person),
               const SizedBox(height: 16),
-              _buildTextField(controller: lastNameController, label: 'Apellido', icon: Icons.person),
+              _buildTextField(
+                  controller: _controllerRegister.lastNameController,
+                  label: 'Apellido',
+                  icon: Icons.person),
               const SizedBox(height: 16),
-              _buildTextField(controller: phoneController, label: 'Teléfono', icon: Icons.phone, inputType: TextInputType.phone),
+              _buildTextField(
+                  controller: _controllerRegister.phoneController,
+                  label: 'Teléfono',
+                  icon: Icons.phone,
+                  inputType: TextInputType.phone),
               const SizedBox(height: 16),
-              _buildTextField(controller: passwordController, label: 'Contraseña', icon: Icons.lock, isPassword: true),
+              _buildTextField(
+                  controller: _controllerRegister.passwordController,
+                  label: 'Contraseña',
+                  icon: Icons.lock,
+                  isPassword: true),
               const SizedBox(height: 16),
-              _buildTextField(controller: confirmPasswordController, label: 'Confirmar Contraseña', icon: Icons.lock, isPassword: true),
+              _buildTextField(
+                  controller: _controllerRegister.confirmPasswordController,
+                  label: 'Confirmar Contraseña',
+                  icon: Icons.lock,
+                  isPassword: true),
               const SizedBox(height: 32),
 
               SizedBox(
@@ -72,7 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    // TODO
+                    _controllerRegister.register();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff38c2a6),
@@ -93,18 +131,19 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  // Método para construir un TextField personalizado
+// Método para construir un TextField personalizado
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
     required IconData icon,
-    bool isPassword = false,
-    TextInputType inputType = TextInputType.text,
+    bool isPassword = false, // Indica si es un campo de contraseña
+    TextInputType inputType =
+        TextInputType.text, // Tipo de teclado (texto, email, teléfono, etc.)
   }) {
     return TextField(
       controller: controller,
-      obscureText: isPassword,
-      keyboardType: inputType,
+      obscureText: isPassword, // Enmascarar texto si es una contraseña
+      keyboardType: inputType, // Tipo de teclado según el contexto
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon, color: const Color(0xff38c2a6)),
