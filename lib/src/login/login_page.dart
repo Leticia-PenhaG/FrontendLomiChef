@@ -18,7 +18,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
@@ -64,10 +63,7 @@ class _LoginPageState extends State<LoginPage> {
       centerTitle: true,
       title: const Text(
         'Login',
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-        ),
+        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
       ),
     );
   }
@@ -92,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         SizedBox(height: 8),
         Text(
-          'Por favor iniciá sesión para continuar',
+          'Por favor, ingresá a tu cuenta para continuar',
           style: TextStyle(fontSize: 16, color: AppColors.secondaryTextColor),
           textAlign: TextAlign.center,
         ),
@@ -158,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildForgotPasswordButton() {
     return TextButton(
       onPressed: () {
-        // Implementar acción para olvidar contraseña
+        // TODO
       },
       child: const Text(
         '¿Olvidaste tu contraseña?',
