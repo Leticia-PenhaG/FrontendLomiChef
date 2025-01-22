@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:lomi_chef_to_go/src/register/register_controller.dart';
+import 'package:lomi_chef_to_go/src/pages/register/register_controller.dart';
 
-import '../utils/app_colors.dart';
+import '../../utils/app_colors.dart';
+
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

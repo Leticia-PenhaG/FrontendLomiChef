@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lomi_chef_to_go/src/login/login_page.dart';
-import 'package:lomi_chef_to_go/src/register/register_page.dart';
+import 'package:lomi_chef_to_go/src/pages/login/login_page.dart';
+import 'package:lomi_chef_to_go/src/pages/register/register_page.dart';
 
 import 'src/utils/app_colors.dart';
 

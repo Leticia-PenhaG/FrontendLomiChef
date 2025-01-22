@@ -1,8 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:lomi_chef_to_go/src/login/login_controller.dart';
-import '../utils/app_colors.dart';
+
+import '../../utils/app_colors.dart';
+import 'login_controller.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
