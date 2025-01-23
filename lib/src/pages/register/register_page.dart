@@ -71,7 +71,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: _controllerRegister.emailController,
                   label: 'Correo Electrónico',
                   icon: Icons.email,
-                  //validator: (value) => _controllerRegister.validateEmail(value),
+                  validator: (value) => _controllerRegister.validateEmail(value),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
@@ -97,7 +97,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   label: 'Teléfono',
                   icon: Icons.phone,
                   inputType: TextInputType.phone,
-                  //validator: (value) => _controllerRegister.validatePhone(value),
+                  validator: (value) => _controllerRegister.validatePhone(value),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(

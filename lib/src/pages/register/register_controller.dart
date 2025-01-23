@@ -45,6 +45,17 @@ class RegisterController {
     }
   }
 
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'El correo electrónico es obligatorio';
+    }
+    const emailRegex = r'^[^@]+@[^@]+\.[^@]+$';
+    if (!RegExp(emailRegex).hasMatch(value)) {
+      return 'Ingresa un correo válido';
+    }
+    return null;
+  }
+
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'La contraseña es obligatoria';
@@ -53,6 +64,16 @@ class RegisterController {
         r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
     if (!RegExp(passwordRegex).hasMatch(value)) {
       return 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial';
+    }
+    return null;
+  }
+
+  String? validatePhone(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'El teléfono es obligatorio';
+    }
+    if (!RegExp(r'^\d{7,15}$').hasMatch(value)) {
+      return 'Ingresa un número de teléfono válido';
     }
     return null;
   }
