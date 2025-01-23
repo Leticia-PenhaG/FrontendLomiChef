@@ -169,9 +169,12 @@ class _RegisterPageState extends State<RegisterPage> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
+        errorStyle: const TextStyle(
+          fontSize: 14,
+          overflow: TextOverflow.ellipsis, // Controla el desbordamiento
+        ),
       ),
       validator: validator,
-      errorMaxLines: 3, // Aumenta el número de líneas para errores largos
     );
   }
 }
