@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lomi_chef_to_go/src/models/response_api.dart';
-
 import '../../models/user.dart';
 import '../../provider/user_provider.dart';
 
 class RegisterController {
   late final BuildContext context;
+  final formKey = GlobalKey<FormState>();
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
@@ -16,42 +17,55 @@ class RegisterController {
   UserProvider usersProvider = UserProvider();
 
   Future<void> init(BuildContext context) async {
-    this.context = context;
-    await Future.delayed(Duration.zero);
     usersProvider.init(context);
   }
 
   void register() async {
-    String email = emailController.text.trim();
-    String name = nameController.text.trim();
-    String lastName = lastNameController.text.trim();
-    String phone = phoneController.text.trim();
-    String password = passwordController.text.trim();
+    if (formKey.currentState?.validate() == true) {
+      String email = emailController.text.trim();
+      String name = nameController.text.trim();
+      String lastName = lastNameController.text.trim();
+      String phone = phoneController.text.trim();
+      String password = passwordController.text.trim();
 
-    User user = User(
-      email: email,
-      name: name,
-      lastname: lastName,
-      phone: phone,
-      password: password,
-    );
+      User user = User(
+        email: email,
+        name: name,
+        lastname: lastName,
+        phone: phone,
+        password: password,
+      );
 
-    ResponseApi? responseApi = await usersProvider.create(user); // Respuesta del servicio
+      //ResponseApi? responseApi = await usersProvider.create(user);
 
-    if (responseApi?.success == true) {
-      _showDialog('Éxito', 'Usuario registrado correctamente');
-    } else {
-      _showDialog('Error', responseApi?.message ?? 'Error desconocido');
+      //print('RESPUESTA: ${responseApi?.toJson()}');
     }
   }
 
   String? validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'El correo electrónico es obligatorio';
-    }
-    const emailRegex = r'^[^@]+@[^@]+\.[^@]+$';
+    if (value == null || value.isEmpty) return 'El correo es obligatorio';
+    const emailRegex =
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
     if (!RegExp(emailRegex).hasMatch(value)) {
       return 'Ingresa un correo válido';
+    }
+    return null;
+  }
+
+  String? validateName(String? value) {
+    if (value == null || value.isEmpty) return 'Este campo es obligatorio';
+    const nameRegex = r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$";
+    if (!RegExp(nameRegex).hasMatch(value)) {
+      return 'Solo se permiten letras y espacios';
+    }
+    return null;
+  }
+
+  String? validatePhone(String? value) {
+    if (value == null || value.isEmpty) return 'El teléfono es obligatorio';
+    const phoneRegex = r'^\d{9,}$';
+    if (!RegExp(phoneRegex).hasMatch(value)) {
+      return 'Ingresa un teléfono válido (mínimo 9 dígitos)';
     }
     return null;
   }
@@ -68,39 +82,10 @@ class RegisterController {
     return null;
   }
 
-  String? validatePhone(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'El teléfono es obligatorio';
-    }
-    if (!RegExp(r'^\d{7,15}$').hasMatch(value)) {
-      return 'Ingresa un número de teléfono válido';
-    }
-    return null;
-  }
-
   String? validateConfirmPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Tenés que confirmar la contraseña';
-    }
-    if (value != passwordController.text.trim()) {
+    if (value != passwordController.text) {
       return 'Las contraseñas no coinciden';
     }
     return null;
-  }
-
-  void _showDialog(String title, String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Aceptar'),
-          ),
-        ],
-      ),
-    );
   }
 }
