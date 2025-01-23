@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lomi_chef_to_go/src/login/login_page.dart';
+import 'package:lomi_chef_to_go/src/pages/login/login_page.dart';
+import 'package:lomi_chef_to_go/src/pages/register/register_page.dart';
+
+import 'src/utils/app_colors.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,9 +23,15 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       initialRoute: 'login',
       routes: {
-        'login': (BuildContext context) => LoginPage()
+        'login': (BuildContext context) => LoginPage(),
+        'register': (BuildContext context) => RegisterPage()
       },
+      theme: ThemeData(
+        primaryColor: AppColors.primaryColor,
+        appBarTheme: AppBarTheme(
+          backgroundColor: AppColors.primaryColor,
+        ),
+      ),
     );
   }
 }
-
