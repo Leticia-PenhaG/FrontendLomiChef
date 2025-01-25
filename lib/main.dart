@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lomi_chef_to_go/src/pages/home/home_page.dart';
+import 'package:lomi_chef_to_go/src/pages/client/products/list/client_products_list_page.dart';
 import 'package:lomi_chef_to_go/src/pages/login/login_page.dart';
 import 'package:lomi_chef_to_go/src/pages/register/register_page.dart';
 
@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> {
       routes: {
         'login': (BuildContext context) => LoginPage(),
         'register': (BuildContext context) => RegisterPage(),
-        'home': (BuildContext context) => HomePage(),
+        'client/products/list' : (BuildContext context) => ClientProductsListPage()
       },
       theme: ThemeData(
         primaryColor: AppColors.primaryColor,
