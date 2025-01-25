@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /*
@@ -31,5 +31,10 @@ class SharedPreferencesHelper {
   Future<bool> clearSession(String key) async {
     final preferences = await SharedPreferences.getInstance();
     return preferences.remove(key);
+  }
+
+  void logout(BuildContext context) async {
+    await clearSession('user');
+    Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
   }
 }

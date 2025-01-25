@@ -23,7 +23,7 @@ class LoginController {
     en este caso la llave 'user'*/
     User user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user') ?? {});
 
-    //print('Usuario: ${user.toJson()}');
+    //print('Usuario: ${user.toJson()}'); datos guardados en el dispositivo
 
     // Si el token de sesión no es nulo, redirige al usuario al home
     if (user?.sessionToken != null) {
