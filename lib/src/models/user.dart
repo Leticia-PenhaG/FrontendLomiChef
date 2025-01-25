@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class User {
-  int? id;
+  String? id; // Cambiar de int? a String?
   String email;
   String password;
   String? phone;
@@ -27,14 +27,13 @@ class User {
     this.updatedAt,
   });
 
-  // Factory constructor para crear un objeto User desde un JSON
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
-      email: json['email'],
-      password: json['password'],
-      phone: json['phone'],
-      name: json['name'],
+      id: json['id']?.toString() ?? '',
+      email: json['email'] ?? '',
+      password: json['password'] ?? '',
+      phone: json['phone'] ?? '',
+      name: json['name'] ?? '',
       image: json['image'],
       isAvailable: json['is_available'] ?? false,
       lastname: json['lastname'],
@@ -48,7 +47,6 @@ class User {
     );
   }
 
-  // Método para convertir un objeto User a un JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -65,14 +63,35 @@ class User {
     };
   }
 
-  // Método para convertir un JSON string a un objeto User
   static User fromJsonString(String jsonString) {
     final Map<String, dynamic> jsonData = json.decode(jsonString);
     return User.fromJson(jsonData);
   }
 
-  // Método para convertir un objeto User a un JSON string
   String toJsonString() {
     return json.encode(toJson());
   }
 }
+
+// Factory constructor para crear un objeto User desde un JSON
+/*
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'] != null ? int.tryParse(json['id'].toString()) : null, // Conversión segura a entero
+      email: json['email'],
+      password: json['password'],
+      phone: json['phone'],
+      name: json['name'],
+      image: json['image'],
+      isAvailable: json['is_available'] ?? false,
+      lastname: json['lastname'],
+      sessionToken: json['session_token'],
+      createdAt: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at'])
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.tryParse(json['updated_at'])
+          : null,
+    );
+  }
+*/
