@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:lomi_chef_to_go/src/models/rol.dart';
+
 class User {
   String? id; // Cambiar de int? a String?
   String email;
@@ -12,6 +14,7 @@ class User {
   String? sessionToken;
   DateTime? createdAt;
   DateTime? updatedAt;
+  List<Rol>? roles = [];
 
   User({
     this.id,
@@ -25,11 +28,12 @@ class User {
     this.sessionToken,
     this.createdAt,
     this.updatedAt,
+    this.roles
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id']?.toString() ?? '',
+      id: json['id'] is int ? json['id'].toString() : json['id'],
       email: json['email'] ?? '',
       password: json['password'] ?? '',
       phone: json['phone'] ?? '',
@@ -44,6 +48,10 @@ class User {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
           : null,
+      /*roles: json['roles'] == null ? [] : List<Rol>.from(json['roles'].map((model) => Rol.fromJson(model))) ?? [],*/
+      roles: json['roles'] is String
+          ? List<Rol>.from(jsonDecode(json['roles']).map((model) => Rol.fromJson(model)))
+          : List<Rol>.from(json['roles'].map((model) => Rol.fromJson(model))),
     );
   }
 
@@ -60,6 +68,7 @@ class User {
       'session_token': sessionToken,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
+      'roles': roles?.map((rol) => rol.toJson()).toList(),
     };
   }
 
@@ -72,26 +81,3 @@ class User {
     return json.encode(toJson());
   }
 }
-
-// Factory constructor para crear un objeto User desde un JSON
-/*
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      id: json['id'] != null ? int.tryParse(json['id'].toString()) : null, // Conversión segura a entero
-      email: json['email'],
-      password: json['password'],
-      phone: json['phone'],
-      name: json['name'],
-      image: json['image'],
-      isAvailable: json['is_available'] ?? false,
-      lastname: json['lastname'],
-      sessionToken: json['session_token'],
-      createdAt: json['created_at'] != null
-          ? DateTime.tryParse(json['created_at'])
-          : null,
-      updatedAt: json['updated_at'] != null
-          ? DateTime.tryParse(json['updated_at'])
-          : null,
-    );
-  }
-*/
