@@ -13,7 +13,7 @@ class LoginController {
 
   UserProvider usersProvider = new UserProvider();
   final SharedPreferencesHelper _sharedPreferencesHelper =
-      SharedPreferencesHelper();
+  SharedPreferencesHelper();
 
   // Inicializa el controlador y verifica si el usuario ya tiene una sesión activa.
   Future init(BuildContext context) async {
@@ -71,16 +71,15 @@ class LoginController {
         // Guarda los datos del usuario en sharedpreferences clave 'user'.
         _sharedPreferencesHelper.saveSessionToken('user', user.toJson());
 
-        // Verifica los roles y redirige al usuario al home del perfil que tiene el usuario.
-
         print('Usuario logueado: ${user.toJson()}');
-        if (user.roles!.length > 1) {
+        if (user.roles!.length == 1) {
+          // Si solo tiene el rol "Cliente", redirigimos directamente a la página de productos del cliente
+          Navigator.pushNamedAndRemoveUntil(
+              context, 'client/products/list', (route) => false);
+        } else {
+          // Si tiene más de un rol, lo redirigimos a la pantalla de selección de roles
           Navigator.pushNamedAndRemoveUntil(context, 'roles', (route) => false);
         }
-        else {
-          Navigator.pushNamedAndRemoveUntil(context, user.roles![0].route, (route) => false);
-        }
-
       } else {
         SnackbarHelper.show(
           context: context,
