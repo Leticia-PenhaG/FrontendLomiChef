@@ -9,17 +9,17 @@ import 'package:lomi_chef_to_go/src/roles/roles_page.dart';
 import 'src/utils/app_colors.dart';
 
 /*void main() {
-  runApp(const MyApp());
+  runApp(const LomiChefDeliveryApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class LomiChefDeliveryApp extends StatefulWidget {
+  const LomiChefDeliveryApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<LomiChefDeliveryApp> createState() => _LomiChefDeliveryAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _LomiChefDeliveryAppState extends State<LomiChefDeliveryApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -45,17 +45,17 @@ class _MyAppState extends State<MyApp> {
 }*/
 
 void main() {
-  runApp(const MyApp());
+  runApp(const LomiChefDeliveryApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class LomiChefDeliveryApp extends StatefulWidget {
+  const LomiChefDeliveryApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<LomiChefDeliveryApp> createState() => _LomiChefDeliveryAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _LomiChefDeliveryAppState extends State<LomiChefDeliveryApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
