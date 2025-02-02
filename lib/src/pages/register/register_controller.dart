@@ -36,12 +36,18 @@ class RegisterController {
       password: password,
     );
 
-    ResponseApi? responseApi = await usersProvider.create(user); // Respuesta del servicio
+    ResponseApi? responseApi =
+        await usersProvider.create(user); // Respuesta del servicio
 
-    if (responseApi?.success == true) {
-      _showDialog('Éxito', 'Usuario registrado correctamente');
+    if (responseApi != null && responseApi.success == true) {
+      Future.delayed(Duration(seconds: 3), () {
+        Navigator.pushReplacementNamed(context, 'login');
+      }); //cuando se crea nuevo usuario se redirige automáticamente al login
+      _showDialog('Éxito',
+          'Usuario registrado correctamente, ahora podés iniciar sesión');
     } else {
-      _showDialog('Error', responseApi?.message ?? 'Error desconocido');
+      _showDialog(
+          'Error', responseApi?.message ?? 'Ocurrió un error inesperado');
     }
   }
 

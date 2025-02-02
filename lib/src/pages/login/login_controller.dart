@@ -12,7 +12,8 @@ class LoginController {
   TextEditingController passwordController = TextEditingController();
 
   UserProvider usersProvider = new UserProvider();
-  final SharedPreferencesHelper _sharedPreferencesHelper = SharedPreferencesHelper();
+  final SharedPreferencesHelper _sharedPreferencesHelper =
+  SharedPreferencesHelper();
 
   // Inicializa el controlador y verifica si el usuario ya tiene una sesión activa.
   Future init(BuildContext context) async {
@@ -21,13 +22,20 @@ class LoginController {
 
     /* Intenta recuperar el usuario almacenado en el sharedpreferences, tiene en cuenta
     en este caso la llave 'user'*/
-    User user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user') ?? {});
+    User user = User.fromJson(
+        await _sharedPreferencesHelper.readSessionToken('user') ?? {});
 
     //print('Usuario: ${user.toJson()}'); datos guardados en el dispositivo
 
     // Si el token de sesión no es nulo, redirige al usuario al home
-    if (user?.sessionToken != null) {
-      Navigator.pushNamedAndRemoveUntil(context, 'client/products/list', (route) => false);
+    if (user.sessionToken != null) {
+      if (user.roles!.length > 1) {
+        // Si tiene más de un rol, lo redirigimos a la pantalla de selección de roles
+        Navigator.pushNamedAndRemoveUntil(context, 'roles', (route) => false);
+      } else {
+        // Redirige al usuario al único rol que tiene
+        Navigator.pushNamedAndRemoveUntil(context, user.roles![0].route, (route) => false);
+      }
     }
   }
 
@@ -68,8 +76,13 @@ class LoginController {
         // Guarda los datos del usuario en sharedpreferences clave 'user'.
         _sharedPreferencesHelper.saveSessionToken('user', user.toJson());
 
-        // Redirige al usuario al home.
-        Navigator.pushNamedAndRemoveUntil(context, 'client/products/list', (route) => false);
+        print('Usuario logueado: ${user.toJson()}');
+
+        if (user.roles!.length > 1) {
+          Navigator.pushNamedAndRemoveUntil(context, 'roles', (route) => false);
+        } else {
+          Navigator.pushNamedAndRemoveUntil(context, user.roles![0].route, (route) => false);
+        }
 
       } else {
         SnackbarHelper.show(
