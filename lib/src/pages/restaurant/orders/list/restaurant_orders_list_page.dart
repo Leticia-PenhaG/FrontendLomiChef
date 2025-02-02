@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lomi_chef_to_go/src/pages/restaurant/orders/list/restaurant_orders_list_controller.dart';
-
 import '../../../../utils/app_colors.dart';
 
 class RestaurantOrdersListPage extends StatefulWidget {
@@ -17,7 +16,6 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((timestamp) {
@@ -51,7 +49,7 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
 
   }
 
-  Widget _drawer() {
+/*  Widget _drawer() {
     return Drawer (
       child: ListView(
         padding: EdgeInsets.zero,
@@ -114,5 +112,97 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
         ],
       ),
     );
+  }*/
+
+
+  Widget _drawer() {
+    return Drawer(
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(top: 40.0, left: 16.0, right: 16.0),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.primaryColor,
+                  Color(0xff5cd0b3),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.white,
+                  backgroundImage: AssetImage('assets/img/no-image-icon.png'),
+                ),
+                const SizedBox(height: 10),
+
+                Text(
+                  'Nombre de usuario',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'usuario@email.com',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white70,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'teléfono',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white70,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+              ],
+            ),
+          ),
+
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                _buildDrawerItem(Icons.person, 'Seleccionar rol', () {}),
+
+                //const Divider(),
+
+                _buildDrawerItem(Icons.power_settings_new, 'Cerrar sesión', () {
+                  _restaurantOrdersListController.logout();
+                }, color: Colors.red),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
+
+// Función para construir ListTiles de manera más reutilizable
+  Widget _buildDrawerItem(IconData icon, String text, VoidCallback onTap, {Color color = Colors.black}) {
+    return ListTile(
+      leading: Icon(icon, color: color),
+      title: Text(
+        text,
+        style: TextStyle(fontSize: 16, color: color),
+      ),
+      onTap: onTap,
+    );
+  }
+
 }

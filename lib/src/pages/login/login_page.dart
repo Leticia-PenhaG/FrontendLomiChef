@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         SizedBox(height: 8),
         Text(
-          'Por favor, ingresá a tu cuenta para continuar',
+          'Ingresá a tu cuenta para continuar',
           style: TextStyle(fontSize: 16, color: AppColors.secondaryTextColor),
           textAlign: TextAlign.center,
         ),
