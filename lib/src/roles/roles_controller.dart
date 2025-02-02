@@ -2,23 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lomi_chef_to_go/src/utils/shared_preferences_helper.dart';
 import '../models/user.dart';
 
-
-/*
-class RolesController {
-  late BuildContext context;
-  late User user;
-  SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper();
-
-  Future init(BuildContext context) async {
-    this.context = context;
-    //se obtine el usuario de sesión
-    user = User.fromJson(await sharedPreferencesHelper.readSessionToken('user'));
-
-  }
-
-
-}*/
-
 class RolesController {
   late BuildContext context;
   late Function refresh;
@@ -36,7 +19,7 @@ class RolesController {
       refresh(); // Asegura que la UI se actualiza después de la carga de datos
     }
   }
-  
+
   void goToHomePage(String route) {
     Navigator.pushNamedAndRemoveUntil(context, route, (route) => false);
   }
