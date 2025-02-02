@@ -65,7 +65,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
 
   }
 
-  Widget _drawer() {
+  /*Widget _drawer() {
     return Drawer (
       child: ListView(
         padding: EdgeInsets.zero,
@@ -135,6 +135,94 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
           ),
         ],
       ),
+    );
+  }*/
+
+  Widget _drawer() {
+    return Drawer(
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(top: 40.0, left: 16.0, right: 16.0),
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.blue, Colors.blueAccent],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.white,
+                  backgroundImage: AssetImage('assets/img/no-image-icon.png'),
+                ),
+                const SizedBox(height: 10), // Espacio
+
+                Text(
+                  'Nombre de usuario',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                Text(
+                  'usuario@email.com',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white70,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+                Text(
+                  'teléfono',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white70,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Lista de opciones del Drawer
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                _buildDrawerItem(Icons.edit, 'Editar perfil', () {}),
+                _buildDrawerItem(Icons.shopping_cart, 'Mis pedidos', () {}),
+                _buildDrawerItem(Icons.person, 'Seleccionar rol', () {}),
+
+                const Divider(), // Línea divisoria
+
+                // Botón de cerrar sesión con color rojo
+                _buildDrawerItem(Icons.power_settings_new, 'Cerrar sesión', () {
+                  _controllerProductList.logout();
+                }, color: Colors.red),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// Función para construir ListTiles de manera más limpia y reutilizable
+  Widget _buildDrawerItem(IconData icon, String text, VoidCallback onTap, {Color color = Colors.black}) {
+    return ListTile(
+      leading: Icon(icon, color: color),
+      title: Text(
+        text,
+        style: TextStyle(fontSize: 16, color: color),
+      ),
+      onTap: onTap,
     );
   }
 }
