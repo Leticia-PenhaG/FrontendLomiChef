@@ -47,7 +47,7 @@ class _RolesPageState extends State<RolesPage> {
     );
   }
 
-  Widget _cardRol(Rol rol) {
+  /*Widget _cardRol(Rol rol) {
     return GestureDetector(
       onTap: () {
         _rolesController.goToHomePage(rol.route);
@@ -84,10 +84,6 @@ class _RolesPageState extends State<RolesPage> {
     );
   }
 
-  void refresh() {
-    setState(() {}); // Asegura que la UI se actualiza después de la carga de datos
-  }
-
   String _getRoleImage(String roleName) {
     switch (roleName.toUpperCase()) {
       case 'CLIENTE':
@@ -99,6 +95,64 @@ class _RolesPageState extends State<RolesPage> {
       default:
         return 'assets/img/no-image-icon.png';
     }
+  }*/
+
+  Widget _cardRol(Rol rol) {
+    return GestureDetector(
+      onTap: () {
+        _rolesController.goToHomePage(rol.route);
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 40,
+                backgroundColor: Colors.grey.shade200,
+                child: Icon(
+                  _getRoleIcon(rol.name),
+                  size: 40,
+                  color: Colors.blue.shade700,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                rol.name,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  IconData _getRoleIcon(String roleName) {
+    switch (roleName.toUpperCase()) {
+      case 'CLIENTE':
+        return Icons.shopping_cart;
+      case 'RESTAURANTE':
+        return Icons.restaurant_menu;
+      case 'REPARTIDOR':
+        return Icons.delivery_dining;
+      default:
+        return Icons.person;
+    }
+  }
+
+  void refresh() {
+    setState(() {}); // Asegura que la UI se actualiza después de la carga de datos
   }
 }
 
