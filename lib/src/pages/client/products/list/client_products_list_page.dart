@@ -55,7 +55,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
 
   Widget _menuDrawer() {
     return GestureDetector(
-      onTap: _controllerProductList.openDrawerNavigator,
+      onTap: _controllerProductList.openDrawerBar,
       child: Container (
         margin: EdgeInsets.only(left: 20),
         alignment: Alignment.centerLeft,
@@ -116,7 +116,23 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                 ]
               )
           ),
-
+          ListTile(
+            title: Text('Editar perfil'),
+            trailing: Icon(Icons.edit)
+          ),
+          ListTile(
+              title: Text('Mis pedidos'),
+              trailing: Icon(Icons.shopping_cart)
+          ),
+          ListTile(
+              title: Text('Seleccionar rol'),
+              trailing: Icon(Icons.person)
+          ),
+          ListTile(
+              onTap: _controllerProductList.logout,
+              title: Text('Cerrar sesión'),
+              trailing: Icon(Icons.power_settings_new)
+          ),
         ],
       ),
     );

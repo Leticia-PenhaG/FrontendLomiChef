@@ -22,7 +22,7 @@ class ClientProductsListController {
     return context != null;
   }
 
-  void openDrawerNavigator() {
+  void openDrawerBar() {
     key.currentState?.openDrawer(); //menu de opciones lateral
   }
 }
