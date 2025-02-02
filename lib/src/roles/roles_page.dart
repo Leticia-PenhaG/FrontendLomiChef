@@ -47,7 +47,9 @@ class _RolesPageState extends State<RolesPage> {
     );
   }
 
-  /*Widget _cardRol(Rol rol) {
+  /* //para mostrar imágenes en lugar de lo íconos
+
+  Widget _cardRol(Rol rol) {
     return GestureDetector(
       onTap: () {
         _rolesController.goToHomePage(rol.route);
