@@ -1,6 +1,134 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:lomi_chef_to_go/src/roles/roles_controller.dart';
+import '../models/rol.dart';
 
-class RolesPage extends StatelessWidget {
+class RolesPage extends StatefulWidget {
+  const RolesPage({Key? key}) : super(key: key);
+
+  @override
+  State<RolesPage> createState() => _RolesPageState();
+}
+
+class _RolesPageState extends State<RolesPage> {
+  final RolesController _rolesController = RolesController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      await _rolesController.init(context);
+      setState(() {}); // Asegura que la UI se actualiza después de la carga de datos
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Seleccioná un rol'),
+      ),
+      body: ListView(
+        children: _rolesController.user.roles?.map((Rol rol) {
+          return _cardRol(rol);
+        }).toList() ??
+            [], // Evita problemas si `roles` es `null`
+      ),
+    );
+  }
+
+  Widget _cardRol(Rol rol) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, rol.route); // Redirigir según el rol seleccionado
+      },
+      child: Column(
+        children: [
+          SizedBox(
+            height: 100,
+            child: FadeInImage(
+              image: rol.image != null && rol.image!.isNotEmpty
+                  ? NetworkImage(rol.image!) as ImageProvider
+                  : const AssetImage('assets/img/no-image-icon.png'),
+              fit: BoxFit.contain,
+              fadeInDuration: const Duration(milliseconds: 50),
+              placeholder: const AssetImage('assets/img/no-image-icon.png'),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            rol.name ?? '',
+            style: const TextStyle(fontSize: 16, color: Colors.black),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/*class RolesPage extends StatefulWidget {
+  const RolesPage({Key key}) : super (key: key);
+
+  @override
+  State<RolesPage> createState() => _RolesPageState();
+}
+
+class _RolesPageState extends State<RolesPage> {
+
+  final RolesController _rolesController = RolesController();
+  @override
+  void initState(){
+    super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((timestamp) {
+      _rolesController.init(context);
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Seleccioná un rol),
+      ),
+      body: ListView(
+      children: _rolesController.user != null ? _rolesController.user.roles.map((Rol rol) {
+        return _cardRol(rol);
+    }).toList() : []
+    )
+    );
+   }
+
+  Widget _cardRol(Rol rol) {
+    return Column(
+        children: [
+          Container(
+            height: 100,
+            child: FadeInImage(
+              image: rol.image != null
+                  ? NetworkImage(rol.image)
+                  : AssetImage('assets/img/no-image-icon.png'),
+              fit: BoxFit.contain,
+              fadeInDuration: Duration(milliseconds: 50),
+              placeholder: AssetImage('assets/img/no-image-icon.png'),
+            ),
+            Text(
+              rol.name ?? '',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black
+              ),
+            ),
+          )
+
+    ],
+    );
+
+  }
+}*/
+
+
+/*class RolesPage extends StatelessWidget {
   final List<Map<String, dynamic>> roles;
 
   const RolesPage({Key? key, required this.roles}) : super(key: key);
@@ -77,5 +205,4 @@ class RolesPage extends StatelessWidget {
         return Icons.person;
     }
   }
-}
-
+}*/
