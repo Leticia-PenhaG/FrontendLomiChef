@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:lomi_chef_to_go/src/pages/client/products/list/client_products_list_controlller.dart';
+import 'package:lomi_chef_to_go/src/pages/client/products/list/client_products_list_controller.dart';
 import 'package:lomi_chef_to_go/src/utils/app_colors.dart';
 
 class ClientProductsListPage extends StatefulWidget {
