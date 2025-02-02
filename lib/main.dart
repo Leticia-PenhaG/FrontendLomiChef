@@ -8,7 +8,7 @@ import 'package:lomi_chef_to_go/src/roles/roles_page.dart';
 
 import 'src/utils/app_colors.dart';
 
-/*void main() {
+void main() {
   runApp(const LomiChefDeliveryApp());
 }
 
@@ -42,9 +42,9 @@ class _LomiChefDeliveryAppState extends State<LomiChefDeliveryApp> {
       ),
     );
   }
-}*/
+}
 
-void main() {
+/*void main() {
   runApp(const LomiChefDeliveryApp());
 }
 
@@ -102,4 +102,4 @@ class _LomiChefDeliveryAppState extends State<LomiChefDeliveryApp> {
       ),
     );
   }
-}
+}*/

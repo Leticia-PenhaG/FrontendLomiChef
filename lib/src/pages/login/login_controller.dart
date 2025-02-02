@@ -28,9 +28,14 @@ class LoginController {
     //print('Usuario: ${user.toJson()}'); datos guardados en el dispositivo
 
     // Si el token de sesión no es nulo, redirige al usuario al home
-    if (user?.sessionToken != null) {
-      Navigator.pushNamedAndRemoveUntil(
-          context, 'client/products/list', (route) => false);
+    if (user.sessionToken != null) {
+      if (user.roles!.length > 1) {
+        // Si tiene más de un rol, lo redirigimos a la pantalla de selección de roles
+        Navigator.pushNamedAndRemoveUntil(context, 'roles', (route) => false);
+      } else {
+        // Redirige al usuario al único rol que tiene
+        Navigator.pushNamedAndRemoveUntil(context, user.roles![0].route, (route) => false);
+      }
     }
   }
 
@@ -72,14 +77,13 @@ class LoginController {
         _sharedPreferencesHelper.saveSessionToken('user', user.toJson());
 
         print('Usuario logueado: ${user.toJson()}');
-        if (user.roles!.length == 1) {
-          // Si solo tiene el rol "Cliente", redirigimos directamente a la página de productos del cliente
-          Navigator.pushNamedAndRemoveUntil(
-              context, 'client/products/list', (route) => false);
-        } else {
-          // Si tiene más de un rol, lo redirigimos a la pantalla de selección de roles
+
+        if (user.roles!.length > 1) {
           Navigator.pushNamedAndRemoveUntil(context, 'roles', (route) => false);
+        } else {
+          Navigator.pushNamedAndRemoveUntil(context, user.roles![0].route, (route) => false);
         }
+
       } else {
         SnackbarHelper.show(
           context: context,

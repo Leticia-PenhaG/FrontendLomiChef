@@ -18,8 +18,7 @@ class _RolesPageState extends State<RolesPage> {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      await _rolesController.init(context);
-      setState(() {}); // Asegura que la UI se actualiza después de la carga de datos
+      await _rolesController.init(context, refresh);
     });
   }
 
@@ -41,31 +40,51 @@ class _RolesPageState extends State<RolesPage> {
   Widget _cardRol(Rol rol) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, rol.route); // Redirigir según el rol seleccionado
+        _rolesController.goToHomePage(rol.route);
       },
       child: Column(
         children: [
-          SizedBox(
+          Container(
             height: 100,
             child: FadeInImage(
-              image: rol.image != null && rol.image!.isNotEmpty
-                  ? NetworkImage(rol.image!) as ImageProvider
-                  : const AssetImage('assets/img/no-image-icon.png'),
+              image: AssetImage(_getRoleImage(rol.name)),
               fit: BoxFit.contain,
               fadeInDuration: const Duration(milliseconds: 50),
               placeholder: const AssetImage('assets/img/no-image-icon.png'),
             ),
           ),
-          const SizedBox(height: 8),
           Text(
             rol.name ?? '',
-            style: const TextStyle(fontSize: 16, color: Colors.black),
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
           ),
         ],
       ),
     );
   }
+
+  void refresh() {
+    setState(() {}); // Asegura que la UI se actualiza después de la carga de datos
+
+  }
 }
+
+// Método para obtener la imagen correspondiente al rol
+  String _getRoleImage(String roleName) {
+    switch (roleName.toUpperCase()) {
+      case 'CLIENTE':
+        return 'assets/img/client.png';
+      case 'RESTAURANTE':
+        return 'assets/img/restaurant.png';
+      case 'REPARTIDOR':
+        return 'assets/img/delivery.png';
+      default:
+        return 'assets/img/no-image-icon.png';
+    }
+  }
+
 
 /*class RolesPage extends StatefulWidget {
   const RolesPage({Key key}) : super (key: key);
