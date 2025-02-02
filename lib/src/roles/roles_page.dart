@@ -16,7 +16,6 @@ class _RolesPageState extends State<RolesPage> {
   @override
   void initState() {
     super.initState();
-
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       await _rolesController.init(context, refresh);
     });
@@ -27,12 +26,23 @@ class _RolesPageState extends State<RolesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Seleccioná un rol'),
+        centerTitle: true,
       ),
-      body: ListView(
-        children: _rolesController.user.roles?.map((Rol rol) {
-              return _cardRol(rol);
-            }).toList() ??
-            [], // Evita problemas si `roles` es `null`
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, // Muestra 2 columnas
+            crossAxisSpacing: 16.0,
+            mainAxisSpacing: 16.0,
+            childAspectRatio: 0.9, // Ajusta la proporción de las tarjetas
+          ),
+          itemCount: _rolesController.user.roles?.length ?? 0,
+          itemBuilder: (BuildContext context, int index) {
+            final Rol rol = _rolesController.user.roles![index];
+            return _cardRol(rol);
+          },
+        ),
       ),
     );
   }
@@ -42,45 +52,53 @@ class _RolesPageState extends State<RolesPage> {
       onTap: () {
         _rolesController.goToHomePage(rol.route);
       },
-      child: Column(
-        children: [
-          Container(
-            height: 100,
-            child: FadeInImage(
-              image: AssetImage(_getRoleImage(rol.name)),
-              fit: BoxFit.contain,
-              fadeInDuration: const Duration(milliseconds: 50),
-              placeholder: const AssetImage('assets/img/no-image-icon.png'),
-            ),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 40,
+                backgroundColor: Colors.grey.shade200,
+                backgroundImage: AssetImage(_getRoleImage(rol.name)),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                rol.name,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
-          Text(
-            rol.name ?? '',
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 
   void refresh() {
-    setState(
-        () {}); // Asegura que la UI se actualiza después de la carga de datos
+    setState(() {}); // Asegura que la UI se actualiza después de la carga de datos
+  }
+
+  String _getRoleImage(String roleName) {
+    switch (roleName.toUpperCase()) {
+      case 'CLIENTE':
+        return 'assets/img/client.png';
+      case 'RESTAURANTE':
+        return 'assets/img/restaurant.png';
+      case 'REPARTIDOR':
+        return 'assets/img/delivery.png';
+      default:
+        return 'assets/img/no-image-icon.png';
+    }
   }
 }
 
-// Método para obtener la imagen correspondiente al rol
-String _getRoleImage(String roleName) {
-  switch (roleName.toUpperCase()) {
-    case 'CLIENTE':
-      return 'assets/img/client.png';
-    case 'RESTAURANTE':
-      return 'assets/img/restaurant.png';
-    case 'REPARTIDOR':
-      return 'assets/img/delivery.png';
-    default:
-      return 'assets/img/no-image-icon.png';
-  }
-}
