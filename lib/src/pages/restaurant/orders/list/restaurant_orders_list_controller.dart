@@ -32,4 +32,8 @@ class RestaurantOrdersListController {
   void openDrawerBar() {
     key.currentState?.openDrawer(); //menu de opciones lateral
   }
+
+  void goToRoles() {
+    Navigator.pushNamedAndRemoveUntil(context!, 'roles', (route) => false);
+  }
 }

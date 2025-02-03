@@ -91,7 +91,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                       ? NetworkImage(_controllerProductList.user.image!) as ImageProvider
                       : const AssetImage('assets/img/no-image-icon.png'),
                 ),
-                const SizedBox(height: 10), // Espacio
+                const SizedBox(height: 10),
 
                 Text(
                   '${_controllerProductList.user.name ?? ''} ${_controllerProductList.user.lastname ?? ''}',
@@ -133,10 +133,15 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
               children: [
                 _buildDrawerItem(Icons.edit, 'Editar perfil', () {}),
                 _buildDrawerItem(Icons.shopping_cart, 'Mis pedidos', () {}),
-                _buildDrawerItem(Icons.person, 'Seleccionar rol', () {}),
-
+                //se controla que el usuario tenga más de un rol para mostrar la opción 'Seleccionar rol'
+                if (_controllerProductList.user != null &&
+                    _controllerProductList.user.roles!.length > 1)
+                  _buildDrawerItem(
+                    Icons.person,
+                    'Seleccionar rol',
+                    _controllerProductList.goToRoles,
+                  ) ,
                 //const Divider(),
-
                 _buildDrawerItem(Icons.power_settings_new, 'Cerrar sesión', () {
                   _controllerProductList.logout();
                 }, color: Colors.red),

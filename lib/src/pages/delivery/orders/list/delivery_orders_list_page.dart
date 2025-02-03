@@ -79,7 +79,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
                       ? NetworkImage(_deliveryOrdersListController.user.image!) as ImageProvider
                       : const AssetImage('assets/img/no-image-icon.png'),
                 ),
-                const SizedBox(height: 10), // Espacio
+                const SizedBox(height: 10),
 
                 Text(
                   '${_deliveryOrdersListController.user.name ?? ''} ${_deliveryOrdersListController.user.lastname ?? ''}',
@@ -119,9 +119,13 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                _buildDrawerItem(Icons.edit, 'Editar perfil', () {}),
-                _buildDrawerItem(Icons.shopping_cart, 'Mis pedidos', () {}),
-                _buildDrawerItem(Icons.person, 'Seleccionar rol', () {}),
+                if (_deliveryOrdersListController.user != null &&
+                    _deliveryOrdersListController.user.roles!.length > 1)
+                  _buildDrawerItem(
+                    Icons.person,
+                    'Seleccionar rol',
+                    _deliveryOrdersListController.goToRoles,
+                  ) ,
 
                 //const Divider(),
 

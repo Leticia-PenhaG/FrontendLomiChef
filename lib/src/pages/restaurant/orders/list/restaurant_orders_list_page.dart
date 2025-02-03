@@ -80,7 +80,7 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
                       ? NetworkImage(_restaurantOrdersListController.user.image!) as ImageProvider
                       : const AssetImage('assets/img/no-image-icon.png'),
                 ),
-                const SizedBox(height: 10), // Espacio
+                const SizedBox(height: 10),
 
                 Text(
                   '${_restaurantOrdersListController.user.name ?? ''} ${_restaurantOrdersListController.user.lastname ?? ''}',
@@ -120,9 +120,13 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                _buildDrawerItem(Icons.edit, 'Editar perfil', () {}),
-                _buildDrawerItem(Icons.shopping_cart, 'Mis pedidos', () {}),
-                _buildDrawerItem(Icons.person, 'Seleccionar rol', () {}),
+                if (_restaurantOrdersListController.user != null &&
+                    _restaurantOrdersListController.user.roles!.length > 1)
+                  _buildDrawerItem(
+                    Icons.person,
+                    'Seleccionar rol',
+                    _restaurantOrdersListController.goToRoles,
+                  ) ,
 
                 //const Divider(),
 
