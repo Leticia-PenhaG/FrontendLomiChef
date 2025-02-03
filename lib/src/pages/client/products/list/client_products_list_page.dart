@@ -11,8 +11,7 @@ class ClientProductsListPage extends StatefulWidget {
 }
 
 class _ClientProductsListPageState extends State<ClientProductsListPage> {
-  final ClientProductsListController _controllerProductList =
-      ClientProductsListController();
+  final ClientProductsListController _controllerProductList = ClientProductsListController();
   bool _isInitialized = false;
 
   @override
@@ -22,8 +21,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       await _controllerProductList.init(context, refresh);
       setState(() {
-        _isInitialized =
-            true; // Cambia el estado una vez que `context` está listo
+        _isInitialized = true; // Cambia el estado una vez que `context` está listo
       });
     });
   }
@@ -49,7 +47,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
       body: Center(
         child: ElevatedButton(
           onPressed: () => _controllerProductList.logout(),
-          child: const Text('Cerrar sesión'),
+          child: const Text('Client Page'),
         ),
       ),
     );
@@ -61,11 +59,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
       child: Container(
         margin: EdgeInsets.only(left: 20),
         alignment: Alignment.centerLeft,
-        child: Image.asset(
-          'assets/img/menu.png',
-          width: 20,
-          height: 20,
-        ),
+        child: Image.asset('assets/img/menu.png', width: 20, height: 20),
       ),
     );
   }

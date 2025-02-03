@@ -11,15 +11,18 @@ class DeliveryOrdersListPage extends StatefulWidget {
 }
 
 class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
-
   final DeliveryOrdersListController _deliveryOrdersListController = DeliveryOrdersListController();
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
 
-    SchedulerBinding.instance.addPostFrameCallback((timestamp) {
-      _deliveryOrdersListController.init(context);
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      await _deliveryOrdersListController.init(context, refresh);
+      setState(() {
+        _isInitialized = true; // Cambia el estado una vez que `context` está listo
+      });
     });
   }
 
@@ -43,7 +46,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
       child: Container (
         margin: EdgeInsets.only(left: 20),
         alignment: Alignment.centerLeft,
-        child: Image.asset('assets/img/menu.png', width: 20, height: 20,),
+        child: Image.asset('assets/img/menu.png', width: 20, height: 20),
       ),
     );
 
@@ -72,12 +75,14 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: Colors.white,
-                  backgroundImage: AssetImage('assets/img/no-image-icon.png'),
+                  backgroundImage: (_deliveryOrdersListController.user.image != null && _deliveryOrdersListController.user.image!.isNotEmpty)
+                      ? NetworkImage(_deliveryOrdersListController.user.image!) as ImageProvider
+                      : const AssetImage('assets/img/no-image-icon.png'),
                 ),
                 const SizedBox(height: 10), // Espacio
 
                 Text(
-                  'Nombre de usuario',
+                  '${_deliveryOrdersListController.user.name ?? ''} ${_deliveryOrdersListController.user.lastname ?? ''}',
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.white,
@@ -87,7 +92,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
                 const SizedBox(height: 8),
 
                 Text(
-                  'usuario@email.com',
+                  _deliveryOrdersListController.user.email ?? '',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white70,
@@ -97,7 +102,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
                 const SizedBox(height: 8),
 
                 Text(
-                  'teléfono',
+                  _deliveryOrdersListController.user.phone ?? '',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white70,
@@ -105,7 +110,6 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
-
               ],
             ),
           ),
@@ -115,6 +119,8 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
+                _buildDrawerItem(Icons.edit, 'Editar perfil', () {}),
+                _buildDrawerItem(Icons.shopping_cart, 'Mis pedidos', () {}),
                 _buildDrawerItem(Icons.person, 'Seleccionar rol', () {}),
 
                 //const Divider(),
@@ -130,6 +136,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
     );
   }
 
+
 // Función para construir ListTiles de manera más reutilizable
   Widget _buildDrawerItem(IconData icon, String text, VoidCallback onTap, {Color color = Colors.black}) {
     return ListTile(
@@ -140,6 +147,12 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
       ),
       onTap: onTap,
     );
+  }
+
+  void refresh(){
+    setState(() {
+
+    });
   }
 
 /*
