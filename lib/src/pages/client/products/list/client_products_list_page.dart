@@ -11,7 +11,8 @@ class ClientProductsListPage extends StatefulWidget {
 }
 
 class _ClientProductsListPageState extends State<ClientProductsListPage> {
-  final ClientProductsListController _controllerProductList = ClientProductsListController();
+  final ClientProductsListController _controllerProductList =
+      ClientProductsListController();
   bool _isInitialized = false;
 
   @override
@@ -19,9 +20,10 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      await _controllerProductList.init(context);
+      await _controllerProductList.init(context, refresh);
       setState(() {
-        _isInitialized = true; // Cambia el estado una vez que `context` está listo
+        _isInitialized =
+            true; // Cambia el estado una vez que `context` está listo
       });
     });
   }
@@ -56,13 +58,16 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
   Widget _menuDrawer() {
     return GestureDetector(
       onTap: _controllerProductList.openDrawerBar,
-      child: Container (
+      child: Container(
         margin: EdgeInsets.only(left: 20),
         alignment: Alignment.centerLeft,
-        child: Image.asset('assets/img/menu.png', width: 20, height: 20,),
+        child: Image.asset(
+          'assets/img/menu.png',
+          width: 20,
+          height: 20,
+        ),
       ),
     );
-
   }
 
   Widget _drawer() {
@@ -88,12 +93,14 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: Colors.white,
-                  backgroundImage: AssetImage('assets/img/no-image-icon.png'),
+                  backgroundImage: (_controllerProductList.user.image != null && _controllerProductList.user.image!.isNotEmpty)
+                      ? NetworkImage(_controllerProductList.user.image!) as ImageProvider
+                      : const AssetImage('assets/img/no-image-icon.png'),
                 ),
                 const SizedBox(height: 10), // Espacio
 
                 Text(
-                  'Nombre de usuario',
+                  '${_controllerProductList.user.name ?? ''} ${_controllerProductList.user.lastname ?? ''}',
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.white,
@@ -103,7 +110,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                 const SizedBox(height: 8),
 
                 Text(
-                  'usuario@email.com',
+                  _controllerProductList.user.email ?? '',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white70,
@@ -113,7 +120,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                 const SizedBox(height: 8),
 
                 Text(
-                  'teléfono',
+                  _controllerProductList.user.phone ?? '',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white70,
@@ -121,7 +128,6 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
-
               ],
             ),
           ),
@@ -149,7 +155,8 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
   }
 
 // Función para construir ListTiles de manera más reutilizable
-  Widget _buildDrawerItem(IconData icon, String text, VoidCallback onTap, {Color color = Colors.black}) {
+  Widget _buildDrawerItem(IconData icon, String text, VoidCallback onTap,
+      {Color color = Colors.black}) {
     return ListTile(
       leading: Icon(icon, color: color),
       title: Text(
@@ -160,6 +167,11 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
     );
   }
 
+  void refresh(){
+    setState(() {
+
+    });
+  }
 
 /*Widget _drawer() {
     return Drawer (
@@ -234,5 +246,3 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
     );
   }*/
 }
-
-
