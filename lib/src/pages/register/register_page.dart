@@ -61,7 +61,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Por favor, ingresá la información necesaria para completar tu registro.',
+                  'Ingresá la información necesaria para completar tu registro.',
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
                 const SizedBox(height: 24),
