@@ -13,7 +13,7 @@ class RestaurantOrdersListController {
   Future<void> init(BuildContext context, Function refresh) async {
     this.context = context;
     this.refresh = refresh;
-    user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user')); //datos de usuario guardados
+    user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
     refresh();
   }
 

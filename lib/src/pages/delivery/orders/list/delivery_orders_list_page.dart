@@ -11,7 +11,7 @@ class DeliveryOrdersListPage extends StatefulWidget {
 }
 
 class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
-  final DeliveryOrdersListController _deliveryOrdersListController = DeliveryOrdersListController();
+  final DeliveryOrdersListController _controllerDelivery = DeliveryOrdersListController();
   bool _isInitialized = false;
 
   @override
@@ -19,7 +19,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      await _deliveryOrdersListController.init(context, refresh);
+      await _controllerDelivery.init(context, refresh);
       setState(() {
         _isInitialized = true; // Cambia el estado una vez que `context` está listo
       });
@@ -29,7 +29,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _deliveryOrdersListController.key,
+      key: _controllerDelivery.key,
       appBar: AppBar(
         leading: _menuDrawer(),
       ),
@@ -42,7 +42,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
 
   Widget _menuDrawer() {
     return GestureDetector(
-      onTap: _deliveryOrdersListController.openDrawerBar,
+      onTap: _controllerDelivery.openDrawerBar,
       child: Container (
         margin: EdgeInsets.only(left: 20),
         alignment: Alignment.centerLeft,
@@ -75,14 +75,14 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: Colors.white,
-                  backgroundImage: (_deliveryOrdersListController.user.image != null && _deliveryOrdersListController.user.image!.isNotEmpty)
-                      ? NetworkImage(_deliveryOrdersListController.user.image!) as ImageProvider
+                  backgroundImage: (_controllerDelivery.user.image != null && _controllerDelivery.user.image!.isNotEmpty)
+                      ? NetworkImage(_controllerDelivery.user.image!) as ImageProvider
                       : const AssetImage('assets/img/no-image-icon.png'),
                 ),
                 const SizedBox(height: 10),
 
                 Text(
-                  '${_deliveryOrdersListController.user.name ?? ''} ${_deliveryOrdersListController.user.lastname ?? ''}',
+                  '${_controllerDelivery.user.name ?? ''} ${_controllerDelivery.user.lastname ?? ''}',
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.white,
@@ -92,7 +92,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
                 const SizedBox(height: 8),
 
                 Text(
-                  _deliveryOrdersListController.user.email ?? '',
+                  _controllerDelivery.user.email ?? '',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white70,
@@ -102,7 +102,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
                 const SizedBox(height: 8),
 
                 Text(
-                  _deliveryOrdersListController.user.phone ?? '',
+                  _controllerDelivery.user.phone ?? '',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white70,
@@ -119,18 +119,18 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                if (_deliveryOrdersListController.user != null &&
-                    _deliveryOrdersListController.user.roles!.length > 1)
+                if (_controllerDelivery.user != null &&
+                    _controllerDelivery.user.roles!.length > 1)
                   _buildDrawerItem(
                     Icons.person,
                     'Seleccionar rol',
-                    _deliveryOrdersListController.goToRoles,
+                    _controllerDelivery.goToRoles,
                   ) ,
 
                 //const Divider(),
 
                 _buildDrawerItem(Icons.power_settings_new, 'Cerrar sesión', () {
-                  _deliveryOrdersListController.logout();
+                  _controllerDelivery.logout();
                 }, color: Colors.red),
               ],
             ),
@@ -216,7 +216,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
               trailing: Icon(Icons.person)
           ),
           ListTile(
-              onTap: _deliveryOrdersListController.logout,
+              onTap: _controllerDelivery.logout,
               title: Text('Cerrar sesión'),
               trailing: Icon(Icons.power_settings_new)
           ),

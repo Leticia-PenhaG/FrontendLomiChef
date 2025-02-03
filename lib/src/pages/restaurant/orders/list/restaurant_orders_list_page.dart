@@ -12,7 +12,7 @@ class RestaurantOrdersListPage extends StatefulWidget {
 
 class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
 
-  final RestaurantOrdersListController _restaurantOrdersListController = RestaurantOrdersListController();
+  final RestaurantOrdersListController _controllerRestaurant = RestaurantOrdersListController();
   bool _isInitialized = false;
 
   @override
@@ -20,7 +20,7 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((timestamp) {
-      _restaurantOrdersListController.init(context, refresh);
+      _controllerRestaurant.init(context, refresh);
       setState(() {
         _isInitialized = true; // Cambia el estado una vez que `context` está listo
       });
@@ -30,7 +30,7 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _restaurantOrdersListController.key,
+      key: _controllerRestaurant.key,
       appBar: AppBar(
         leading: _menuDrawer(),
       ),
@@ -43,7 +43,7 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
 
   Widget _menuDrawer() {
     return GestureDetector(
-      onTap: _restaurantOrdersListController.openDrawerBar,
+      onTap: _controllerRestaurant.openDrawerBar,
       child: Container (
         margin: EdgeInsets.only(left: 20),
         alignment: Alignment.centerLeft,
@@ -76,14 +76,14 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: Colors.white,
-                  backgroundImage: (_restaurantOrdersListController.user.image != null && _restaurantOrdersListController.user.image!.isNotEmpty)
-                      ? NetworkImage(_restaurantOrdersListController.user.image!) as ImageProvider
+                  backgroundImage: (_controllerRestaurant.user.image != null && _controllerRestaurant.user.image!.isNotEmpty)
+                      ? NetworkImage(_controllerRestaurant.user.image!) as ImageProvider
                       : const AssetImage('assets/img/no-image-icon.png'),
                 ),
                 const SizedBox(height: 10),
 
                 Text(
-                  '${_restaurantOrdersListController.user.name ?? ''} ${_restaurantOrdersListController.user.lastname ?? ''}',
+                  '${_controllerRestaurant.user.name ?? ''} ${_controllerRestaurant.user.lastname ?? ''}',
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.white,
@@ -93,7 +93,7 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
                 const SizedBox(height: 8),
 
                 Text(
-                  _restaurantOrdersListController.user.email ?? '',
+                  _controllerRestaurant.user.email ?? '',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white70,
@@ -103,7 +103,7 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
                 const SizedBox(height: 8),
 
                 Text(
-                  _restaurantOrdersListController.user.phone ?? '',
+                  _controllerRestaurant.user.phone ?? '',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white70,
@@ -120,18 +120,18 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                if (_restaurantOrdersListController.user != null &&
-                    _restaurantOrdersListController.user.roles!.length > 1)
+                if (_controllerRestaurant.user != null &&
+                    _controllerRestaurant.user.roles!.length > 1)
                   _buildDrawerItem(
                     Icons.person,
                     'Seleccionar rol',
-                    _restaurantOrdersListController.goToRoles,
+                    _controllerRestaurant.goToRoles,
                   ) ,
 
                 //const Divider(),
 
                 _buildDrawerItem(Icons.power_settings_new, 'Cerrar sesión', () {
-                  _restaurantOrdersListController.logout();
+                  _controllerRestaurant.logout();
                 }, color: Colors.red),
               ],
             ),
@@ -216,7 +216,7 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
               trailing: Icon(Icons.person)
           ),
           ListTile(
-              onTap: _restaurantOrdersListController.logout,
+              onTap: _controllerRestaurant.logout,
               title: Text('Cerrar sesión'),
               trailing: Icon(Icons.power_settings_new)
           ),

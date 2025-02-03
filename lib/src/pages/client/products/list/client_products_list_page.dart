@@ -11,7 +11,7 @@ class ClientProductsListPage extends StatefulWidget {
 }
 
 class _ClientProductsListPageState extends State<ClientProductsListPage> {
-  final ClientProductsListController _controllerProductList = ClientProductsListController();
+  final ClientProductsListController _controllerClient = ClientProductsListController();
   bool _isInitialized = false;
 
   @override
@@ -19,7 +19,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      await _controllerProductList.init(context, refresh);
+      await _controllerClient.init(context, refresh);
       setState(() {
         _isInitialized = true; // Cambia el estado una vez que `context` está listo
       });
@@ -39,14 +39,14 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
 
     // Se construye la UI una vez que `context` está inicializado
     return Scaffold(
-      key: _controllerProductList.key,
+      key: _controllerClient.key,
       appBar: AppBar(
         leading: _menuDrawer(),
       ),
       drawer: _drawer(),
       body: Center(
         child: ElevatedButton(
-          onPressed: () => _controllerProductList.logout(),
+          onPressed: () => _controllerClient.logout(),
           child: const Text('Client Page'),
         ),
       ),
@@ -55,7 +55,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
 
   Widget _menuDrawer() {
     return GestureDetector(
-      onTap: _controllerProductList.openDrawerBar,
+      onTap: _controllerClient.openDrawerBar,
       child: Container(
         margin: EdgeInsets.only(left: 20),
         alignment: Alignment.centerLeft,
@@ -87,14 +87,14 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: Colors.white,
-                  backgroundImage: (_controllerProductList.user.image != null && _controllerProductList.user.image!.isNotEmpty)
-                      ? NetworkImage(_controllerProductList.user.image!) as ImageProvider
+                  backgroundImage: (_controllerClient.user.image != null && _controllerClient.user.image!.isNotEmpty)
+                      ? NetworkImage(_controllerClient.user.image!) as ImageProvider
                       : const AssetImage('assets/img/no-image-icon.png'),
                 ),
                 const SizedBox(height: 10),
 
                 Text(
-                  '${_controllerProductList.user.name ?? ''} ${_controllerProductList.user.lastname ?? ''}',
+                  '${_controllerClient.user.name ?? ''} ${_controllerClient.user.lastname ?? ''}',
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.white,
@@ -104,7 +104,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                 const SizedBox(height: 8),
 
                 Text(
-                  _controllerProductList.user.email ?? '',
+                  _controllerClient.user.email ?? '',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white70,
@@ -114,7 +114,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                 const SizedBox(height: 8),
 
                 Text(
-                  _controllerProductList.user.phone ?? '',
+                  _controllerClient.user.phone ?? '',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white70,
@@ -134,16 +134,16 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                 _buildDrawerItem(Icons.edit, 'Editar perfil', () {}),
                 _buildDrawerItem(Icons.shopping_cart, 'Mis pedidos', () {}),
                 //se controla que el usuario tenga más de un rol para mostrar la opción 'Seleccionar rol'
-                if (_controllerProductList.user != null &&
-                    _controllerProductList.user.roles!.length > 1)
+                if (_controllerClient.user != null &&
+                    _controllerClient.user.roles!.length > 1)
                   _buildDrawerItem(
                     Icons.person,
                     'Seleccionar rol',
-                    _controllerProductList.goToRoles,
+                    _controllerClient.goToRoles,
                   ) ,
                 //const Divider(),
                 _buildDrawerItem(Icons.power_settings_new, 'Cerrar sesión', () {
-                  _controllerProductList.logout();
+                  _controllerClient.logout();
                 }, color: Colors.red),
               ],
             ),
@@ -236,7 +236,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
               trailing: Icon(Icons.person)
           ),
           ListTile(
-              onTap: _controllerProductList.logout,
+              onTap: _controllerClient.logout,
               title: Text('Cerrar sesión'),
               trailing: Icon(Icons.power_settings_new)
           ),
