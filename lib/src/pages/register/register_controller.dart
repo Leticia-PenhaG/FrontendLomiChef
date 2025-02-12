@@ -86,7 +86,7 @@ class RegisterController {
 
   String? validateConfirmPassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Tenés que confirmar la contraseña';
+      return 'La contraseña no puede ser vacía ni nula';
     }
     if (value != passwordController.text.trim()) {
       return 'Las contraseñas no coinciden';
@@ -108,5 +108,24 @@ class RegisterController {
         ],
       ),
     );
+  }
+
+  void showAlertDialog() {
+    Widget galleryButton =
+    ElevatedButton(onPressed: () {}, child: Text('Galería'));
+
+    Widget cameraButton =
+    ElevatedButton(onPressed: () {}, child: Text('Cámara'));
+
+    AlertDialog alertDialog = AlertDialog(
+      title: Text('Seleccioná tu imagen'),
+      actions: [galleryButton, cameraButton],
+    );
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog;
+        });
   }
 }

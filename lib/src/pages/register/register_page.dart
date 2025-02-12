@@ -52,7 +52,7 @@ class _RegisterPageState extends State<RegisterPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 16),
-                const Text(
+                /*const Text(
                   'Creá tu cuenta',
                   style: TextStyle(
                       fontSize: 24,
@@ -64,8 +64,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   'Ingresá la información necesaria para completar tu registro.',
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
+                const SizedBox(height: 24),*/
+                Center(child: _imageUser()),
                 const SizedBox(height: 24),
-
                 // Campos de texto
                 _buildTextField(
                   controller: _controllerRegister.emailController,
@@ -146,6 +147,17 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _imageUser() {
+    return GestureDetector(
+      onTap: _controllerRegister.showAlertDialog,
+      child: CircleAvatar(
+        backgroundImage: AssetImage('assets/img/client.png'),
+        radius: 70,
+        backgroundColor: Colors.grey[200],
       ),
     );
   }
