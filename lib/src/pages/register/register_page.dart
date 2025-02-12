@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lomi_chef_to_go/src/pages/register/register_controller.dart';
-
 import '../../utils/app_colors.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -22,7 +21,7 @@ class _RegisterPageState extends State<RegisterPage> {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      _controllerRegister.init(context); // Inicializar controladores
+      _controllerRegister.init(context, refresh); // Inicializar controladores
     });
   }
 
@@ -155,7 +154,9 @@ class _RegisterPageState extends State<RegisterPage> {
     return GestureDetector(
       onTap: _controllerRegister.showAlertDialog,
       child: CircleAvatar(
-        backgroundImage: AssetImage('assets/img/client.png'),
+        backgroundImage: _controllerRegister.imageFile != null
+            ? FileImage(_controllerRegister.imageFile!)
+            : const AssetImage('assets/img/client.png'),
         radius: 70,
         backgroundColor: Colors.grey[200],
       ),
@@ -188,5 +189,11 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
       validator: validator,
     );
+  }
+
+  void refresh(){
+    setState(() {
+
+    });
   }
 }

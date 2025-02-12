@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lomi_chef_to_go/src/models/response_api.dart';
 
 import '../../models/user.dart';
@@ -14,9 +17,13 @@ class RegisterController {
   final TextEditingController confirmPasswordController = TextEditingController();
 
   UserProvider usersProvider = UserProvider();
+  XFile? pickedFile;
+  File? imageFile;
+  late Function refresh;
 
-  Future<void> init(BuildContext context) async {
+  Future<void> init(BuildContext context, Function refresh) async {
     this.context = context;
+    this.refresh = refresh;
     await Future.delayed(Duration.zero);
     usersProvider.init(context);
   }
@@ -110,12 +117,31 @@ class RegisterController {
     );
   }
 
-  void showAlertDialog() {
-    Widget galleryButton =
-    ElevatedButton(onPressed: () {}, child: Text('Galería'));
+  /*para seleccionar la imagen de la cámara o de la galería*/
+  Future<void> selectImage(ImageSource imageSource) async {
+    final XFile? pickedFile = await ImagePicker().pickImage(source: imageSource);
 
-    Widget cameraButton =
-    ElevatedButton(onPressed: () {}, child: Text('Cámara'));
+    if (pickedFile != null) {
+      imageFile = File(pickedFile.path);
+      refresh();
+    }
+
+    Navigator.pop(context);
+  }
+
+
+  void showAlertDialog() {
+    Widget galleryButton = ElevatedButton(
+        onPressed: () {
+          selectImage(ImageSource.gallery);
+        },
+        child: Text('Galería'));
+
+    Widget cameraButton = ElevatedButton(
+        onPressed: () {
+          selectImage(ImageSource.camera);
+        },
+        child: Text('Cámara'));
 
     AlertDialog alertDialog = AlertDialog(
       title: Text('Seleccioná tu imagen'),
