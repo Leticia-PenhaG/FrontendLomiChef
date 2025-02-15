@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lomi_chef_to_go/src/models/response_api.dart';
@@ -38,8 +37,9 @@ class RegisterController {
       return;
     }
 
-    _progressDialog.show(max: 100, msg: 'Cargando...');
+    _progressDialog.show(max: 100, msg: 'Procesando...');
     isBtnRegisterEnabled = false;
+    refresh();
 
     String email = emailController.text.trim();
     String name = nameController.text.trim();
@@ -59,27 +59,28 @@ class RegisterController {
 
     if (tempStream == null) {
       _showDialog('Error', 'No se pudo completar el registro. Intentá de nuevo.');
+      isBtnRegisterEnabled = true;
+      refresh();
       return;
     }
 
-    Stream<dynamic> stream = tempStream; // asegurarse que no sea null
-
+    Stream<dynamic> stream = tempStream; // para asegurar que no sea null
 
     stream.listen((res) {
       _progressDialog.close();
-      //ResponseApi? responseApi = await usersProvider.create(user); // Respuesta del servicio
       ResponseApi? responseApi = ResponseApi.fromJson(json.decode(res)); // Respuesta del servicio
 
       if (responseApi != null && responseApi.success == true) {
         Future.delayed(Duration(seconds: 3), () {    //si el registro fue exitoso se redirige al login automáticamente después de 3 segundos
           Navigator.pushReplacementNamed(context, 'login');
-        }); //cuando se crea nuevo usuario se redirige automáticamente al login
+        });
         _showDialog('Éxito',
             'Usuario registrado correctamente, ahora podés iniciar sesión');
       } else {
         _showDialog(
             'Error', responseApi?.message ?? 'Ocurrió un error inesperado');
         isBtnRegisterEnabled = true;
+        refresh();
       }
     });
   }
