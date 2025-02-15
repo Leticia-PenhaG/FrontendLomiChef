@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:lomi_chef_to_go/src/api/environment.dart';
@@ -15,10 +16,51 @@ class UserProvider {
 
   Future<void> init(BuildContext context) async {
     this.context = context;
-    await Future.delayed(Duration.zero); 
+    await Future.delayed(Duration.zero);
   }
 
-  Future<ResponseApi?> create (User user) async {
+  Future<Stream?> createWithImage (User user, File image) async {
+    try {
+      Uri url = Uri.http(_url, '$_api/create');
+      final request = http.MultipartRequest('POST',url);
+      /*if(image != null) {
+
+        request.files.add(
+          http.MultipartFile(
+            'image',  // Asegúrate de que el nombre aquí coincide con el que se espera en el servidor
+            http.ByteStream(image.openRead().cast()),
+            await image.length(),
+            filename: image.path.split('/').last,
+          ),
+        );
+      }*/
+
+      if (image != null) {
+        request.files.add(
+          http.MultipartFile(
+            'image',
+            http.ByteStream(image.openRead().cast()),
+            await image.length(),
+            filename: image.path.split('/').last,
+          ),
+        );
+        print("Imagen añadida a la solicitud");
+      } else {
+        print("No se ha enviado ninguna imagen");
+      }
+
+      //request.fields['files'] = json.encode(user);
+      request.fields['user'] = json.encode(user);
+
+      final response = await request.send();//se envía la petición a node.js
+      return response.stream.transform(utf8.decoder);
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+
+  }
+    Future<ResponseApi?> create (User user) async {
     try {
       Uri url = Uri.http(_url, '$_api/create');
       String bodyParams = json.encode(user);

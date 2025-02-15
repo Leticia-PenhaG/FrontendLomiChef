@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -29,6 +30,11 @@ class RegisterController {
   }
 
   void register() async {
+    if (imageFile == null) {
+      _showDialog('Error', 'Por favor seleccioná una imagen');
+      return;
+    }
+
     String email = emailController.text.trim();
     String name = nameController.text.trim();
     String lastName = lastNameController.text.trim();
@@ -43,19 +49,31 @@ class RegisterController {
       password: password,
     );
 
-    ResponseApi? responseApi =
-        await usersProvider.create(user); // Respuesta del servicio
+    Stream<dynamic>? tempStream = await usersProvider.createWithImage(user, imageFile!);
 
-    if (responseApi != null && responseApi.success == true) {
-      Future.delayed(Duration(seconds: 3), () {
-        Navigator.pushReplacementNamed(context, 'login');
-      }); //cuando se crea nuevo usuario se redirige automáticamente al login
-      _showDialog('Éxito',
-          'Usuario registrado correctamente, ahora podés iniciar sesión');
-    } else {
-      _showDialog(
-          'Error', responseApi?.message ?? 'Ocurrió un error inesperado');
+    if (tempStream == null) {
+      _showDialog('Error', 'No se pudo completar el registro. Intentá de nuevo.');
+      return;
     }
+
+    Stream<dynamic> stream = tempStream; // asegurarse que no sea null
+
+
+    stream.listen((res) {
+      //ResponseApi? responseApi = await usersProvider.create(user); // Respuesta del servicio
+      ResponseApi? responseApi = ResponseApi.fromJson(json.decode(res)); // Respuesta del servicio
+
+      if (responseApi != null && responseApi.success == true) {
+        Future.delayed(Duration(seconds: 3), () {
+          Navigator.pushReplacementNamed(context, 'login');
+        }); //cuando se crea nuevo usuario se redirige automáticamente al login
+        _showDialog('Éxito',
+            'Usuario registrado correctamente, ahora podés iniciar sesión');
+      } else {
+        _showDialog(
+            'Error', responseApi?.message ?? 'Ocurrió un error inesperado');
+      }
+    });
   }
 
   String? validateEmail(String? value) {
@@ -124,11 +142,12 @@ class RegisterController {
     if (pickedFile != null) {
       imageFile = File(pickedFile.path);
       refresh();
+    } else {
+      _showDialog('Error', 'No seleccionaste ninguna imagen.');
     }
 
     Navigator.pop(context);
   }
-
 
   void showAlertDialog() {
     Widget galleryButton = ElevatedButton(
