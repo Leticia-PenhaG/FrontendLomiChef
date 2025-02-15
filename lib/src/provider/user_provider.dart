@@ -19,46 +19,31 @@ class UserProvider {
     await Future.delayed(Duration.zero);
   }
 
-  Future<Stream?> createWithImage (User user, File image) async {
+  Future<Stream<String>?> createWithImage(User user, File image) async {
     try {
       Uri url = Uri.http(_url, '$_api/create');
-      final request = http.MultipartRequest('POST',url);
-      /*if(image != null) {
+      var request = http.MultipartRequest('POST', url);
 
-        request.files.add(
-          http.MultipartFile(
-            'image',  // Asegúrate de que el nombre aquí coincide con el que se espera en el servidor
-            http.ByteStream(image.openRead().cast()),
-            await image.length(),
-            filename: image.path.split('/').last,
-          ),
-        );
-      }*/
+      request.fields['user'] = json.encode(user.toJson()); // Convertir user a JSON
 
-      if (image != null) {
-        request.files.add(
-          http.MultipartFile(
-            'image',
-            http.ByteStream(image.openRead().cast()),
-            await image.length(),
-            filename: image.path.split('/').last,
-          ),
-        );
-        print("Imagen añadida a la solicitud");
-      } else {
-        print("No se ha enviado ninguna imagen");
-      }
+      var stream = http.ByteStream(image.openRead());
+      var length = await image.length();
 
-      //request.fields['files'] = json.encode(user);
-      request.fields['user'] = json.encode(user);
+      var multipartFile = http.MultipartFile(
+        'image',
+        stream,
+        length,
+        filename: image.path.split('/').last,
+      );
 
-      final response = await request.send();//se envía la petición a node.js
+      request.files.add(multipartFile);
+
+      var response = await request.send();
       return response.stream.transform(utf8.decoder);
     } catch (e) {
-      print('Error: $e');
+      print('Error al enviar imagen: $e');
       return null;
     }
-
   }
     Future<ResponseApi?> create (User user) async {
     try {
