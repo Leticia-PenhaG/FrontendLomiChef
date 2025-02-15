@@ -127,7 +127,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        _controllerRegister.register();
+                        _controllerRegister.isBtnRegisterEnabled ? _controllerRegister.register() : null; // se deshabilita el botón de registro cuando isBtnRegisterEnabled es false con el null
                       }
                     },
                     style: ElevatedButton.styleFrom(

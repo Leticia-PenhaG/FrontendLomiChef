@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lomi_chef_to_go/src/models/response_api.dart';
-
+import 'package:sn_progress_dialog/progress_dialog.dart';
 import '../../models/user.dart';
 import '../../provider/user_provider.dart';
 
@@ -21,12 +21,15 @@ class RegisterController {
   XFile? pickedFile;
   File? imageFile;
   late Function refresh;
+  late ProgressDialog _progressDialog;
+  bool isBtnRegisterEnabled = true;
 
   Future<void> init(BuildContext context, Function refresh) async {
     this.context = context;
     this.refresh = refresh;
     await Future.delayed(Duration.zero);
     usersProvider.init(context);
+    _progressDialog = ProgressDialog(context: context);
   }
 
   void register() async {
@@ -34,6 +37,9 @@ class RegisterController {
       _showDialog('Error', 'Por favor seleccioná una imagen');
       return;
     }
+
+    _progressDialog.show(max: 100, msg: 'Cargando...');
+    isBtnRegisterEnabled = false;
 
     String email = emailController.text.trim();
     String name = nameController.text.trim();
@@ -60,11 +66,12 @@ class RegisterController {
 
 
     stream.listen((res) {
+      _progressDialog.close();
       //ResponseApi? responseApi = await usersProvider.create(user); // Respuesta del servicio
       ResponseApi? responseApi = ResponseApi.fromJson(json.decode(res)); // Respuesta del servicio
 
       if (responseApi != null && responseApi.success == true) {
-        Future.delayed(Duration(seconds: 3), () {
+        Future.delayed(Duration(seconds: 3), () {    //si el registro fue exitoso se redirige al login automáticamente después de 3 segundos
           Navigator.pushReplacementNamed(context, 'login');
         }); //cuando se crea nuevo usuario se redirige automáticamente al login
         _showDialog('Éxito',
@@ -72,6 +79,7 @@ class RegisterController {
       } else {
         _showDialog(
             'Error', responseApi?.message ?? 'Ocurrió un error inesperado');
+        isBtnRegisterEnabled = true;
       }
     });
   }
