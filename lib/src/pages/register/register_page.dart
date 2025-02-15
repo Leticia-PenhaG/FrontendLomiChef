@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lomi_chef_to_go/src/pages/register/register_controller.dart';
-
 import '../../utils/app_colors.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -22,7 +21,7 @@ class _RegisterPageState extends State<RegisterPage> {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      _controllerRegister.init(context); // Inicializar controladores
+      _controllerRegister.init(context, refresh); // Inicializar controladores
     });
   }
 
@@ -52,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 16),
-                const Text(
+                /*const Text(
                   'Creá tu cuenta',
                   style: TextStyle(
                       fontSize: 24,
@@ -64,8 +63,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   'Ingresá la información necesaria para completar tu registro.',
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
+                const SizedBox(height: 24),*/
+                Center(child: _imageUser()),
                 const SizedBox(height: 24),
-
                 // Campos de texto
                 _buildTextField(
                   controller: _controllerRegister.emailController,
@@ -125,11 +125,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: _controllerRegister.isBtnRegisterEnabled ? () {
                       if (_formKey.currentState!.validate()) {
                         _controllerRegister.register();
                       }
-                    },
+                    } : null, // se deshabilita el botón de registro cuando isBtnRegisterEnabled es false con el null
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff38c2a6),
                       shape: RoundedRectangleBorder(
@@ -146,6 +146,19 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _imageUser() {
+    return GestureDetector(
+      onTap: _controllerRegister.showAlertDialog,
+      child: CircleAvatar(
+        backgroundImage: _controllerRegister.imageFile != null
+            ? FileImage(_controllerRegister.imageFile!)
+            : const AssetImage('assets/img/client.png'),
+        radius: 70,
+        backgroundColor: Colors.grey[200],
       ),
     );
   }
@@ -176,5 +189,11 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
       validator: validator,
     );
+  }
+
+  void refresh(){
+    setState(() {
+
+    });
   }
 }

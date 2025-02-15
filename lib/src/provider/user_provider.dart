@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:lomi_chef_to_go/src/api/environment.dart';
@@ -15,10 +16,36 @@ class UserProvider {
 
   Future<void> init(BuildContext context) async {
     this.context = context;
-    await Future.delayed(Duration.zero); 
+    await Future.delayed(Duration.zero);
   }
 
-  Future<ResponseApi?> create (User user) async {
+  Future<Stream<String>?> createWithImage(User user, File image) async {
+    try {
+      Uri url = Uri.http(_url, '$_api/create');
+      var request = http.MultipartRequest('POST', url);
+
+      request.fields['user'] = json.encode(user.toJson()); // Convertir user a JSON
+
+      var stream = http.ByteStream(image.openRead());
+      var length = await image.length();
+
+      var multipartFile = http.MultipartFile(
+        'image',
+        stream,
+        length,
+        filename: image.path.split('/').last,
+      );
+
+      request.files.add(multipartFile);
+
+      var response = await request.send();
+      return response.stream.transform(utf8.decoder);
+    } catch (e) {
+      print('Error al enviar imagen: $e');
+      return null;
+    }
+  }
+    Future<ResponseApi?> create (User user) async {
     try {
       Uri url = Uri.http(_url, '$_api/create');
       String bodyParams = json.encode(user);
