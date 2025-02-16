@@ -75,17 +75,17 @@ class UserProvider {
     }
   }
 
-  Future<ResponseApi?> create(User user) async {
+  //obtener el usuario por ID
+  Future<User?> getUserById(String id) async {
     try {
-      Uri url = Uri.http(_url, '$_api/create');
-      String bodyParams = json.encode(user);
+      Uri url = Uri.http(_url, '$_api/getById/$id');
+
       Map<String, String> headers = {'Content-type': 'application/json'};
 
-      final res = await http.post(url, headers: headers, body: bodyParams);
-      final data = json.decode(res
-          .body); //almacena la respuesta que retorna node.js al momento de realizar la petición
-      ResponseApi responseApi = ResponseApi.fromJson(data);
-      return responseApi;
+      final res = await http.get(url, headers: headers);
+      final data = json.decode(res.body); //almacena la respuesta que retorna node.js al momento de realizar la petición
+      User user = User.fromJson(data);
+      return user;
     } catch (e) {
       print('Error: $e');
       return null;

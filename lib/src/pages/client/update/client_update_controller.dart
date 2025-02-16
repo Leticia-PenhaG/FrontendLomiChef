@@ -48,13 +48,14 @@ class ClientUpdateController {
       passwordController.text = user.password!;
       confirmPasswordController.text = user.password!;
     } else {
-      passwordController.text = ''; // Si no hay contraseña guardada, deja vacío
+      passwordController.text = ''; // Si no hay contraseña guardada, se deja el campo vacío
       confirmPasswordController.text = '';
     }
 
     refresh();
   }
 
+  //permite actualizar perfil del cliente
   void updateProfile() async {
     _progressDialog.show(max: 100, msg: 'Procesando...');
     isBtnUpdateEnabled = false;
@@ -66,8 +67,8 @@ class ClientUpdateController {
     String phone = phoneController.text.trim();
     String password = passwordController.text.trim();
 
-    // Si la contraseña está vacía, NO la enviamos (el backend la ignora)
-    User userToSend = User(
+    // Si la contraseña está vacía, no la enviamos (el backend la ignora)
+    User actualUser = User(
         id: user.id,
         email: email,
         name: name,
@@ -80,9 +81,9 @@ class ClientUpdateController {
     Stream<dynamic>? tempStream;
 
     if (imageFile != null) {
-      tempStream = await usersProvider.updateProfile(userToSend, imageFile!);
+      tempStream = await usersProvider.updateProfile(actualUser, imageFile!);
     } else {
-      tempStream = await usersProvider.updateProfile(userToSend, null);
+      tempStream = await usersProvider.updateProfile(actualUser, null);
     }
 
     if (tempStream == null) {
@@ -92,12 +93,20 @@ class ClientUpdateController {
       return;
     }
 
-    tempStream.listen((res) {
+    tempStream.listen((res) async {
       _progressDialog.close();
       ResponseApi? responseApi = ResponseApi.fromJson(json.decode(res));
       Fluttertoast.showToast(msg: responseApi.message);
 
       if (responseApi != null && responseApi.success == true) {
+        //user = (await usersProvider.getUserById(actualUser.id))!; //se obtiene el cliente de la base de datos
+
+        if (actualUser.id != null) {
+          user = await usersProvider.getUserById(actualUser.id!) ?? user;
+        }
+
+        _sharedPreferencesHelper.saveSessionToken('user', user.toJson());
+
         Navigator.pushNamedAndRemoveUntil(context, 'client/products/list', (route) => false);
       } else {
         _showDialog('Error', responseApi?.message ?? 'Ocurrió un error inesperado');
