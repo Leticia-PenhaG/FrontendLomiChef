@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:lomi_chef_to_go/src/api/environment.dart';
 import '../models/response_api.dart';
@@ -45,21 +44,55 @@ class UserProvider {
       return null;
     }
   }
-    Future<ResponseApi?> create (User user) async {
+
+  Future<Stream<String>?> updateProfile(User user, File? image) async {
     try {
-      Uri url = Uri.http(_url, '$_api/create');
-      String bodyParams = json.encode(user);
-      Map<String, String> headers = {
-        'Content-type' : 'application/json'
-      };
+      Uri url = Uri.http(_url, '$_api/update');
+      var request = http.MultipartRequest('PUT', url);
 
-      final res = await http.post(url, headers: headers, body: bodyParams);
-      final data = json.decode(res.body); //almacena la respuesta que retorna node.js al momento de realizar la petición
-      ResponseApi responseApi = ResponseApi.fromJson(data);
-      return responseApi;
+      request.fields['user'] = json.encode(user.toJson());
 
+      if (image != null) {
+        // Solo se agrega la imagen si el usuario seleccionó una nueva
+        var stream = http.ByteStream(image.openRead());
+        var length = await image.length();
+
+        var multipartFile = http.MultipartFile(
+          'image',
+          stream,
+          length,
+          filename: image.path.split('/').last,
+        );
+
+        request.files.add(multipartFile);
+      }
+
+      var response = await request.send();
+      return response.stream.transform(utf8.decoder);
+    } catch (e) {
+      print('Error al enviar imagen: $e');
+      return null;
     }
-    catch(e) {
+  }
+
+  //obtener el usuario por ID
+  Future<User?> getUserById(String id) async {
+    try {
+      Uri url = Uri.http(_url, '$_api/getById/$id');
+
+      Map<String, String> headers = {'Content-type': 'application/json'};
+
+      final res = await http.get(url, headers: headers);
+      final data = json.decode(res.body);
+
+      if (data['success'] == true) {
+        User user = User.fromJson(data['data']); // Se extrae el objeto "data"
+        return user;
+      } else {
+        print("Error al obtener usuario: ${data['message']}");
+        return null;
+      }
+    } catch (e) {
       print('Error: $e');
       return null;
     }
@@ -87,5 +120,4 @@ class UserProvider {
       return null;
     }
   }
-
 }
