@@ -1,16 +1,15 @@
 import 'dart:convert';
-
 import 'package:lomi_chef_to_go/src/models/rol.dart';
 
 class User {
   String? id; // Cambiar de int? a String?
-  String email;
-  String password;
+  String? email;
+  String? password;
   String? phone;
   String name;
   String? image;
   bool isAvailable;
-  String? lastname;
+  String lastname;
   String? sessionToken;
   DateTime? createdAt;
   DateTime? updatedAt;
@@ -18,13 +17,13 @@ class User {
 
   User({
     this.id,
-    required this.email,
-    required this.password,
+    this.email,
+    this.password,
     this.phone,
     required this.name,
     this.image,
     this.isAvailable = false,
-    this.lastname,
+    required this.lastname,
     this.sessionToken,
     this.createdAt,
     this.updatedAt,

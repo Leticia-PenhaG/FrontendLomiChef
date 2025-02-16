@@ -3,18 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lomi_chef_to_go/src/models/response_api.dart';
+import 'package:lomi_chef_to_go/src/utils/shared_preferences_helper.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
 import '../../../models/user.dart';
 import '../../../provider/user_provider.dart';
 
 class ClientUpdateController {
   late final BuildContext context;
-  final TextEditingController emailController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
 
   UserProvider usersProvider = UserProvider();
   XFile? pickedFile;
@@ -22,6 +20,8 @@ class ClientUpdateController {
   late Function refresh;
   late ProgressDialog _progressDialog;
   bool isBtnUpdateEnabled = true;
+  late User user;
+  final SharedPreferencesHelper _sharedPreferencesHelper = SharedPreferencesHelper();
 
   Future<void> init(BuildContext context, Function refresh) async {
     this.context = context;
@@ -29,6 +29,11 @@ class ClientUpdateController {
     await Future.delayed(Duration.zero);
     usersProvider.init(context);
     _progressDialog = ProgressDialog(context: context);
+    user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
+    nameController.text = user.name;
+    lastNameController.text = user.lastname;
+    phoneController.text = user.phone!;
+    refresh();
   }
 
   void updateProfile() async {
@@ -41,18 +46,14 @@ class ClientUpdateController {
     isBtnUpdateEnabled = false;
     refresh();
 
-    String email = emailController.text.trim();
     String name = nameController.text.trim();
     String lastName = lastNameController.text.trim();
     String phone = phoneController.text.trim();
-    String password = passwordController.text.trim();
 
     User user = User(
-      email: email,
       name: name,
       lastname: lastName,
       phone: phone,
-      password: password,
     );
 
     Stream<dynamic>? tempStream = await usersProvider.createWithImage(user, imageFile!);
@@ -85,34 +86,12 @@ class ClientUpdateController {
     });
   }
 
-  String? validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'La contraseña es obligatoria';
-    }
-    const passwordRegex =
-        r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
-    if (!RegExp(passwordRegex).hasMatch(value)) {
-      return 'Debe tener: \n- Al menos 8 caracteres\n- Una mayúscula\n- Una minúscula\n- Un número\n- Un carácter especial.';
-    }
-    return null;
-  }
-
   String? validatePhone(String? value) {
     if (value == null || value.isEmpty) {
       return 'El teléfono es obligatorio';
     }
     if (!RegExp(r'^\d{7,15}$').hasMatch(value)) {
       return 'Ingresa un número de teléfono válido';
-    }
-    return null;
-  }
-
-  String? validateConfirmPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'La contraseña no puede ser vacía ni nula';
-    }
-    if (value != passwordController.text.trim()) {
-      return 'Las contraseñas no coinciden';
     }
     return null;
   }

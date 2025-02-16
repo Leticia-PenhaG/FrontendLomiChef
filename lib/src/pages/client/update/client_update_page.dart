@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-
 import '../../../utils/app_colors.dart';
 import 'client_update_controller.dart';
 
@@ -102,7 +101,7 @@ class _ClientUpdatePageState extends State<ClientUpdatePage> {
               ),
             ),
             child: const Text(
-              'Actualizar perfil',
+              'Actualizar',
               style: TextStyle(fontSize: 18, color: Colors.white),
             ),
           ),
@@ -111,13 +110,31 @@ class _ClientUpdatePageState extends State<ClientUpdatePage> {
     );
   }
 
+  /*Widget _imageUser() {
+    return GestureDetector(
+      onTap: _controllerClientUpdate.showAlertDialog,
+      child: CircleAvatar(
+        backgroundImage: _controllerClientUpdate.imageFile != null
+            ? FileImage(_controllerClientUpdate.imageFile!)
+            : _controllerClientUpdate.user.image != null
+            ? NetworkImage(_controllerClientUpdate.user.image)
+            : const AssetImage('assets/img/client.png'),
+        radius: 70,
+        backgroundColor: Colors.grey[200],
+      ),
+    );
+  }*/
+
   Widget _imageUser() {
     return GestureDetector(
       onTap: _controllerClientUpdate.showAlertDialog,
       child: CircleAvatar(
         backgroundImage: _controllerClientUpdate.imageFile != null
             ? FileImage(_controllerClientUpdate.imageFile!)
-            : const AssetImage('assets/img/client.png'),
+            : (_controllerClientUpdate.user.image != null &&
+            _controllerClientUpdate.user.image!.isNotEmpty
+            ? NetworkImage(_controllerClientUpdate.user.image!)
+            : const AssetImage('assets/img/client.png')) as ImageProvider,
         radius: 70,
         backgroundColor: Colors.grey[200],
       ),
