@@ -10,9 +10,12 @@ import '../../../provider/user_provider.dart';
 
 class ClientUpdateController {
   late final BuildContext context;
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
   UserProvider usersProvider = UserProvider();
   XFile? pickedFile;
@@ -33,6 +36,10 @@ class ClientUpdateController {
     nameController.text = user.name;
     lastNameController.text = user.lastname;
     phoneController.text = user.phone!;
+    emailController.text = user.email!;
+    passwordController.text = user.password!;
+    confirmPasswordController.text = user.password!;
+
     refresh();
   }
 
@@ -46,14 +53,18 @@ class ClientUpdateController {
     isBtnUpdateEnabled = false;
     refresh();
 
+    String email = emailController.text.trim();
     String name = nameController.text.trim();
     String lastName = lastNameController.text.trim();
     String phone = phoneController.text.trim();
+    String password = passwordController.text.trim();
 
     User user = User(
+      email: email,
       name: name,
       lastname: lastName,
       phone: phone,
+      password: password,
     );
 
     Stream<dynamic>? tempStream = await usersProvider.createWithImage(user, imageFile!);
@@ -86,12 +97,45 @@ class ClientUpdateController {
     });
   }
 
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'El correo electrónico es obligatorio';
+    }
+    const emailRegex = r'^[^@]+@[^@]+\.[^@]+$';
+    if (!RegExp(emailRegex).hasMatch(value)) {
+      return 'Ingresa un correo válido';
+    }
+    return null;
+  }
+
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'La contraseña es obligatoria';
+    }
+    const passwordRegex =
+        r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
+    if (!RegExp(passwordRegex).hasMatch(value)) {
+      return 'Debe tener: \n- Al menos 8 caracteres\n- Una mayúscula\n- Una minúscula\n- Un número\n- Un carácter especial.';
+    }
+    return null;
+  }
+
   String? validatePhone(String? value) {
     if (value == null || value.isEmpty) {
       return 'El teléfono es obligatorio';
     }
     if (!RegExp(r'^\d{7,15}$').hasMatch(value)) {
       return 'Ingresa un número de teléfono válido';
+    }
+    return null;
+  }
+
+  String? validateConfirmPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'La contraseña no puede ser vacía ni nula';
+    }
+    if (value != passwordController.text.trim()) {
+      return 'Las contraseñas no coinciden';
     }
     return null;
   }

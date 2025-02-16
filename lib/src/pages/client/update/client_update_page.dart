@@ -50,7 +50,15 @@ class _ClientUpdatePageState extends State<ClientUpdatePage> {
                 Center(child: _imageUser()),
                 const SizedBox(height: 24),
 
-                const SizedBox(height: 32),
+                // Campos de texto
+                _buildTextField(
+                  controller: _controllerClientUpdate.emailController,
+                  label: 'Correo Electrónico',
+                  icon: Icons.email,
+                  validator: (value) =>
+                      _controllerClientUpdate.validateEmail(value),
+                ),
+                const SizedBox(height: 16),
                 _buildTextField(
                   controller: _controllerClientUpdate.nameController,
                   label: 'Nombre',
@@ -59,7 +67,7 @@ class _ClientUpdatePageState extends State<ClientUpdatePage> {
                       ? 'El nombre es obligatorio'
                       : null,
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 16),
                 _buildTextField(
                   controller: _controllerClientUpdate.lastNameController,
                   label: 'Apellido',
@@ -68,13 +76,32 @@ class _ClientUpdatePageState extends State<ClientUpdatePage> {
                       ? 'El apellido es obligatorio'
                       : null,
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 16),
                 _buildTextField(
                   controller: _controllerClientUpdate.phoneController,
                   label: 'Teléfono',
                   icon: Icons.phone,
                   inputType: TextInputType.phone,
-                  validator: (value) => _controllerClientUpdate.validatePhone(value),
+                  validator: (value) =>
+                      _controllerClientUpdate.validatePhone(value),
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: _controllerClientUpdate.passwordController,
+                  label: 'Contraseña',
+                  icon: Icons.lock,
+                  isPassword: true,
+                  validator: (value) =>
+                      _controllerClientUpdate.validatePassword(value),
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: _controllerClientUpdate.confirmPasswordController,
+                  label: 'Confirmar Contraseña',
+                  icon: Icons.lock,
+                  isPassword: true,
+                  validator: (value) =>
+                      _controllerClientUpdate.validateConfirmPassword(value),
                 ),
               ],
             ),
@@ -109,21 +136,6 @@ class _ClientUpdatePageState extends State<ClientUpdatePage> {
       ),
     );
   }
-
-  /*Widget _imageUser() {
-    return GestureDetector(
-      onTap: _controllerClientUpdate.showAlertDialog,
-      child: CircleAvatar(
-        backgroundImage: _controllerClientUpdate.imageFile != null
-            ? FileImage(_controllerClientUpdate.imageFile!)
-            : _controllerClientUpdate.user.image != null
-            ? NetworkImage(_controllerClientUpdate.user.image)
-            : const AssetImage('assets/img/client.png'),
-        radius: 70,
-        backgroundColor: Colors.grey[200],
-      ),
-    );
-  }*/
 
   Widget _imageUser() {
     return GestureDetector(
