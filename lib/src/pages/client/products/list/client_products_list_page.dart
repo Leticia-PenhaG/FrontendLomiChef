@@ -46,7 +46,9 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
       drawer: _drawer(),
       body: Center(
         child: ElevatedButton(
-          onPressed: () => _controllerClient.logout(),
+          onPressed: () {
+            // TODO
+          },
           child: const Text('Client Page'),
         ),
       ),
