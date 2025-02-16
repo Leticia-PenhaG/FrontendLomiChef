@@ -56,11 +56,6 @@ class ClientUpdateController {
   }
 
   void updateProfile() async {
-    if (imageFile == null) {
-      _showDialog('Error', 'Por favor seleccioná una imagen');
-      return;
-    }
-
     _progressDialog.show(max: 100, msg: 'Procesando...');
     isBtnUpdateEnabled = false;
     refresh();
@@ -71,41 +66,41 @@ class ClientUpdateController {
     String phone = phoneController.text.trim();
     String password = passwordController.text.trim();
 
-    // Si el usuario dejó la contraseña en blanco, se mantiene la actual
-    if (password.isEmpty) {
-      password = user.password!;
-    }
-
+    // Si la contraseña está vacía, NO la enviamos (el backend la ignora)
     User userToSend = User(
-      id: user.id,
-      email: email,
-      name: name,
-      lastname: lastName,
-      phone: phone,
-      password: password,
+        id: user.id,
+        email: email,
+        name: name,
+        lastname: lastName,
+        phone: phone,
+        password: password.isNotEmpty ? password : null, // Si está vacía, no se manda
+        image: user.image // Mantiene la imagen actual si no se selecciona una nueva
     );
 
-    Stream<dynamic>? tempStream = await usersProvider.updateProfile(userToSend, imageFile!);
+    Stream<dynamic>? tempStream;
+
+    if (imageFile != null) {
+      tempStream = await usersProvider.updateProfile(userToSend, imageFile!);
+    } else {
+      tempStream = await usersProvider.updateProfile(userToSend, null);
+    }
 
     if (tempStream == null) {
-      _showDialog('Error', 'No se pudo completar el registro. Intentá de nuevo.');
+      _showDialog('Error', 'No se pudo completar la actualización. Intentá de nuevo.');
       isBtnUpdateEnabled = true;
       refresh();
       return;
     }
 
-    Stream<dynamic> stream = tempStream; // para asegurar que no sea null
-
-    stream.listen((res) {
+    tempStream.listen((res) {
       _progressDialog.close();
-      ResponseApi? responseApi = ResponseApi.fromJson(json.decode(res)); // Respuesta del servicio
+      ResponseApi? responseApi = ResponseApi.fromJson(json.decode(res));
       Fluttertoast.showToast(msg: responseApi.message);
 
       if (responseApi != null && responseApi.success == true) {
         Navigator.pushNamedAndRemoveUntil(context, 'client/products/list', (route) => false);
       } else {
-        _showDialog(
-            'Error', responseApi?.message ?? 'Ocurrió un error inesperado');
+        _showDialog('Error', responseApi?.message ?? 'Ocurrió un error inesperado');
         isBtnUpdateEnabled = true;
         refresh();
       }
@@ -125,12 +120,19 @@ class ClientUpdateController {
 
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'La contraseña es obligatoria';
+      return null; // Se mantiene la contraseña actual si es que no se ingresa una nueva
     }
     const passwordRegex =
         r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
     if (!RegExp(passwordRegex).hasMatch(value)) {
       return 'Debe tener: \n- Al menos 8 caracteres\n- Una mayúscula\n- Una minúscula\n- Un número\n- Un carácter especial.';
+    }
+    return null;
+  }
+
+  String? validateConfirmPassword(String? value) {
+    if (passwordController.text.isNotEmpty && value != passwordController.text.trim()) {
+      return 'Las contraseñas no coinciden';
     }
     return null;
   }
@@ -141,16 +143,6 @@ class ClientUpdateController {
     }
     if (!RegExp(r'^\d{7,15}$').hasMatch(value)) {
       return 'Ingresa un número de teléfono válido';
-    }
-    return null;
-  }
-
-  String? validateConfirmPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'La contraseña no puede ser vacía ni nula';
-    }
-    if (value != passwordController.text.trim()) {
-      return 'Las contraseñas no coinciden';
     }
     return null;
   }

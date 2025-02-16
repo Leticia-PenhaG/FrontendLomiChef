@@ -45,24 +45,27 @@ class UserProvider {
     }
   }
 
-  Future<Stream<String>?> updateProfile(User user, File image) async {
+  Future<Stream<String>?> updateProfile(User user, File? image) async {
     try {
       Uri url = Uri.http(_url, '$_api/update');
       var request = http.MultipartRequest('PUT', url);
 
       request.fields['user'] = json.encode(user.toJson());
 
-      var stream = http.ByteStream(image.openRead());
-      var length = await image.length();
+      if (image != null) {
+        // Solo se agrega la imagen si el usuario seleccionó una nueva
+        var stream = http.ByteStream(image.openRead());
+        var length = await image.length();
 
-      var multipartFile = http.MultipartFile(
-        'image',
-        stream,
-        length,
-        filename: image.path.split('/').last,
-      );
+        var multipartFile = http.MultipartFile(
+          'image',
+          stream,
+          length,
+          filename: image.path.split('/').last,
+        );
 
-      request.files.add(multipartFile);
+        request.files.add(multipartFile);
+      }
 
       var response = await request.send();
       return response.stream.transform(utf8.decoder);
