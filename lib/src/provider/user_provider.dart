@@ -83,9 +83,15 @@ class UserProvider {
       Map<String, String> headers = {'Content-type': 'application/json'};
 
       final res = await http.get(url, headers: headers);
-      final data = json.decode(res.body); //almacena la respuesta que retorna node.js al momento de realizar la petición
-      User user = User.fromJson(data);
-      return user;
+      final data = json.decode(res.body);
+
+      if (data['success'] == true) {
+        User user = User.fromJson(data['data']); // Se extrae el objeto "data"
+        return user;
+      } else {
+        print("Error al obtener usuario: ${data['message']}");
+        return null;
+      }
     } catch (e) {
       print('Error: $e');
       return null;

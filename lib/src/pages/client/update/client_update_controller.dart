@@ -99,13 +99,21 @@ class ClientUpdateController {
       Fluttertoast.showToast(msg: responseApi.message);
 
       if (responseApi != null && responseApi.success == true) {
-        //user = (await usersProvider.getUserById(actualUser.id))!; //se obtiene el cliente de la base de datos
-
+        // Se obtiene el usuario con los datos actualizados
         if (actualUser.id != null) {
-          user = await usersProvider.getUserById(actualUser.id!) ?? user;
+          User? updatedUser = await usersProvider.getUserById(actualUser.id!);
+          if (updatedUser != null) {
+            user = updatedUser; // Asignamos el usuario actualizado
+            print("Usuario actualizado: ${user.toJson()}");
+
+            // Se guardan los datos del usuario en SharedPreferences
+            await _sharedPreferencesHelper.saveSessionToken('user', user.toJson());
+
+          }
         }
 
-        _sharedPreferencesHelper.saveSessionToken('user', user.toJson());
+        //Actualización de la pantalla
+        refresh();
 
         Navigator.pushNamedAndRemoveUntil(context, 'client/products/list', (route) => false);
       } else {
