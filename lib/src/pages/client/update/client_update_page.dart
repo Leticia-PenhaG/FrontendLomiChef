@@ -51,7 +51,7 @@ class _ClientUpdatePageState extends State<ClientUpdatePage> {
                 Center(child: _imageUser()),
                 const SizedBox(height: 24),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 32),
                 _buildTextField(
                   controller: _controllerClientUpdate.nameController,
                   label: 'Nombre',
@@ -60,7 +60,7 @@ class _ClientUpdatePageState extends State<ClientUpdatePage> {
                       ? 'El nombre es obligatorio'
                       : null,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 32),
                 _buildTextField(
                   controller: _controllerClientUpdate.lastNameController,
                   label: 'Apellido',
@@ -69,7 +69,7 @@ class _ClientUpdatePageState extends State<ClientUpdatePage> {
                       ? 'El apellido es obligatorio'
                       : null,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 32),
                 _buildTextField(
                   controller: _controllerClientUpdate.phoneController,
                   label: 'Teléfono',
@@ -83,7 +83,7 @@ class _ClientUpdatePageState extends State<ClientUpdatePage> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: const EdgeInsets.fromLTRB(24, 16, 24, 60),
         child: SizedBox(
           width: double.infinity,
           height: 50,
