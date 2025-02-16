@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lomi_chef_to_go/src/models/response_api.dart';
 import 'package:lomi_chef_to_go/src/utils/shared_preferences_helper.dart';
@@ -32,13 +33,24 @@ class ClientUpdateController {
     await Future.delayed(Duration.zero);
     usersProvider.init(context);
     _progressDialog = ProgressDialog(context: context);
+
+    // Recuperar el usuario desde SharedPreferences
     user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
+
+    // Asignar los valores recuperados
     nameController.text = user.name;
     lastNameController.text = user.lastname;
-    phoneController.text = user.phone!;
-    emailController.text = user.email!;
-    passwordController.text = user.password!;
-    confirmPasswordController.text = user.password!;
+    phoneController.text = user.phone ?? '';
+    emailController.text = user.email ?? '';
+
+    // Recuperar la contraseña, si existe
+    if (user.password != null && user.password!.isNotEmpty) {
+      passwordController.text = user.password!;
+      confirmPasswordController.text = user.password!;
+    } else {
+      passwordController.text = ''; // Si no hay contraseña guardada, deja vacío
+      confirmPasswordController.text = '';
+    }
 
     refresh();
   }
@@ -59,7 +71,13 @@ class ClientUpdateController {
     String phone = phoneController.text.trim();
     String password = passwordController.text.trim();
 
-    User user = User(
+    // Si el usuario dejó la contraseña en blanco, se mantiene la actual
+    if (password.isEmpty) {
+      password = user.password!;
+    }
+
+    User userToSend = User(
+      id: user.id,
       email: email,
       name: name,
       lastname: lastName,
@@ -67,7 +85,7 @@ class ClientUpdateController {
       password: password,
     );
 
-    Stream<dynamic>? tempStream = await usersProvider.createWithImage(user, imageFile!);
+    Stream<dynamic>? tempStream = await usersProvider.updateProfile(userToSend, imageFile!);
 
     if (tempStream == null) {
       _showDialog('Error', 'No se pudo completar el registro. Intentá de nuevo.');
@@ -81,13 +99,10 @@ class ClientUpdateController {
     stream.listen((res) {
       _progressDialog.close();
       ResponseApi? responseApi = ResponseApi.fromJson(json.decode(res)); // Respuesta del servicio
+      Fluttertoast.showToast(msg: responseApi.message);
 
       if (responseApi != null && responseApi.success == true) {
-        Future.delayed(Duration(seconds: 3), () {    //si el registro fue exitoso se redirige al login automáticamente después de 3 segundos
-          Navigator.pushReplacementNamed(context, 'login');
-        });
-        _showDialog('Éxito',
-            'Usuario registrado correctamente, ahora podés iniciar sesión');
+        Navigator.pushNamedAndRemoveUntil(context, 'client/products/list', (route) => false);
       } else {
         _showDialog(
             'Error', responseApi?.message ?? 'Ocurrió un error inesperado');

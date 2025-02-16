@@ -88,7 +88,7 @@ class _ClientUpdatePageState extends State<ClientUpdatePage> {
                 const SizedBox(height: 16),
                 _buildTextField(
                   controller: _controllerClientUpdate.passwordController,
-                  label: 'Contraseña',
+                  label: 'Contraseña (dejar en blanco si no cambiás)',
                   icon: Icons.lock,
                   isPassword: true,
                   validator: (value) =>
@@ -97,7 +97,7 @@ class _ClientUpdatePageState extends State<ClientUpdatePage> {
                 const SizedBox(height: 16),
                 _buildTextField(
                   controller: _controllerClientUpdate.confirmPasswordController,
-                  label: 'Confirmar Contraseña',
+                  label: 'Confirmar Contraseña (si cambiaste)',
                   icon: Icons.lock,
                   isPassword: true,
                   validator: (value) =>

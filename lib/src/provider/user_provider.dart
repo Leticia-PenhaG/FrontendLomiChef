@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:lomi_chef_to_go/src/api/environment.dart';
 import '../models/response_api.dart';
@@ -45,21 +44,46 @@ class UserProvider {
       return null;
     }
   }
-    Future<ResponseApi?> create (User user) async {
+
+  Future<Stream<String>?> updateProfile(User user, File image) async {
+    try {
+      Uri url = Uri.http(_url, '$_api/update');
+      var request = http.MultipartRequest('PUT', url);
+
+      request.fields['user'] = json.encode(user.toJson());
+
+      var stream = http.ByteStream(image.openRead());
+      var length = await image.length();
+
+      var multipartFile = http.MultipartFile(
+        'image',
+        stream,
+        length,
+        filename: image.path.split('/').last,
+      );
+
+      request.files.add(multipartFile);
+
+      var response = await request.send();
+      return response.stream.transform(utf8.decoder);
+    } catch (e) {
+      print('Error al enviar imagen: $e');
+      return null;
+    }
+  }
+
+  Future<ResponseApi?> create(User user) async {
     try {
       Uri url = Uri.http(_url, '$_api/create');
       String bodyParams = json.encode(user);
-      Map<String, String> headers = {
-        'Content-type' : 'application/json'
-      };
+      Map<String, String> headers = {'Content-type': 'application/json'};
 
       final res = await http.post(url, headers: headers, body: bodyParams);
-      final data = json.decode(res.body); //almacena la respuesta que retorna node.js al momento de realizar la petición
+      final data = json.decode(res
+          .body); //almacena la respuesta que retorna node.js al momento de realizar la petición
       ResponseApi responseApi = ResponseApi.fromJson(data);
       return responseApi;
-
-    }
-    catch(e) {
+    } catch (e) {
       print('Error: $e');
       return null;
     }
@@ -87,5 +111,4 @@ class UserProvider {
       return null;
     }
   }
-
 }
