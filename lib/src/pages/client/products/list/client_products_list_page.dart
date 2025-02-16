@@ -131,8 +131,9 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                _buildDrawerItem(Icons.edit, 'Editar perfil', () {}),
+                _buildDrawerItem(Icons.edit, 'Actualizar perfil', _controllerClient.goToUpdatePage),
                 _buildDrawerItem(Icons.shopping_cart, 'Mis pedidos', () {}),
+
                 //se controla que el usuario tenga más de un rol para mostrar la opción 'Seleccionar rol'
                 if (_controllerClient.user != null &&
                     _controllerClient.user.roles!.length > 1)
@@ -142,6 +143,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                     _controllerClient.goToRoles,
                   ) ,
                 //const Divider(),
+
                 _buildDrawerItem(Icons.power_settings_new, 'Cerrar sesión', () {
                   _controllerClient.logout();
                 }, color: Colors.red),
@@ -224,7 +226,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
               )
           ),
           ListTile(
-            title: Text('Editar perfil'),
+            title: Text('Actualizar perfil'),
             trailing: Icon(Icons.edit)
           ),
           ListTile(

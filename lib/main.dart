@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lomi_chef_to_go/src/pages/client/products/list/client_products_list_page.dart';
+import 'package:lomi_chef_to_go/src/pages/client/update/client_update_page.dart';
 import 'package:lomi_chef_to_go/src/pages/delivery/orders/list/delivery_orders_list_page.dart';
 import 'package:lomi_chef_to_go/src/pages/login/login_page.dart';
 import 'package:lomi_chef_to_go/src/pages/register/register_page.dart';
@@ -29,12 +30,10 @@ class _LomiChefDeliveryAppState extends State<LomiChefDeliveryApp> {
       routes: {
         'login': (BuildContext context) => LoginPage(),
         'register': (BuildContext context) => RegisterPage(),
-        'client/products/list': (BuildContext context) =>
-            ClientProductsListPage(),
-        'delivery/orders/list': (BuildContext context) =>
-            DeliveryOrdersListPage(),
-        'restaurant/orders/list': (BuildContext context) =>
-            RestaurantOrdersListPage(),
+        'client/products/list': (BuildContext context) => ClientProductsListPage(),
+        'delivery/orders/list': (BuildContext context) => DeliveryOrdersListPage(),
+        'restaurant/orders/list': (BuildContext context) => RestaurantOrdersListPage(),
+        'client/update': (BuildContext context) => ClientUpdatePage(),
         'roles': (BuildContext context) => RolesPage(),
       },
       theme: ThemeData(
