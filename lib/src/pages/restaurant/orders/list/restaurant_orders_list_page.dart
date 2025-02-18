@@ -122,6 +122,13 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
               children: [
                 if (_controllerRestaurant.user != null &&
                     _controllerRestaurant.user.roles!.length > 1)
+
+                  _buildDrawerItem(
+                    Icons.list_alt_outlined,
+                    'Crear categoría',
+                    _controllerRestaurant.goToCategoriesCreate,
+                  ) ,
+
                   _buildDrawerItem(
                     Icons.person,
                     'Seleccionar rol',

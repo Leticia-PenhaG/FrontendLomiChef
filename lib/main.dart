@@ -4,9 +4,9 @@ import 'package:lomi_chef_to_go/src/pages/client/update/client_update_page.dart'
 import 'package:lomi_chef_to_go/src/pages/delivery/orders/list/delivery_orders_list_page.dart';
 import 'package:lomi_chef_to_go/src/pages/login/login_page.dart';
 import 'package:lomi_chef_to_go/src/pages/register/register_page.dart';
+import 'package:lomi_chef_to_go/src/pages/restaurant/categories/create/restaurant_categories_create_page.dart';
 import 'package:lomi_chef_to_go/src/pages/restaurant/orders/list/restaurant_orders_list_page.dart';
 import 'package:lomi_chef_to_go/src/roles/roles_page.dart';
-
 import 'src/utils/app_colors.dart';
 
 void main() {
@@ -33,6 +33,7 @@ class _LomiChefDeliveryAppState extends State<LomiChefDeliveryApp> {
         'client/products/list': (BuildContext context) => ClientProductsListPage(),
         'delivery/orders/list': (BuildContext context) => DeliveryOrdersListPage(),
         'restaurant/orders/list': (BuildContext context) => RestaurantOrdersListPage(),
+        'restaurant/categories/create': (BuildContext context) => RestaurantCategoriesCreatePage(),
         'client/update': (BuildContext context) => ClientUpdatePage(),
         'roles': (BuildContext context) => RolesPage(),
       },
