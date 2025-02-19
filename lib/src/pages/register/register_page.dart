@@ -131,7 +131,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                     } : null, // se deshabilita el botón de registro cuando isBtnRegisterEnabled es false con el null
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff38c2a6),
+                      backgroundColor: AppColors.primaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
