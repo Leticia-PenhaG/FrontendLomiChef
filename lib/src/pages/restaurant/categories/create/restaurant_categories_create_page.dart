@@ -12,15 +12,14 @@ class RestaurantCategoriesCreatePage extends StatefulWidget {
 }
 
 class _RestaurantCategoriesCreatePageState extends State<RestaurantCategoriesCreatePage> {
-  bool isBtnCreateEnabled = false; // Controla si el botón está habilitado
+  bool isBtnCreateEnabled = false;
 
-  final RestaurantCategoriesCreateController _controllerCategories= RestaurantCategoriesCreateController();
+  final RestaurantCategoriesCreateController _controllerCategories = RestaurantCategoriesCreateController();
 
   @override
   void initState() {
     super.initState();
-
-    SchedulerBinding.instance.addPostFrameCallback((timestamp) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       _controllerCategories.init(context, refresh);
     });
   }
@@ -28,90 +27,107 @@ class _RestaurantCategoriesCreatePageState extends State<RestaurantCategoriesCre
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
-        title: const Text('Nueva categoría'),
+        title: const Text('Nueva Categoría', style: TextStyle(color: Colors.white)),
+        backgroundColor: AppColors.primaryColor,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 30),
-          _textFieldName(),
-          _textFieldDescription()
-        ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _titleSection('Información de la categoría'),
+            const SizedBox(height: 20),
+            _textFieldName(),
+            const SizedBox(height: 15),
+            _textFieldDescription(),
+          ],
+        ),
       ),
       bottomNavigationBar: _buttonCreate(),
     );
+  }
 
+  Widget _titleSection(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: AppColors.textColor,
+      ),
+    );
   }
 
   Widget _textFieldName() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
-      decoration: BoxDecoration(
-        color: AppColors.primaryColor,
-        borderRadius: BorderRadius.circular(30)
-      ),
-      child: TextField(
-        controller: _controllerCategories.nameController,
-        decoration: InputDecoration(
-          hintText: 'Nombre de la categoría',
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.all(15),
-          hintStyle: TextStyle(
-            color: Colors.black
-          ),
-          suffixIcon: Icon(
-            Icons.list_alt,
-            color: Colors.black,
-          )
+    return TextField(
+      controller: _controllerCategories.nameController,
+      decoration: InputDecoration(
+        labelText: 'Nombre de la categoría',
+        labelStyle: const TextStyle(color: AppColors.textColor),
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: AppColors.secondaryColor),
         ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.secondaryColor, width: 1.5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.primaryColor, width: 2),
+        ),
+        prefixIcon: const Icon(Icons.list_alt, color: AppColors.secondaryColor),
       ),
     );
   }
 
   Widget _textFieldDescription() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          color: AppColors.primaryColor,
-          borderRadius: BorderRadius.circular(30)
-      ),
-      child: TextField(
-        controller: _controllerCategories.descriptionController,
-        maxLines: 3,
-        maxLength: 255,
-        decoration: InputDecoration(
-            hintText: 'Descripción de la categoría',
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.all(15),
-            hintStyle: TextStyle(
-                color: Colors.black
-            ),
-            suffixIcon: Icon(
-              Icons.description,
-              color: Colors.black,
-            )
+    return TextField(
+      controller: _controllerCategories.descriptionController,
+      maxLines: 3,
+      maxLength: 255,
+      decoration: InputDecoration(
+        labelText: 'Descripción de la categoría',
+        labelStyle: const TextStyle(color: AppColors.textColor),
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: AppColors.secondaryColor),
         ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.secondaryColor, width: 1.5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.primaryColor, width: 2),
+        ),
+        prefixIcon: const Icon(Icons.description, color: AppColors.secondaryColor),
       ),
     );
   }
 
   Widget _buttonCreate() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
       child: SizedBox(
         width: double.infinity,
-        height: 50, // Mantiene altura consistente
+        height: 50,
         child: ElevatedButton(
-          onPressed: _controllerCategories.createCategory, // Implementa lógica aquí
+          onPressed: _controllerCategories.createCategory,
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primaryColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            elevation: 5,
           ),
           child: const Text(
-            'Crear categoría',
+            'Crear Categoría',
             style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
@@ -119,37 +135,8 @@ class _RestaurantCategoriesCreatePageState extends State<RestaurantCategoriesCre
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    bool isPassword = false,
-    TextInputType inputType = TextInputType.text,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      obscureText: isPassword,
-      keyboardType: inputType,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, color: const Color(0xff38c2a6)),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        errorStyle: const TextStyle(
-          fontSize: 14,
-          overflow: TextOverflow.ellipsis, // Controla el desbordamiento
-        ),
-      ),
-      validator: validator,
-    );
-  }
-
   void refresh() {
-    setState(() {
-
-    });
-
+    setState(() {});
   }
 }
+

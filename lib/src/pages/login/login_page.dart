@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
         SizedBox(height: 8),
         Text(
           'Ingresá a tu cuenta para continuar',
-          style: TextStyle(fontSize: 16, color: AppColors.secondaryTextColor),
+          style: TextStyle(fontSize: 16, color: AppColors.hintColor),
           textAlign: TextAlign.center,
         ),
       ],
@@ -160,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
         '¿Olvidaste tu contraseña?',
         style: TextStyle(
           fontSize: 14,
-          color: AppColors.secondaryTextColor,
+          color: AppColors.hintColor,
           decoration: TextDecoration.underline,
         ),
       ),
@@ -173,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         const Text(
           '¿No tenés cuenta? ',
-          style: TextStyle(fontSize: 14, color: AppColors.secondaryTextColor),
+          style: TextStyle(fontSize: 14, color: AppColors.hintColor),
         ),
         GestureDetector(
           onTap: _controllerLogin.goToRegisterPage,
