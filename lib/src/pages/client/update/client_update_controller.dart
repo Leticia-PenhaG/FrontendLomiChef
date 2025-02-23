@@ -31,11 +31,11 @@ class ClientUpdateController {
     this.context = context;
     this.refresh = refresh;
     await Future.delayed(Duration.zero);
-    usersProvider.init(context);
     _progressDialog = ProgressDialog(context: context);
 
     // Recuperar el usuario desde SharedPreferences
     user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
+    usersProvider.init(context, token: user.sessionToken);        //se envía el token de sesión
 
     // Asignar los valores recuperados
     nameController.text = user.name;
