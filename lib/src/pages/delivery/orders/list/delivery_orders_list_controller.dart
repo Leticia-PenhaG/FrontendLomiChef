@@ -22,7 +22,7 @@ class DeliveryOrdersListController {
       print('Error: El contexto no ha sido inicializado.');
       return;
     }
-    _sharedPreferencesHelper.logout(context!);
+    _sharedPreferencesHelper.logout(context!, user.id!);
   }
 
   bool isInitialized() {

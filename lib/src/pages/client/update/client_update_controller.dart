@@ -35,7 +35,10 @@ class ClientUpdateController {
 
     // Recuperar el usuario desde SharedPreferences
     user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
-    usersProvider.init(context, token: user.sessionToken);        //se envía el token de sesión
+
+    print('TOKEN ENVIADO: ${user.sessionToken}');
+
+    usersProvider.init(context, sessionUser: user);        //+++SE ENVÍA El USUARIO PARA OBTENER EL TOKEN DE LA SESIÓN +++
 
     // Asignar los valores recuperados
     nameController.text = user.name;

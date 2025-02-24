@@ -14,11 +14,11 @@ class UserProvider {
   final String _api = '/api/users';
 
   late BuildContext context;
-  late String token;
+  User? sessionUser;
 
-  Future<void> init(BuildContext context, {String? token}) async {
+  Future<void> init(BuildContext context, {User? sessionUser}) async {
     this.context = context;
-    this.token = token ?? '';
+    this.sessionUser = sessionUser;
     await Future.delayed(Duration.zero);
   }
 
@@ -54,8 +54,10 @@ class UserProvider {
       Uri url = Uri.http(_url, '$_api/update');
       var request = http.MultipartRequest('PUT', url);
 
-      request.headers['Authorization'] = token;       //token de sesión
-
+      // Usar sessionUser de manera segura
+      if (sessionUser != null) {
+        request.headers['Authorization'] = sessionUser!.sessionToken!;
+      }
       request.fields['user'] = json.encode(user.toJson());
 
       if (image != null) {
@@ -77,7 +79,7 @@ class UserProvider {
 
       if(response.statusCode == 401) {        //Respuesta no autorizada
         Fluttertoast.showToast(msg: 'La sesión expiró');
-        new SharedPreferencesHelper().logout(context);
+        new SharedPreferencesHelper().logout(context, sessionUser?.id ?? '');
       }
       return response.stream.transform(utf8.decoder);
     } catch (e) {
@@ -93,13 +95,13 @@ class UserProvider {
 
       Map<String, String> headers = {
         'Content-type': 'application/json',
-        'Authorization' : token
+        'Authorization' : sessionUser?.sessionToken ?? ''  // Si sessionUser es null, se pasa una cadena vacía
       };
       final res = await http.get(url, headers: headers);
 
       if(res.statusCode == 401) { //Respuesta no autorizada
         Fluttertoast.showToast(msg: 'La sesión expiró');
-        new SharedPreferencesHelper().logout(context);
+        new SharedPreferencesHelper().logout(context, sessionUser?.id ?? '');
       }
 
       final data = json.decode(res.body);
@@ -131,6 +133,36 @@ class UserProvider {
       final res = await http.post(url, headers: headers, body: bodyParams);
       final data = json.decode(res.body); //almacena la respuesta que retorna node.js al momento de realizar la petición
       ResponseApi responseApi = ResponseApi.fromJson(data);
+      return responseApi;
+
+    }
+    catch(e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
+  Future<ResponseApi?> logout(String idUser) async {
+    try {
+      Uri url = Uri.http(_url, '$_api/logout');
+
+      String bodyParams = json.encode({'id': idUser});
+
+      Map<String, String> headers = {
+        'Content-type' : 'application/json'
+      };
+
+      final res = await http.post(url, headers: headers, body: bodyParams);
+      final data = json.decode(res.body); //almacena la respuesta que retorna node.js al momento de realizar la petición
+      print("Respuesta Logout: $data"); // DEBUG
+
+      ResponseApi responseApi = ResponseApi.fromJson(data);
+
+      if (!responseApi.success) {
+        Fluttertoast.showToast(msg: "Error al cerrar sesión: ${responseApi.message}");
+        return null;
+      }
+
       return responseApi;
 
     }
