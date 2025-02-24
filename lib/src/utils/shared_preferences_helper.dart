@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:lomi_chef_to_go/src/provider/user_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /*
@@ -30,10 +31,15 @@ class SharedPreferencesHelper {
   // Elimina un valor almacenado asociado con una clave específica.
   Future<bool> clearSession(String key) async {
     final preferences = await SharedPreferences.getInstance();
-    return preferences.remove(key);
+    bool removed = await preferences.remove(key);
+    print("Sesión eliminada: $removed"); // 🔍 DEBUG
+    return removed;
   }
 
-  void logout(BuildContext context) async {
+  void logout(BuildContext context, String idUser) async {
+    UserProvider userProvider = new UserProvider();
+    userProvider.init(context);
+    await userProvider.logout(idUser);
     await clearSession('user');
     Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
   }
