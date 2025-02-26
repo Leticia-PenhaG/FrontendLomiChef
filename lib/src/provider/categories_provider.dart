@@ -32,8 +32,8 @@ class CategoriesProvider {
       final res = await http.post(url, headers: headers, body: bodyParams);
       if(res.statusCode == 401) {
         Fluttertoast.showToast(msg: 'Sesión expirada');
-        new SharedPreferencesHelper().logout(context);
-        //new SharedPreferencesHelper().logout(context, sessionUser.id);
+        //new SharedPreferencesHelper().logout(context);
+        new SharedPreferencesHelper().logout(context, sessionUser.id!);
       }
 
       final data = json.decode(res.body);
