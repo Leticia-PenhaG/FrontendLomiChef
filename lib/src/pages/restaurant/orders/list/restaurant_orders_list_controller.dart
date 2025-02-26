@@ -23,6 +23,7 @@ class RestaurantOrdersListController {
       return;
     }
     _sharedPreferencesHelper.logout(context!);
+    //_sharedPreferencesHelper.logout(context!, user.id!);
   }
 
   bool isInitialized() {

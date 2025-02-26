@@ -37,10 +37,10 @@ class User {
       password: json['password'] ?? '',
       phone: json['phone'] ?? '',
       name: json['name'] ?? '',
-      image: json['image'],
+      image: json['image'] ?? '',
       isAvailable: json['is_available'] ?? false,
-      lastname: json['lastname'],
-      sessionToken: json['session_token'],
+      lastname: json['lastname'] ?? '',
+      sessionToken: json['session_token'] ?? '',
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,

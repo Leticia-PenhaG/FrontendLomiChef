@@ -5,8 +5,21 @@ import '../models/user.dart';
 class RolesController {
   late BuildContext context;
   late Function refresh;
-  //User user = User(); // Se inicializa para evitar errores nulos
-  late User user;
+  User user = User(
+    id: null,
+    email: '',
+    password: '',
+    phone: '',
+    name: '',
+    image: null,
+    isAvailable: false,
+    lastname: '',
+    sessionToken: null,
+    createdAt: null,
+    updatedAt: null,
+    roles: [],
+  ); // Se inicializa para evitar errores nulos
+  //late User user;
   final SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper();
 
   Future<void> init(BuildContext context, Function refresh) async {
