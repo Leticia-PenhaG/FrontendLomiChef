@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lomi_chef_to_go/src/api/environment.dart';
+import 'package:lomi_chef_to_go/src/utils/shared_preferences_helper.dart';
 import '../models/response_api.dart';
 import '../models/user.dart';
 import 'package:http/http.dart' as http;
@@ -12,9 +14,11 @@ class UserProvider {
   final String _api = '/api/users';
 
   late BuildContext context;
+  User? sessionUser;
 
-  Future<void> init(BuildContext context) async {
+  Future<void> init(BuildContext context, {User? sessionUser}) async {
     this.context = context;
+    this.sessionUser = sessionUser;
     await Future.delayed(Duration.zero);
   }
 
@@ -50,6 +54,10 @@ class UserProvider {
       Uri url = Uri.http(_url, '$_api/update');
       var request = http.MultipartRequest('PUT', url);
 
+      // Usar sessionUser de manera segura
+      if (sessionUser != null) {
+        request.headers['Authorization'] = sessionUser!.sessionToken!;
+      }
       request.fields['user'] = json.encode(user.toJson());
 
       if (image != null) {
@@ -68,6 +76,11 @@ class UserProvider {
       }
 
       var response = await request.send();
+
+      if(response.statusCode == 401) {        //Respuesta no autorizada
+        Fluttertoast.showToast(msg: 'La sesión expiró');
+        new SharedPreferencesHelper().logout(context, sessionUser?.id ?? '');
+      }
       return response.stream.transform(utf8.decoder);
     } catch (e) {
       print('Error al enviar imagen: $e');
@@ -80,9 +93,17 @@ class UserProvider {
     try {
       Uri url = Uri.http(_url, '$_api/getById/$id');
 
-      Map<String, String> headers = {'Content-type': 'application/json'};
-
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Authorization' : sessionUser?.sessionToken ?? ''  // Si sessionUser es null, se pasa una cadena vacía
+      };
       final res = await http.get(url, headers: headers);
+
+      if(res.statusCode == 401) { //Respuesta no autorizada
+        Fluttertoast.showToast(msg: 'La sesión expiró');
+        new SharedPreferencesHelper().logout(context, sessionUser?.id ?? '');
+      }
+
       final data = json.decode(res.body);
 
       if (data['success'] == true) {
@@ -112,6 +133,36 @@ class UserProvider {
       final res = await http.post(url, headers: headers, body: bodyParams);
       final data = json.decode(res.body); //almacena la respuesta que retorna node.js al momento de realizar la petición
       ResponseApi responseApi = ResponseApi.fromJson(data);
+      return responseApi;
+
+    }
+    catch(e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
+  Future<ResponseApi?> logout(String idUser) async {
+    try {
+      Uri url = Uri.http(_url, '$_api/logout');
+
+      String bodyParams = json.encode({'id': idUser});
+
+      Map<String, String> headers = {
+        'Content-type' : 'application/json'
+      };
+
+      final res = await http.post(url, headers: headers, body: bodyParams);
+      final data = json.decode(res.body); //almacena la respuesta que retorna node.js al momento de realizar la petición
+      print("Respuesta Logout: $data"); // DEBUG
+
+      ResponseApi responseApi = ResponseApi.fromJson(data);
+
+      if (!responseApi.success) {
+        Fluttertoast.showToast(msg: "Error al cerrar sesión: ${responseApi.message}");
+        return null;
+      }
+
       return responseApi;
 
     }
