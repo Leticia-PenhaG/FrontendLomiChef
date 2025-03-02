@@ -5,15 +5,15 @@ Category categoryFromJson(String str) => Category.fromJson(json.decode(str));
 String categoryToJson(Category data) => json.encode(data.toJson());
 
 class Category {
-  String id;
-  String name;
-  String description;
-
   Category({
-    required this.id,
-    required this.name,
-    required this.description,
+    this.id,
+    this.name,
+    this.description,
   });
+
+  String? id;
+  String? name;
+  String? description;
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
     id: json["id"],

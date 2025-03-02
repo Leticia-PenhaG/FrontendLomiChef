@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lomi_chef_to_go/src/provider/categories_provider.dart';
 import 'package:lomi_chef_to_go/src/utils/shared_preferences_helper.dart';
-
+import '../../../../models/category.dart';
+import '../../../../models/response_api.dart';
 import '../../../../models/user.dart';
 import '../../../../utils/snackbar_helper.dart';
 
@@ -33,21 +34,20 @@ class RestaurantCategoriesCreateController {
       return;
     }
 
-    /*Category category = new Category (
-      name: name,
-      description: description
+    Category category = new Category(name: name, description: description);
+    ResponseApi? responseApi = await _categoriesProvider.createCategory(category);
 
-    );
-    ResponseApi responseApi = await _categoriesProvider.createCategory(category);
+    if (responseApi == null) {
+      SnackbarHelper.show(
+          context: context, message: 'Ocurrió un error inesperado');
+      return;
+    }
 
-    SnackbarHelper.show(context: context, message: ' ${responseApi.message}');
+    SnackbarHelper.show(context: context, message: '${responseApi.message}');
 
-    if(responseApi.success) {
+    if (responseApi!.success) {
       nameController.text = '';
       descriptionController.text = '';
     }
-*/
-    print('Nombre: $name');
-    print('Description: $description');
   }
 }

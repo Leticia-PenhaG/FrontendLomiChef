@@ -157,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
         // TODO
       },
       child: const Text(
-        '¿Olvidaste tu contraseña?',
+        '',
         style: TextStyle(
           fontSize: 14,
           color: AppColors.hintColor,
