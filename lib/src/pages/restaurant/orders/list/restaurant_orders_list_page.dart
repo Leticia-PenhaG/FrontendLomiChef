@@ -129,6 +129,12 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
                     _controllerRestaurant.goToCategoriesCreate,
                   ) ,
 
+                _buildDrawerItem(
+                  Icons.local_pizza,
+                  'Crear producto',
+                  _controllerRestaurant.goToProductsCreate,
+                ) ,
+
                   _buildDrawerItem(
                     Icons.person,
                     'Seleccionar rol',
