@@ -191,65 +191,6 @@ class _RestaurantProductsCreatePageState
           );
   }
 
-  // Widget  _dropDownCategories(List<Category> categories) {
-  //   return Container(
-  //     margin: EdgeInsets.symmetric(horizontal: 33),
-  //     child: Material(
-  //       elevation: 2.0,
-  //       color: Colors.white,
-  //       borderRadius: BorderRadius.all(Radius.circular(5)),
-  //       child: Container(
-  //         padding: EdgeInsets.all(10),
-  //         child: Column(
-  //           children: [
-  //             Row(
-  //               children: [
-  //                 Icon(
-  //                   Icons.search,
-  //                   color: AppColors.primaryColor,
-  //                 ),
-  //                 SizedBox(width: 15),
-  //                 Text(
-  //                   'Categorías',
-  //                   style: TextStyle(color: Colors.grey, fontSize: 16),
-  //                 ),
-  //               ],
-  //             ),
-  //             Container(
-  //               padding: EdgeInsets.symmetric(horizontal: 20),
-  //               child: DropdownButton(
-  //                 underline: Container(
-  //                   alignment: Alignment.centerRight,
-  //                   child: Icon(
-  //                     Icons.arrow_drop_down_circle,
-  //                     color: AppColors.primaryColor,
-  //                   ),
-  //                 ),
-  //                 elevation: 3,
-  //                 isExpanded: true,
-  //                 hint: Text(
-  //                     'Seleccioná la categoría',
-  //                   style: TextStyle(
-  //                     color: Colors.grey,
-  //                     fontSize: 16
-  //                   ),
-  //                 ),
-  //                 items: _dropdownItems(categories),
-  //                 value: _controllerRestaurantProducts.idCategory,
-  //                 onChanged: (option) {
-  //                   setState(() {
-  //                     print('Categoría seleccionada $option');
-  //                     _controllerRestaurantProducts.idCategory = option!; //se establece el valor seleccionado
-  //                   });
-  //                 },
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
   Widget _dropDownCategories(List<Category> categories) {
     if (categories.isEmpty) {
       return Center(
