@@ -20,7 +20,34 @@ class CategoriesProvider {
     this.sessionUser = sessionUser;
   }
 
-  Future<ResponseApi?> createCategory(Category category) async {
+  Future<List<Category>> getAll() async {
+    try {
+      Uri url = Uri.parse('http://$_url$_api/getAll');
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Authorization': sessionUser.sessionToken ?? ''
+      };
+
+      final res = await http.get(url, headers: headers);
+
+      if (res.statusCode == 401) {
+        Fluttertoast.showToast(msg: 'Sesión expirada');
+        new SharedPreferencesHelper().logout(context, sessionUser.id!);
+      }
+
+      final List<dynamic> data = json.decode(res.body); // Asegurar que es una lista
+      List<Category> categories = data.map((item) => Category.fromJson(item)).toList();
+
+      print("Categorías obtenidas en frontend: $categories");
+
+      return categories;
+    } catch (e) {
+      print('Error: $e');
+      return [];
+    }
+  }
+
+Future<ResponseApi?> createCategory(Category category) async {
     try {
       Uri url = Uri.http(_url, '$_api/create');
       String bodyParams = json.encode(category);
