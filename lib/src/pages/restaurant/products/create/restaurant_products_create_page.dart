@@ -16,6 +16,250 @@ class RestaurantProductsCreatePage extends StatefulWidget {
 
 class _RestaurantProductsCreatePageState
     extends State<RestaurantProductsCreatePage> {
+  final RestaurantProductsCreateController _controller = RestaurantProductsCreateController();
+
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _controller.init(context, refresh);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        title: const Text('Nuevo Producto',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: AppColors.primaryColor,
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _titleSection('Información del producto'),
+            const SizedBox(height: 15),
+            _textFieldName(),
+            const SizedBox(height: 15),
+            _textFieldDescription(),
+            const SizedBox(height: 15),
+            _textFieldPrice(),
+            const SizedBox(height: 20),
+            _imageSection(),
+            const SizedBox(height: 20),
+            _dropDownCategories(_controller.categories),
+          ],
+        ),
+      ),
+      bottomNavigationBar: _buttonCreate(),
+    );
+  }
+
+  Widget _titleSection(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+        color: AppColors.textColor,
+      ),
+    );
+  }
+
+  Widget _textFieldName() {
+    return _customTextField(
+      controller: _controller.nameController,
+      labelText: 'Nombre del producto',
+      icon: Icons.local_pizza_rounded,
+    );
+  }
+
+  Widget _textFieldDescription() {
+    return _customTextField(
+      controller: _controller.descriptionController,
+      labelText: 'Descripción del producto',
+      icon: Icons.description,
+      maxLines: 3,
+    );
+  }
+
+  Widget _textFieldPrice() {
+    return _customTextField(
+      labelText: 'Precio',
+      icon: Icons.monetization_on_rounded,
+      keyboardType: TextInputType.number,
+    );
+  }
+
+  Widget _customTextField({
+    TextEditingController? controller,
+    required String labelText,
+    required IconData icon,
+    int maxLines = 1,
+    TextInputType? keyboardType,
+  }) {
+    return TextField(
+      controller: controller,
+      maxLines: maxLines,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        labelText: labelText,
+        labelStyle: const TextStyle(color: AppColors.textColor),
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.secondaryColor),
+        ),
+        prefixIcon: Icon(icon, color: AppColors.secondaryColor),
+      ),
+    );
+  }
+
+  Widget _dropDownCategories(List<Category> categories) {
+    if (categories.isEmpty) {
+      return Center(
+        child: Text(
+          'No hay categorías disponibles',
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 33),
+      child: Material(
+        elevation: 2.0,
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+        child: Container(
+          padding: EdgeInsets.all(10),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.search,
+                    color: AppColors.primaryColor,
+                  ),
+                  SizedBox(width: 15),
+                  Text(
+                    'Categorías',
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: DropdownButton(
+                  underline: Container(
+                    alignment: Alignment.centerRight,
+                    child: Icon(
+                      Icons.arrow_drop_down_circle,
+                      color: AppColors.primaryColor,
+                    ),
+                  ),
+                  elevation: 3,
+                  isExpanded: true,
+                  hint: Text(
+                    'Seleccioná la categoría',
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
+                  items: _dropdownItems(categories),
+                  value: categories.any((c) => c.id == _controller.idCategory)
+                      ? _controller.idCategory
+                      : null,
+                  onChanged: (option) {
+                    setState(() {
+                      print('Categoría seleccionada $option');
+                      _controller.idCategory = option!;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<DropdownMenuItem<String>> _dropdownItems(List<Category> categories) {
+    return categories.map((category) {
+      return DropdownMenuItem(
+        child: Text(category.name!),
+        value: category.id,
+      );
+    }).toList();
+  }
+
+  Widget _imageSection() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: List.generate(3, (index) => _imageCard()),
+    );
+  }
+
+  Widget _imageCard() {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 4,
+      child: Container(
+        height: 100,
+        width: MediaQuery.of(context).size.width * 0.28,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.grey[200],
+        ),
+        child: Icon(Icons.add_a_photo, size: 40, color: Colors.grey[600]),
+      ),
+    );
+  }
+
+  Widget _buttonCreate() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+      child: SizedBox(
+        width: double.infinity,
+        height: 50,
+        child: ElevatedButton(
+          onPressed: _controller.createProduct,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primaryColor,
+            shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            elevation: 5,
+          ),
+          child: const Text(
+            'Crear Producto',
+            style: TextStyle(
+                fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void refresh() {
+    setState(() {});
+  }
+}
+
+
+/*
+class RestaurantProductsCreatePage extends StatefulWidget {
+  const RestaurantProductsCreatePage({super.key});
+
+  @override
+  State<RestaurantProductsCreatePage> createState() =>
+      _RestaurantProductsCreatePageState();
+}
+
+class _RestaurantProductsCreatePageState
+    extends State<RestaurantProductsCreatePage> {
   bool isBtnCreateEnabled = false;
 
   final RestaurantProductsCreateController _controllerRestaurantProducts = RestaurantProductsCreateController();
@@ -297,6 +541,7 @@ class _RestaurantProductsCreatePageState
     setState(() {});
   }
 }
+*/
 
 
 /*
