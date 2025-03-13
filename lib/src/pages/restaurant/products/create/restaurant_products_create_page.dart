@@ -174,7 +174,7 @@ class _RestaurantProductsCreatePageState
                       : null,
                   onChanged: (option) {
                     setState(() {
-                      print('Categoría seleccionada $option');
+                      print('La categoría seleccionada es: $option');
                       _controller.idCategory = option!;
                     });
                   },
@@ -247,7 +247,6 @@ class _RestaurantProductsCreatePageState
     setState(() {});
   }
 }
-
 
 /*
 class RestaurantProductsCreatePage extends StatefulWidget {
