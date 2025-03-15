@@ -66,7 +66,7 @@ class RestaurantProductsCreateController {
       return;
     }
 
-    if(idCategory == null) {
+    if(idCategory == '') {
       _showDialog('Error', 'Seleccioná la categoría del producto');
       return;
     }
