@@ -90,6 +90,7 @@ class _RestaurantProductsCreatePageState
 
   Widget _textFieldPrice() {
     return _customTextField(
+      controller: _controller.priceController, //  Pasamos el controlador con formato
       labelText: 'Precio',
       icon: Icons.monetization_on_rounded,
       keyboardType: TextInputType.number,

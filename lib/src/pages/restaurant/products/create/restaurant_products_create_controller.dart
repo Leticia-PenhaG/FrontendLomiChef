@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lomi_chef_to_go/src/provider/categories_provider.dart';
 import 'package:lomi_chef_to_go/src/utils/shared_preferences_helper.dart';
+import '../../../../models/product.dart';
 import '../../../../models/user.dart';
 import '../../../../utils/snackbar_helper.dart';
 import '../../../../models/category.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+
 
 class RestaurantProductsCreateController {
   late final BuildContext context;
@@ -14,7 +17,11 @@ class RestaurantProductsCreateController {
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-  //final MoneyMaskedTextController priceController = MoneyMaskedTextController();
+  final MoneyMaskedTextController priceController = MoneyMaskedTextController(
+    decimalSeparator: ',',
+    thousandSeparator: '.',
+    leftSymbol: 'Gs. ',
+  );
 
   final CategoriesProvider _categoriesProvider = CategoriesProvider();
 
@@ -46,12 +53,32 @@ class RestaurantProductsCreateController {
   void createProduct() async {
     String name = nameController.text;
     String description = descriptionController.text;
+    double price = priceController.numberValue;
 
-    if (name.isEmpty || description.isEmpty) {
+    if (name.isEmpty || description.isEmpty || price==0) {
       SnackbarHelper.show(
           context: context, message: 'Todos los campos son obligatorios');
       return;
     }
+
+    if(imageFile1 == null || imageFile2 == null || imageFile3 == null) {
+      _showDialog('Error', 'Seleccioná las tres imágenes');
+      return;
+    }
+
+    if(idCategory == null) {
+      _showDialog('Error', 'Seleccioná la categoría del producto');
+      return;
+    }
+
+    Product product = new Product(
+        name: name,
+        description: description,
+        price: price,
+        idCategory: int.tryParse(idCategory),
+    );
+
+    print('Formulario Producto: ${product.toJson()}');
   }
 
   /*para seleccionar la imagen de la cámara o de la galería*/
@@ -97,5 +124,21 @@ class RestaurantProductsCreateController {
         builder: (BuildContext context) {
           return alertDialog;
         });
+  }
+
+  void _showDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Aceptar'),
+          ),
+        ],
+      ),
+    );
   }
 }
