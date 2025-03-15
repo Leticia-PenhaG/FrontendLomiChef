@@ -6,7 +6,261 @@ import 'package:lomi_chef_to_go/src/models/category.dart';
 import 'package:lomi_chef_to_go/src/pages/restaurant/products/create/restaurant_products_create_controller.dart';
 import 'package:lomi_chef_to_go/src/utils/app_colors.dart';
 
+
 class RestaurantProductsCreatePage extends StatefulWidget {
+  const RestaurantProductsCreatePage({super.key});
+
+  @override
+  State<RestaurantProductsCreatePage> createState() =>
+      _RestaurantProductsCreatePageState();
+}
+
+class _RestaurantProductsCreatePageState
+    extends State<RestaurantProductsCreatePage> {
+  final RestaurantProductsCreateController _controller = RestaurantProductsCreateController();
+
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _controller.init(context, refresh);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        title: const Text('Nuevo Producto',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: AppColors.primaryColor,
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _titleSection('Información del producto'),
+            const SizedBox(height: 15),
+            _textFieldName(),
+            const SizedBox(height: 15),
+            _textFieldDescription(),
+            const SizedBox(height: 15),
+            _textFieldPrice(),
+            const SizedBox(height: 20),
+            _imageSection(), //para seleccionar la imagen
+            const SizedBox(height: 20),
+            _dropDownCategories(_controller.categories),
+          ],
+        ),
+      ),
+      bottomNavigationBar: _buttonCreate(),
+    );
+  }
+
+  Widget _titleSection(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+        color: AppColors.textColor,
+      ),
+    );
+  }
+
+  Widget _textFieldName() {
+    return _customTextField(
+      controller: _controller.nameController,
+      labelText: 'Nombre del producto',
+      icon: Icons.local_pizza_rounded,
+    );
+  }
+
+  Widget _textFieldDescription() {
+    return _customTextField(
+      controller: _controller.descriptionController,
+      labelText: 'Descripción del producto',
+      icon: Icons.description,
+      maxLines: 3,
+    );
+  }
+
+  Widget _textFieldPrice() {
+    return _customTextField(
+      labelText: 'Precio',
+      icon: Icons.monetization_on_rounded,
+      keyboardType: TextInputType.number,
+    );
+  }
+
+  Widget _customTextField({
+    TextEditingController? controller,
+    required String labelText,
+    required IconData icon,
+    int maxLines = 1,
+    TextInputType? keyboardType,
+  }) {
+    return TextField(
+      controller: controller,
+      maxLines: maxLines,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        labelText: labelText,
+        labelStyle: const TextStyle(color: AppColors.textColor),
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.secondaryColor),
+        ),
+        prefixIcon: Icon(icon, color: AppColors.secondaryColor),
+      ),
+    );
+  }
+
+  Widget _dropDownCategories(List<Category> categories) {
+    if (categories.isEmpty) {
+      return Center(
+        child: Text(
+          'No hay categorías disponibles',
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 33),
+      child: Material(
+        elevation: 2.0,
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+        child: Container(
+          padding: EdgeInsets.all(10),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.search,
+                    color: AppColors.primaryColor,
+                  ),
+                  SizedBox(width: 15),
+                  Text(
+                    'Categorías',
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: DropdownButton(
+                  underline: Container(
+                    alignment: Alignment.centerRight,
+                    child: Icon(
+                      Icons.arrow_drop_down_circle,
+                      color: AppColors.primaryColor,
+                    ),
+                  ),
+                  elevation: 3,
+                  isExpanded: true,
+                  hint: Text(
+                    'Seleccioná la categoría',
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
+                  items: _dropdownItems(categories),
+                  value: categories.any((c) => c.id == _controller.idCategory)
+                      ? _controller.idCategory
+                      : null,
+                  onChanged: (option) {
+                    setState(() {
+                      print('La categoría seleccionada es: $option');
+                      _controller.idCategory = option!;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<DropdownMenuItem<String>> _dropdownItems(List<Category> categories) {
+    return categories.map((category) {
+      return DropdownMenuItem(
+        child: Text(category.name!),
+        value: category.id,
+      );
+    }).toList();
+  }
+
+  Widget _imageSection() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _cardImage(_controller.imageFile1 as File?, 1),
+        _cardImage(_controller.imageFile2 as File?, 2),
+        _cardImage(_controller.imageFile3 as File?, 3),
+      ],
+    );
+  }
+
+  Widget _cardImage(File? imageFile, int numberFile) {
+    return GestureDetector(
+      onTap: () {
+        _controller.showAlertDialog(numberFile);
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        elevation: 4,
+        child: Container(
+          height: 100,
+          width: MediaQuery.of(context).size.width * 0.28,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.grey[200],
+          ),
+          child: imageFile != null
+              ? Image.file(imageFile, fit: BoxFit.cover)
+              : Icon(Icons.add_a_photo, size: 40, color: Colors.grey[600]),
+        ),
+      ),
+    );
+  }
+
+  Widget _buttonCreate() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+      child: SizedBox(
+        width: double.infinity,
+        height: 50,
+        child: ElevatedButton(
+          onPressed: _controller.createProduct,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primaryColor,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            elevation: 5,
+          ),
+          child: const Text(
+            'Crear Producto',
+            style: TextStyle(
+                fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void refresh() {
+    setState(() {});
+  }
+}
+
+
+/*class RestaurantProductsCreatePage extends StatefulWidget {
   const RestaurantProductsCreatePage({super.key});
 
   @override
@@ -246,7 +500,8 @@ class _RestaurantProductsCreatePageState
   void refresh() {
     setState(() {});
   }
-}
+}*/
+
 
 /*
 class RestaurantProductsCreatePage extends StatefulWidget {
@@ -299,9 +554,9 @@ class _RestaurantProductsCreatePageState
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _cardImage(null, 1),
-                  _cardImage(null, 2),
-                  _cardImage(null, 3),
+                  _cardImage(_controllerRestaurantProducts.imageFile1, 1),
+                  _cardImage(_controllerRestaurantProducts.imageFile2, 2),
+                  _cardImage(_controllerRestaurantProducts.imageFile3, 3),
                 ],
               ),
             ),
@@ -412,26 +667,31 @@ class _RestaurantProductsCreatePageState
   }
 
   Widget _cardImage(File? imageFile, int numberFile) {
-    return imageFile != null
-        ? Card(
-            elevation: 3.0,
-            child: Container(
-              height: 100,
-              width: MediaQuery.of(context).size.width * 0.26,
-              child: Image.file(
-                imageFile,
-                fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        _controllerRestaurantProducts.showAlertDialog(numberFile);
+      },
+      child: imageFile != null
+          ? Card(
+              elevation: 3.0,
+              child: Container(
+                height: 100,
+                width: MediaQuery.of(context).size.width * 0.26,
+                child: Image.file(
+                  imageFile,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )
+          : Card(
+              elevation: 3.0,
+              child: Container(
+                height: 140,
+                width: MediaQuery.of(context).size.width * 0.26,
+                child: Image(image: AssetImage('assets/img/cart.png')),
               ),
             ),
-          )
-        : Card(
-            elevation: 3.0,
-            child: Container(
-              height: 140,
-              width: MediaQuery.of(context).size.width * 0.26,
-              child: Image(image: AssetImage('assets/img/cart.png')),
-            ),
-          );
+    );
   }
 
   Widget _dropDownCategories(List<Category> categories) {
@@ -540,6 +800,7 @@ class _RestaurantProductsCreatePageState
     setState(() {});
   }
 }
+
 */
 
 
