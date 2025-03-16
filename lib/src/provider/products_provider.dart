@@ -34,27 +34,6 @@ class ProductsProvider {
         ));
       }
 
-      /*for (int i = 0; i < images.length; i++) {
-        print('Subiendo imagen: ${images[i].path}');
-        request.files.add(
-          http.MultipartFile(
-            'image',
-            http.ByteStream(images[i].openRead().cast()),
-            await images[i].length(),
-            filename: basename(images[i].path),
-          ),
-        );
-      }*/
-
-      /*for (int i = 0; i < images.length; i++) {
-        request.files.add(http.MultipartFile(
-          'image${i + 1}', // Cambiar 'image' por 'image1', 'image2', 'image3'
-          http.ByteStream(images[i].openRead().cast()),
-          await images[i].length(),
-          filename: basename(images[i].path),
-        ));
-      }*/
-
       //request.fields['product'] = json.encode(product); // Convertir user a JSON
       request.fields['product'] = json.encode(product.toJson());
 
