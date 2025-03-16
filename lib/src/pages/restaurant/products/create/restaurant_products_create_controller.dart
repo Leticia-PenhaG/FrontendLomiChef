@@ -12,6 +12,7 @@ import '../../../../models/user.dart';
 import '../../../../utils/snackbar_helper.dart';
 import '../../../../models/category.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:path/path.dart';
 
 class RestaurantProductsCreateController {
   late final BuildContext context;
@@ -71,7 +72,7 @@ class RestaurantProductsCreateController {
     }
 
     if(imageFile1 == null || imageFile2 == null || imageFile3 == null) {
-      SnackbarHelper.show(context: context, message: 'Por favor, selecciona todas las imágenes');
+      SnackbarHelper.show(context: context, message: 'Por favor, seleccioná todas las imágenes');
       return;
     }
 
@@ -80,17 +81,34 @@ class RestaurantProductsCreateController {
       return;
     }
 
-    Product product = new Product(
+    /*Product product = new Product(
         name: name,
         description: description,
         price: price,
         idCategory: int.tryParse(idCategory),
-    );
+    );*/
 
     List<File> images = [];
     images.add(imageFile1!);
     images.add(imageFile2!);
     images.add(imageFile3!);
+
+    print("Imágenes seleccionadas:");
+    print("imageFile1: ${imageFile1!.path}");
+    print("imageFile2: ${imageFile2!.path}");
+    print("imageFile3: ${imageFile3!.path}");
+
+    Product product = Product(
+      name: name,
+      description: description,
+      price: price,
+      idCategory: int.tryParse(idCategory),
+      image1: basename(imageFile1!.path),
+      image2: basename(imageFile2!.path),
+      image3: basename(imageFile3!.path),
+    );
+
+
 
     _progressDialog.show(max: 100, msg: 'Esperá un momento, procesando...');
     Stream stream = await _productsProvider.createProduct(product, images) as Stream;
