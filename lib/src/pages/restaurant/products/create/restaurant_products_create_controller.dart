@@ -1,15 +1,17 @@
+import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lomi_chef_to_go/src/models/response_api.dart';
 import 'package:lomi_chef_to_go/src/provider/categories_provider.dart';
+import 'package:lomi_chef_to_go/src/provider/products_provider.dart';
 import 'package:lomi_chef_to_go/src/utils/shared_preferences_helper.dart';
+import 'package:sn_progress_dialog/progress_dialog.dart';
 import '../../../../models/product.dart';
 import '../../../../models/user.dart';
 import '../../../../utils/snackbar_helper.dart';
 import '../../../../models/category.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
-
 
 class RestaurantProductsCreateController {
   late final BuildContext context;
@@ -24,6 +26,7 @@ class RestaurantProductsCreateController {
   );
 
   final CategoriesProvider _categoriesProvider = CategoriesProvider();
+  final ProductsProvider _productsProvider = ProductsProvider();
 
   late User user;
   SharedPreferencesHelper sharedPref = new SharedPreferencesHelper();
@@ -31,16 +34,22 @@ class RestaurantProductsCreateController {
   List<Category> categories = [];
   late String idCategory = ''; //almacena el id de la categoría seleccionada
 
+  //Imágenes
   late PickedFile pickedFile;
   File? imageFile1;
   File? imageFile2;
   File? imageFile3;
+
+  late ProgressDialog _progressDialog;
 
   Future<void> init(BuildContext context, Function refresh) async {
     this.context = context;
     this.refresh = refresh;
     user = User.fromJson(await sharedPref.readSessionToken('user'));
     _categoriesProvider.init(context, user);
+    _productsProvider.init(context, user);
+    _progressDialog = ProgressDialog(context: context);
+
     getCategories();
   }
 
@@ -62,7 +71,7 @@ class RestaurantProductsCreateController {
     }
 
     if(imageFile1 == null || imageFile2 == null || imageFile3 == null) {
-      _showDialog('Error', 'Seleccioná las tres imágenes');
+      SnackbarHelper.show(context: context, message: 'Por favor, selecciona todas las imágenes');
       return;
     }
 
@@ -78,11 +87,41 @@ class RestaurantProductsCreateController {
         idCategory: int.tryParse(idCategory),
     );
 
+    List<File> images = [];
+    images.add(imageFile1!);
+    images.add(imageFile2!);
+    images.add(imageFile3!);
+
+    _progressDialog.show(max: 100, msg: 'Esperá un momento, procesando...');
+    Stream stream = await _productsProvider.createProduct(product, images) as Stream;
+    stream.listen((res) {
+      _progressDialog.close();
+
+      ResponseApi responseApi = ResponseApi.fromJson(json.decode(res));
+      SnackbarHelper.show(context: context, message: responseApi.message);
+
+      if(responseApi.success) {
+        resetValues();
+      }
+    });
+
     print('Formulario Producto: ${product.toJson()}');
   }
 
-  /*para seleccionar la imagen de la cámara o de la galería*/
-  Future<void> selectImage(ImageSource imageSource, int numberFile) async {
+  void resetValues() {
+    nameController.text = '';
+    descriptionController.text = '';
+    priceController.text = '0.0';
+    imageFile1 = null;
+    imageFile2 = null;
+    imageFile3 = null;
+    idCategory = '';
+    refresh();
+
+  }
+
+  /*para seleccionar la imagen de la cámara o de la galería forma original*/
+  /*Future<void> selectImage(ImageSource imageSource, int numberFile) async {
     final XFile? pickedFile = await ImagePicker().pickImage(source: imageSource);
 
     if (pickedFile != null) {
@@ -93,13 +132,33 @@ class RestaurantProductsCreateController {
       }  else if (numberFile == 3) {
         imageFile3 = File(pickedFile.path);
       }
-      //refresh();
-    } // else {
-    //  _showDialog('Error', 'No seleccionaste ninguna imagen.');
-    //}
+    }
+    Navigator.pop(context);
+    refresh();
+  }*/
+
+  Future<void> selectImage(ImageSource imageSource, int numberFile) async {
+    final XFile? pickedFile = await ImagePicker().pickImage(source: imageSource);
+
+    if (pickedFile != null) {
+      File selectedImage = File(pickedFile.path);
+      print("Imagen seleccionada ($numberFile): ${selectedImage.path}");
+
+      if (numberFile == 1) {
+        imageFile1 = selectedImage;
+      } else if (numberFile == 2) {
+        imageFile2 = selectedImage;
+      } else if (numberFile == 3) {
+        imageFile3 = selectedImage;
+      }
+    } else {
+      print("No se seleccionó imagen ($numberFile)");
+    }
+
     Navigator.pop(context);
     refresh();
   }
+
 
   void showAlertDialog(int numberFile) {
     Widget galleryButton = ElevatedButton(

@@ -202,9 +202,9 @@ class _RestaurantProductsCreatePageState
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _cardImage(_controller.imageFile1 as File?, 1),
-        _cardImage(_controller.imageFile2 as File?, 2),
-        _cardImage(_controller.imageFile3 as File?, 3),
+        _cardImage(_controller.imageFile1, 1),
+        _cardImage(_controller.imageFile2, 2),
+        _cardImage(_controller.imageFile3, 3),
       ],
     );
   }
