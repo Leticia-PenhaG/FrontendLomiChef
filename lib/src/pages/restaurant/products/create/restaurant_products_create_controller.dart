@@ -12,7 +12,6 @@ import '../../../../models/user.dart';
 import '../../../../utils/snackbar_helper.dart';
 import '../../../../models/category.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
-import 'package:path/path.dart';
 
 class RestaurantProductsCreateController {
   late final BuildContext context;
@@ -60,119 +59,6 @@ class RestaurantProductsCreateController {
     refresh();
   }
 
-  // void createProduct() async {
-  //   String name = nameController.text;
-  //   String description = descriptionController.text;
-  //   double price = priceController.numberValue;
-  //
-  //   if (name.isEmpty || description.isEmpty || price==0) {
-  //     SnackbarHelper.show(
-  //         context: context, message: 'Todos los campos son obligatorios');
-  //     return;
-  //   }
-  //
-  //   if(imageFile1 == null || imageFile2 == null || imageFile3 == null) {
-  //     SnackbarHelper.show(context: context, message: 'Por favor, seleccioná todas las imágenes');
-  //     return;
-  //   }
-  //
-  //   if(idCategory == '') {
-  //     _showDialog('Error', 'Seleccioná la categoría del producto');
-  //     return;
-  //   }
-  //
-  //   /*Product product = new Product(
-  //       name: name,
-  //       description: description,
-  //       price: price,
-  //       idCategory: int.tryParse(idCategory),
-  //   );*/
-  //
-  //   List<File> images = [];
-  //   images.add(imageFile1!);
-  //   images.add(imageFile2!);
-  //   images.add(imageFile3!);
-  //
-  //   print("Imágenes seleccionadas:");
-  //   print("imageFile1: ${imageFile1!.path}");
-  //   print("imageFile2: ${imageFile2!.path}");
-  //   print("imageFile3: ${imageFile3!.path}");
-  //
-  //   Product product = Product(
-  //     name: name,
-  //     description: description,
-  //     price: price,
-  //     idCategory: int.tryParse(idCategory),
-  //     image1: basename(imageFile1!.path),
-  //     image2: basename(imageFile2!.path),
-  //     image3: basename(imageFile3!.path),
-  //   );
-  //
-  //
-  //
-  //   _progressDialog.show(max: 100, msg: 'Esperá un momento, procesando...');
-  //   Stream stream = await _productsProvider.createProduct(product, images) as Stream;
-  //   stream.listen((res) {
-  //     _progressDialog.close();
-  //
-  //     ResponseApi responseApi = ResponseApi.fromJson(json.decode(res));
-  //     SnackbarHelper.show(context: context, message: responseApi.message);
-  //
-  //     if(responseApi.success) {
-  //       resetValues();
-  //     }
-  //   });
-  //
-  //   print('Formulario Producto: ${product.toJson()}');
-  // }
-
-  //la version de abajo createProduct crea el producto en la base de datos
-  // void createProduct() async {
-  //   String name = nameController.text;
-  //   String description = descriptionController.text;
-  //   double price = priceController.numberValue;
-  //
-  //   if (name.isEmpty || description.isEmpty || price == 0) {
-  //     SnackbarHelper.show(context: context, message: 'Todos los campos son obligatorios');
-  //     return;
-  //   }
-  //
-  //   if (imageFile1 == null || imageFile2 == null || imageFile3 == null) {
-  //     SnackbarHelper.show(context: context, message: 'Seleccioná las 3 imágenes');
-  //     return;
-  //   }
-  //
-  //   if (idCategory == '') {
-  //     _showDialog('Error', 'Seleccioná la categoría del producto');
-  //     return;
-  //   }
-  //
-  //   List<File> images = [imageFile1!, imageFile2!, imageFile3!];
-  //
-  //   Product product = Product(
-  //     name: name,
-  //     description: description,
-  //     price: price,
-  //     idCategory: int.tryParse(idCategory),
-  //   );
-  //
-  //   _progressDialog.show(max: 100, msg: 'Procesando...');
-  //
-  //
-  //   _progressDialog.show(max: 100, msg: 'Esperá un momento, procesando...');
-  //   Stream stream = await _productsProvider.createProduct(product, images) as Stream;
-  //   stream.listen((res) {
-  //     _progressDialog.close();
-  //
-  //     ResponseApi responseApi = ResponseApi.fromJson(json.decode(res));
-  //     SnackbarHelper.show(context: context, message: responseApi.message);
-  //
-  //     if (responseApi.success) {
-  //       resetValues();
-  //     }
-  //   });
-  // }
-
   void createProduct() async {
     String name = nameController.text;
     String description = descriptionController.text;
@@ -208,7 +94,7 @@ class RestaurantProductsCreateController {
       var response = await _productsProvider.createProduct(product, images);
 
       if (response!.statusCode == 201) {
-        var responseBody = jsonDecode(await response.stream.bytesToString()); // ✅ Leer el body correctamente
+        var responseBody = jsonDecode(await response.stream.bytesToString());
         ResponseApi responseApi = ResponseApi.fromJson(responseBody);
 
         _progressDialog.close();
@@ -229,7 +115,6 @@ class RestaurantProductsCreateController {
     }
   }
 
-
   void resetValues() {
     nameController.text = '';
     descriptionController.text = '';
@@ -241,23 +126,6 @@ class RestaurantProductsCreateController {
     refresh();
 
   }
-
-  /*para seleccionar la imagen de la cámara o de la galería forma original*/
-  /*Future<void> selectImage(ImageSource imageSource, int numberFile) async {
-    final XFile? pickedFile = await ImagePicker().pickImage(source: imageSource);
-
-    if (pickedFile != null) {
-      if(numberFile == 1) {
-        imageFile1 = File(pickedFile.path);
-      } else if (numberFile == 2) {
-        imageFile2 = File(pickedFile.path);
-      }  else if (numberFile == 3) {
-        imageFile3 = File(pickedFile.path);
-      }
-    }
-    Navigator.pop(context);
-    refresh();
-  }*/
 
   Future<void> selectImage(ImageSource imageSource, int numberFile) async {
     final XFile? pickedFile = await ImagePicker().pickImage(source: imageSource);
@@ -280,7 +148,6 @@ class RestaurantProductsCreateController {
     Navigator.pop(context);
     refresh();
   }
-
 
   void showAlertDialog(int numberFile) {
     Widget galleryButton = ElevatedButton(

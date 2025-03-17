@@ -31,7 +31,7 @@ class ProductsProvider {
         var stream = http.ByteStream(images[i].openRead());
         var length = await images[i].length();
         var multipartFile = http.MultipartFile(
-          'images', // 🔹 Asegúrate de que coincida con el nombre en Multer
+          'images',
           stream,
           length,
           filename: basename(images[i].path),
