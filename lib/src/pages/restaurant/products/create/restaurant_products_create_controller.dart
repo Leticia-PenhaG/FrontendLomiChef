@@ -60,71 +60,175 @@ class RestaurantProductsCreateController {
     refresh();
   }
 
+  // void createProduct() async {
+  //   String name = nameController.text;
+  //   String description = descriptionController.text;
+  //   double price = priceController.numberValue;
+  //
+  //   if (name.isEmpty || description.isEmpty || price==0) {
+  //     SnackbarHelper.show(
+  //         context: context, message: 'Todos los campos son obligatorios');
+  //     return;
+  //   }
+  //
+  //   if(imageFile1 == null || imageFile2 == null || imageFile3 == null) {
+  //     SnackbarHelper.show(context: context, message: 'Por favor, seleccioná todas las imágenes');
+  //     return;
+  //   }
+  //
+  //   if(idCategory == '') {
+  //     _showDialog('Error', 'Seleccioná la categoría del producto');
+  //     return;
+  //   }
+  //
+  //   /*Product product = new Product(
+  //       name: name,
+  //       description: description,
+  //       price: price,
+  //       idCategory: int.tryParse(idCategory),
+  //   );*/
+  //
+  //   List<File> images = [];
+  //   images.add(imageFile1!);
+  //   images.add(imageFile2!);
+  //   images.add(imageFile3!);
+  //
+  //   print("Imágenes seleccionadas:");
+  //   print("imageFile1: ${imageFile1!.path}");
+  //   print("imageFile2: ${imageFile2!.path}");
+  //   print("imageFile3: ${imageFile3!.path}");
+  //
+  //   Product product = Product(
+  //     name: name,
+  //     description: description,
+  //     price: price,
+  //     idCategory: int.tryParse(idCategory),
+  //     image1: basename(imageFile1!.path),
+  //     image2: basename(imageFile2!.path),
+  //     image3: basename(imageFile3!.path),
+  //   );
+  //
+  //
+  //
+  //   _progressDialog.show(max: 100, msg: 'Esperá un momento, procesando...');
+  //   Stream stream = await _productsProvider.createProduct(product, images) as Stream;
+  //   stream.listen((res) {
+  //     _progressDialog.close();
+  //
+  //     ResponseApi responseApi = ResponseApi.fromJson(json.decode(res));
+  //     SnackbarHelper.show(context: context, message: responseApi.message);
+  //
+  //     if(responseApi.success) {
+  //       resetValues();
+  //     }
+  //   });
+  //
+  //   print('Formulario Producto: ${product.toJson()}');
+  // }
+
+  //la version de abajo createProduct crea el producto en la base de datos
+  // void createProduct() async {
+  //   String name = nameController.text;
+  //   String description = descriptionController.text;
+  //   double price = priceController.numberValue;
+  //
+  //   if (name.isEmpty || description.isEmpty || price == 0) {
+  //     SnackbarHelper.show(context: context, message: 'Todos los campos son obligatorios');
+  //     return;
+  //   }
+  //
+  //   if (imageFile1 == null || imageFile2 == null || imageFile3 == null) {
+  //     SnackbarHelper.show(context: context, message: 'Seleccioná las 3 imágenes');
+  //     return;
+  //   }
+  //
+  //   if (idCategory == '') {
+  //     _showDialog('Error', 'Seleccioná la categoría del producto');
+  //     return;
+  //   }
+  //
+  //   List<File> images = [imageFile1!, imageFile2!, imageFile3!];
+  //
+  //   Product product = Product(
+  //     name: name,
+  //     description: description,
+  //     price: price,
+  //     idCategory: int.tryParse(idCategory),
+  //   );
+  //
+  //   _progressDialog.show(max: 100, msg: 'Procesando...');
+  //
+  //
+  //   _progressDialog.show(max: 100, msg: 'Esperá un momento, procesando...');
+  //   Stream stream = await _productsProvider.createProduct(product, images) as Stream;
+  //   stream.listen((res) {
+  //     _progressDialog.close();
+  //
+  //     ResponseApi responseApi = ResponseApi.fromJson(json.decode(res));
+  //     SnackbarHelper.show(context: context, message: responseApi.message);
+  //
+  //     if (responseApi.success) {
+  //       resetValues();
+  //     }
+  //   });
+  // }
+
   void createProduct() async {
     String name = nameController.text;
     String description = descriptionController.text;
     double price = priceController.numberValue;
 
-    if (name.isEmpty || description.isEmpty || price==0) {
-      SnackbarHelper.show(
-          context: context, message: 'Todos los campos son obligatorios');
+    if (name.isEmpty || description.isEmpty || price == 0) {
+      SnackbarHelper.show(context: context, message: 'Todos los campos son obligatorios');
       return;
     }
 
-    if(imageFile1 == null || imageFile2 == null || imageFile3 == null) {
-      SnackbarHelper.show(context: context, message: 'Por favor, seleccioná todas las imágenes');
+    if (imageFile1 == null || imageFile2 == null || imageFile3 == null) {
+      SnackbarHelper.show(context: context, message: 'Seleccioná las 3 imágenes');
       return;
     }
 
-    if(idCategory == '') {
+    if (idCategory == '') {
       _showDialog('Error', 'Seleccioná la categoría del producto');
       return;
     }
 
-    /*Product product = new Product(
-        name: name,
-        description: description,
-        price: price,
-        idCategory: int.tryParse(idCategory),
-    );*/
-
-    List<File> images = [];
-    images.add(imageFile1!);
-    images.add(imageFile2!);
-    images.add(imageFile3!);
-
-    print("Imágenes seleccionadas:");
-    print("imageFile1: ${imageFile1!.path}");
-    print("imageFile2: ${imageFile2!.path}");
-    print("imageFile3: ${imageFile3!.path}");
+    List<File> images = [imageFile1!, imageFile2!, imageFile3!];
 
     Product product = Product(
       name: name,
       description: description,
       price: price,
       idCategory: int.tryParse(idCategory),
-      image1: basename(imageFile1!.path),
-      image2: basename(imageFile2!.path),
-      image3: basename(imageFile3!.path),
     );
 
-
-
     _progressDialog.show(max: 100, msg: 'Esperá un momento, procesando...');
-    Stream stream = await _productsProvider.createProduct(product, images) as Stream;
-    stream.listen((res) {
-      _progressDialog.close();
 
-      ResponseApi responseApi = ResponseApi.fromJson(json.decode(res));
-      SnackbarHelper.show(context: context, message: responseApi.message);
+    try {
+      var response = await _productsProvider.createProduct(product, images);
 
-      if(responseApi.success) {
-        resetValues();
+      if (response!.statusCode == 201) {
+        var responseBody = jsonDecode(await response.stream.bytesToString()); // ✅ Leer el body correctamente
+        ResponseApi responseApi = ResponseApi.fromJson(responseBody);
+
+        _progressDialog.close();
+        SnackbarHelper.show(context: context, message: responseApi.message);
+
+        if (responseApi.success) {
+          resetValues();
+        }
+      } else {
+        var errorBody = jsonDecode(await response.stream.bytesToString());
+        _progressDialog.close();
+        SnackbarHelper.show(context: context, message: 'Error: ${errorBody['message']}');
       }
-    });
-
-    print('Formulario Producto: ${product.toJson()}');
+    } catch (e) {
+      _progressDialog.close();
+      SnackbarHelper.show(context: context, message: 'Error al crear el producto');
+      print('Error en createProduct: $e');
+    }
   }
+
 
   void resetValues() {
     nameController.text = '';

@@ -18,30 +18,32 @@ class ProductsProvider {
     this.sessionUser = sessionUser;
   }
 
-  Future<Stream<String>?> createProduct(Product product, List<File> images) async {
+  Future<http.StreamedResponse?> createProduct(Product product, List<File> images) async {
     try {
       Uri url = Uri.http(_url, '$_api/create');
       var request = http.MultipartRequest('POST', url);
       request.headers['Authorization'] = sessionUser.sessionToken!; //se le pasa el token para que realice la llamada
 
-      for(int i = 0; i < images.length; i++) {
-        print('Subiendo imagen: ${images[i].path}');
-        request.files.add(http.MultipartFile(
-          'image',
-          http.ByteStream(images[i].openRead().cast()),
-          await images[i].length(),
-          filename: basename(images[i].path)
-        ));
+      // Convertir el objeto product a JSON y enviarlo como un campo del formulario
+      request.fields['product'] = jsonEncode(product.toJson());
+
+      for (int i = 0; i < images.length; i++) {
+        var stream = http.ByteStream(images[i].openRead());
+        var length = await images[i].length();
+        var multipartFile = http.MultipartFile(
+          'images', // 🔹 Asegúrate de que coincida con el nombre en Multer
+          stream,
+          length,
+          filename: basename(images[i].path),
+        );
+        request.files.add(multipartFile);
       }
 
-      //request.fields['product'] = json.encode(product); // Convertir user a JSON
-      request.fields['product'] = json.encode(product.toJson());
-
-      var response = await request.send();
-      return response.stream.transform(utf8.decoder);
+      return await request.send();
     } catch (e) {
       print('Error al enviar imagen: $e');
       return null;
     }
   }
+
 }
