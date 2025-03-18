@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lomi_chef_to_go/src/pages/client/products/list/client_products_list_controller.dart';
 import 'package:lomi_chef_to_go/src/utils/app_colors.dart';
+import 'dart:io';
 
 class ClientProductsListPage extends StatefulWidget {
   const ClientProductsListPage({super.key});
@@ -40,8 +41,24 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
     // Se construye la UI una vez que `context` está inicializado
     return Scaffold(
       key: _controllerClient.key,
-      appBar: AppBar(
-        leading: _menuDrawer(),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(170),
+        child: AppBar(
+          automaticallyImplyLeading: false,
+          ///leading: ,
+          backgroundColor: Colors.white,
+          actions: [
+            _shoppingBag()
+          ],
+          flexibleSpace: Column(
+            children: [
+              SizedBox(height: 70),
+              _menuDrawer(),
+              _textFieldSearch(),
+              SizedBox(height: 20),
+            ],
+          ),
+        ),
       ),
       drawer: _drawer(),
       body: Center(
@@ -174,6 +191,62 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
     setState(() {
 
     });
+  }
+
+  Widget _shoppingBag(){
+    return Stack(
+      children: [
+        Container(
+          margin: EdgeInsets.only(right: 15),
+          child: Icon(
+            Icons.shopping_bag_outlined,
+            color: Colors.black,
+          ),
+        ),
+        Positioned(
+          right: 16,
+          child: Container(
+          width: 9,
+          height: 9,
+          decoration: BoxDecoration(
+            color: Colors.green,
+            borderRadius: BorderRadius.all(Radius.circular(30))
+          ),
+        ))
+      ],
+    );
+  }
+
+  Widget _textFieldSearch() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: 'Buscar',
+          suffixIcon: Icon(
+              Icons.search_rounded,
+            color: Colors.grey[400]
+          ),
+          hintStyle: TextStyle(
+            fontSize: 17,
+            color: Colors.grey[500]
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+              color: Colors.grey
+            )
+          ),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25),
+              borderSide: BorderSide(
+                  color: Colors.grey
+              )
+          ),
+          contentPadding: EdgeInsets.all(15)
+        ),
+      ),
+    );
   }
 
 /*Widget _drawer() {

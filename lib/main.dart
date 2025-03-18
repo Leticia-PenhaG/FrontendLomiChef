@@ -42,7 +42,8 @@ class _LomiChefDeliveryAppState extends State<LomiChefDeliveryApp> {
       theme: ThemeData(
         primaryColor: AppColors.primaryColor,
         appBarTheme: AppBarTheme(
-          backgroundColor: AppColors.primaryColor,
+           backgroundColor: AppColors.primaryColor,
+          elevation: 0
         ),
       ),
     );
