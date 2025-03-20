@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lomi_chef_to_go/src/models/category.dart';
+import 'package:lomi_chef_to_go/src/provider/categories_provider.dart';
 import 'package:lomi_chef_to_go/src/utils/shared_preferences_helper.dart';
 
 import '../../../../models/user.dart';
@@ -9,11 +11,16 @@ class ClientProductsListController {
   final GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>(); //para poder desplegar el menu de opciones lateral
   late User user;
   late Function refresh;
+  CategoriesProvider _categoriesProvider = new CategoriesProvider();
+
+  List<Category> categories = [];
 
   Future<void> init(BuildContext context, Function refresh) async {
     this.context = context;
     this.refresh = refresh;
     user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user')); //datos de usuario guardados
+    _categoriesProvider.init(context, user);
+    getCategories();
     refresh();
   }
 
@@ -23,6 +30,11 @@ class ClientProductsListController {
       return;
     }
     _sharedPreferencesHelper.logout(context!, user.id!);
+  }
+
+  void getCategories() async{
+    categories = await _categoriesProvider.getAll();
+    refresh();
   }
 
   bool isInitialized() {

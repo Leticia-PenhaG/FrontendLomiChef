@@ -4,6 +4,8 @@ import 'package:lomi_chef_to_go/src/pages/client/products/list/client_products_l
 import 'package:lomi_chef_to_go/src/utils/app_colors.dart';
 import 'dart:io';
 
+import '../../../../models/category.dart';
+
 class ClientProductsListPage extends StatefulWidget {
   const ClientProductsListPage({super.key});
 
@@ -20,26 +22,38 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      await _controllerClient.init(context, refresh);
-      setState(() {
-        _isInitialized = true; // Cambia el estado una vez que `context` está listo
-      });
+       await _controllerClient.init(context, refresh).then((_) {
+         if (mounted) {
+           setState(() {
+             _isInitialized = true; // Cambia el estado una vez que `context` está listo
+           });
+         }
+       });
     });
   }
+
+  //     setState(() {
+  //       _isInitialized = true; // Cambia el estado una vez que `context` está listo
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     if (!_isInitialized) {
       // Se muestra un indicador de carga mientras el controlador se inicializa
-      return Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
+      return DefaultTabController(
+        length: _controllerClient.categories.length,
+        child: Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
         ),
       );
     }
 
     // Se construye la UI una vez que `context` está inicializado
-    return Scaffold(
+    /*return Scaffold(
       key: _controllerClient.key,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(170),
@@ -58,15 +72,63 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
               SizedBox(height: 20),
             ],
           ),
+          bottom: TabBar(indicatorColor: AppColors.primaryColor,
+          labelColor: Colors.black,
+          unselectedLabelColor: Colors.grey[400],
+          isScrollable: true,
+          tabs: List<Widget>.generate(_controllerClient.categories.length,(index){
+            return Tab(
+              child: Text(_controllerClient.categories[index].name ?? ''),
+            );
+          }),
         ),
       ),
       drawer: _drawer(),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            // TODO
-          },
-          child: const Text('Client Page'),
+      body: TabBarView(
+          children: _controllerClient.categories.map((Category category){
+            return Text('Hola');
+          }).toList();
+      ),
+      ),
+    ));*/
+    return DefaultTabController(  // Faltaba envolver con DefaultTabController
+      length: _controllerClient.categories.length,
+      child: Scaffold(
+        key: _controllerClient.key,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(170),
+          child: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+            actions: [
+              _shoppingBag()
+            ],
+            flexibleSpace: Column(
+              children: [
+                SizedBox(height: 70),
+                _menuDrawer(),
+                _textFieldSearch(),
+                SizedBox(height: 20),
+              ],
+            ),
+            bottom: TabBar(
+              indicatorColor: AppColors.primaryColor,
+              labelColor: Colors.black,
+              unselectedLabelColor: Colors.grey[400],
+              isScrollable: true,
+              tabs: List<Widget>.generate(_controllerClient.categories.length, (index) {
+                return Tab(
+                  child: Text(_controllerClient.categories[index].name ?? ''),
+                );
+              }),
+            ),
+          ),
+        ),
+        drawer: _drawer(),
+        body: TabBarView(
+          children: _controllerClient.categories.map((Category category) {
+            return Center(child: Text('Hola')); // Agregué un Center para mejor alineación
+          }).toList(), // ✅ Corrección: se usa `,` en lugar de `;`
         ),
       ),
     );
