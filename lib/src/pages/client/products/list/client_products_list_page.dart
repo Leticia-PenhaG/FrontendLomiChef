@@ -127,7 +127,13 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
         drawer: _drawer(),
         body: TabBarView(
           children: _controllerClient.categories.map((Category category) {
-            return _cardProduct();
+            return GridView.count(
+              crossAxisCount: 2,
+              childAspectRatio: 0.7,
+              children: List.generate(10, (index) {
+                return _cardProduct();
+              }),
+            );
           }).toList(),
         ),
       ),
@@ -165,8 +171,9 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
               children: [
                 Container(
                   height: 150,
+                  margin: EdgeInsets.only(top: 20),
                   width: MediaQuery.of(context).size.width * 0.45,
-                  padding: EdgeInsets.all(15),
+                  padding: EdgeInsets.all(10),
                   child: FadeInImage(
                       image: AssetImage('assets/img/burger.png'),
                       fit: BoxFit.contain,
@@ -176,14 +183,18 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 20),
+                  height: 37,
                   child: Text(
-                    'Nombre del producto',
+                    'Nombre del producto nuevo',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 15,
                       //fontStyle: 'Nimbusans'
                     ),
                   ),
                 ),
+                Spacer(),
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 20),
                   child: Text('1.000 \Gs.',
