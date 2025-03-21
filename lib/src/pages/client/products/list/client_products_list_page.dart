@@ -127,8 +127,39 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
         drawer: _drawer(),
         body: TabBarView(
           children: _controllerClient.categories.map((Category category) {
-            return Center(child: Text('Hola')); // Agregué un Center para mejor alineación
-          }).toList(), // ✅ Corrección: se usa `,` en lugar de `;`
+            return _cardProduct();
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _cardProduct() {
+    return Container(
+      height: 250,
+      child: Card(
+        elevation: 3.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15)
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+                top: -1.0,
+                right: -1.0,
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(15),
+                      topRight: Radius.circular(20)
+                    )
+                  ),
+                )
+            )
+          ],
         ),
       ),
     );
