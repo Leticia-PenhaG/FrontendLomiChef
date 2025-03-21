@@ -157,7 +157,44 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                       topRight: Radius.circular(20)
                     )
                   ),
+                  child: Icon(Icons.add, color: Colors.white),
                 )
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 150,
+                  width: MediaQuery.of(context).size.width * 0.45,
+                  padding: EdgeInsets.all(15),
+                  child: FadeInImage(
+                      image: AssetImage('assets/img/burger.png'),
+                      fit: BoxFit.contain,
+                      fadeInDuration: Duration(milliseconds: 50),
+                      placeholder: AssetImage('assets/img/no-image-icon.png'),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    'Nombre del producto',
+                    style: TextStyle(
+                      fontSize: 15,
+                      //fontStyle: 'Nimbusans'
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  child: Text('1.000 \Gs.',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold
+                      //fontFamily: ''
+                    ),
+                  ),
+                )
+              ],
             )
           ],
         ),
