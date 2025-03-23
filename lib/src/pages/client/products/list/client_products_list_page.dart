@@ -5,6 +5,7 @@ import 'package:lomi_chef_to_go/src/utils/app_colors.dart';
 import 'dart:io';
 import '../../../../models/category.dart';
 import '../../../../models/product.dart';
+import 'package:intl/intl.dart';
 
 class ClientProductsListPage extends StatefulWidget {
   const ClientProductsListPage({super.key});
@@ -160,7 +161,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: Text(
-                '${product.price ?? 0} Gs.',
+                '${formatPrice(product.price ?? 0)} Gs.',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
@@ -457,6 +458,11 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
         ),
       ),
     );
+  }
+
+  String formatPrice(double price) {
+    final formatter = NumberFormat("#,###", "es_PY"); // Formato con punto para miles
+    return formatter.format(price);
   }
 
   //ORIGINAL OPTION
