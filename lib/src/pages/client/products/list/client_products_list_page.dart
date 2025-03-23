@@ -106,64 +106,41 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
     );
   }
 
+
   //opcion 1
   Widget _cardProduct(Product product) {
     return Container(
-      margin: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            blurRadius: 5,
-            spreadRadius: 2,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
+      height: 280,
       child: Card(
-        elevation: 0,
+        elevation: 3.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              flex: 8, // Se aumenta la altura para que la imagen tenga más espacio
+            // 🔹 Imagen del producto
+            Container(
+              height: 140,
+              width: MediaQuery.of(context).size.width * 0.45,
+              padding: EdgeInsets.all(5),
               child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15),
-                  topRight: Radius.circular(15),
-                ),
-                child: Container(
-                  width: double.infinity,
-                  color: Colors.white, // Fondo blanco en caso de imagen nula
-                  child: product.image1 != null && product.image1!.isNotEmpty
-                      ? FadeInImage(
-                    image: NetworkImage(product.image1!),
-                    placeholder: AssetImage('assets/img/loading.png'),
-                    fit: BoxFit.contain, // Para que la imagen no se recorte
-                    fadeInDuration: Duration(milliseconds: 300),
-                    imageErrorBuilder: (context, error, stackTrace) {
-                      return Image.asset(
-                        'assets/img/no-image-icon.png',
-                        fit: BoxFit.contain,
-                      );
-                    },
-                  )
-                      : Image.asset(
-                    'assets/img/no-image-icon.png',
-                    fit: BoxFit.contain,
-                  ),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                child: FadeInImage(
+                  image: product.image1 != null
+                      ? NetworkImage(product.image1!)
+                      : AssetImage('assets/img/burger.png') as ImageProvider,
+                  fit: BoxFit.contain,
+                  placeholder: AssetImage('assets/img/no-image-icon.png'),
+                  fadeInDuration: Duration(milliseconds: 50),
                 ),
               ),
             ),
-            SizedBox(height: 10), // Espacio antes del nombre
+
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.symmetric(horizontal: 15),
               child: Text(
-                product.name ?? 'Sin nombre',
+                product.name ?? '',
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -172,19 +149,23 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                 ),
               ),
             ),
-            SizedBox(height: 5),
+            SizedBox(height: 5), // Espaciado
+
+            // 🔹 Precio del producto
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.symmetric(horizontal: 15),
               child: Text(
                 '${product.price ?? 0} Gs.',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
                   color: Colors.green[700],
-                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-            Spacer(), // Asegura que el botón quede alineado abajo
+
+            Spacer(),
+
             Align(
               alignment: Alignment.bottomRight,
               child: Container(
@@ -201,7 +182,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                   ],
                 ),
                 child: IconButton(
-                  icon: Icon(Icons.add, color: Colors.white, size: 20), // Tamaño menor
+                  icon: Icon(Icons.add, color: Colors.white, size: 22),
                   onPressed: () {
                     // Acción de agregar producto
                   },
@@ -213,6 +194,85 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
       ),
     );
   }
+
+
+  //ORIGINAL OPTION CARD PRODUCT
+  // Widget _cardProduct(Product product) {
+  //   return Container(
+  //     height: 250,
+  //     child: Card(
+  //       elevation: 3.0,
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(15)
+  //       ),
+  //       child: Stack(
+  //         children: [
+  //           Positioned(
+  //               top: -1.0,
+  //               right: -1.0,
+  //               child: Container(
+  //                 width: 40,
+  //                 height: 40,
+  //                 decoration: BoxDecoration(
+  //                   color: AppColors.primaryColor,
+  //                   borderRadius: BorderRadius.only(
+  //                     bottomLeft: Radius.circular(15),
+  //                     topRight: Radius.circular(20)
+  //                   )
+  //                 ),
+  //                 child: Icon(Icons.add, color: Colors.white),
+  //               )
+  //           ),
+  //           Column(
+  //             //el recycler view que hace que se carguen los productos por categoría que hay en la base de datos
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Container(
+  //                 height: 150,
+  //                 margin: EdgeInsets.only(top: 20),
+  //                 width: MediaQuery.of(context).size.width * 0.45,
+  //                 padding: EdgeInsets.all(10),
+  //                 child: FadeInImage(
+  //                     image: product.image1 != null
+  //                       ? NetworkImage(product.image1!)
+  //                       : AssetImage('assets/img/burger.png'),
+  //                     fit: BoxFit.contain,
+  //                     fadeInDuration: Duration(milliseconds: 50),
+  //                     placeholder: AssetImage('assets/img/no-image-icon.png'),
+  //                 ),
+  //               ),
+  //               Container(
+  //                 margin: EdgeInsets.symmetric(horizontal: 20),
+  //                 height: 37,
+  //                 child: Text(
+  //                   product.name ?? '',
+  //                   maxLines: 2,
+  //                   overflow: TextOverflow.ellipsis,
+  //                   style: TextStyle(
+  //                     fontSize: 15,
+  //                     //fontStyle: 'Nimbusans'
+  //                   ),
+  //                 ),
+  //               ),
+  //               Spacer(),
+  //               Container(
+  //                 margin: EdgeInsets.symmetric(horizontal: 20),
+  //                 child: Text('${product.price ?? 0} \Gs.',
+  //                   style: TextStyle(
+  //                     fontSize: 15,
+  //                     fontWeight: FontWeight.bold
+  //                     //fontFamily: ''
+  //                   ),
+  //                 ),
+  //               )
+  //             ],
+  //           )
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
 
   Widget _menuDrawer() {
     return GestureDetector(
@@ -426,77 +486,4 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
   //     ),
   //   );
   // }
-
-/*Widget _drawer() {
-    return Drawer (
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start, //izq.
-                children: [
-                  Text('Nombre de usuario',
-                    style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold
-                    ),
-                    maxLines: 1,
-                  ),
-                  Text('Email',
-                    style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey[300],
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic
-                    ),
-                    maxLines: 1,
-                  ),
-                  Text('Teléfono',
-                    style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey[300],
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic
-                    ),
-                    maxLines: 1,
-                  ),
-                  Container(
-                    height: 60,
-                    margin: EdgeInsets.only(top: 8),
-                    child: FadeInImage(
-                        image: AssetImage('assets/img/no-image-icon.png'),
-                        fit: BoxFit.contain,
-                      fadeInDuration: Duration(milliseconds: 50),
-                      placeholder: AssetImage('assets/img/no-image.png'),
-                    ),
-                  )
-                ]
-              )
-          ),
-          ListTile(
-            title: Text('Actualizar perfil'),
-            trailing: Icon(Icons.edit)
-          ),
-          ListTile(
-              title: Text('Mis pedidos'),
-              trailing: Icon(Icons.shopping_cart)
-          ),
-          ListTile(
-              title: Text('Seleccionar rol'),
-              trailing: Icon(Icons.person)
-          ),
-          ListTile(
-              onTap: _controllerClient.logout,
-              title: Text('Cerrar sesión'),
-              trailing: Icon(Icons.power_settings_new)
-          ),
-        ],
-      ),
-    );
-  }*/
 }
