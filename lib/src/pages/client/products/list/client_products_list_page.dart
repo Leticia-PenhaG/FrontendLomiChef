@@ -3,8 +3,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:lomi_chef_to_go/src/pages/client/products/list/client_products_list_controller.dart';
 import 'package:lomi_chef_to_go/src/utils/app_colors.dart';
 import 'dart:io';
-
 import '../../../../models/category.dart';
+import '../../../../models/product.dart';
 
 class ClientProductsListPage extends StatefulWidget {
   const ClientProductsListPage({super.key});
@@ -52,45 +52,6 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
       );
     }
 
-    // Se construye la UI una vez que `context` está inicializado
-    /*return Scaffold(
-      key: _controllerClient.key,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(170),
-        child: AppBar(
-          automaticallyImplyLeading: false,
-          ///leading: ,
-          backgroundColor: Colors.white,
-          actions: [
-            _shoppingBag()
-          ],
-          flexibleSpace: Column(
-            children: [
-              SizedBox(height: 70),
-              _menuDrawer(),
-              _textFieldSearch(),
-              SizedBox(height: 20),
-            ],
-          ),
-          bottom: TabBar(indicatorColor: AppColors.primaryColor,
-          labelColor: Colors.black,
-          unselectedLabelColor: Colors.grey[400],
-          isScrollable: true,
-          tabs: List<Widget>.generate(_controllerClient.categories.length,(index){
-            return Tab(
-              child: Text(_controllerClient.categories[index].name ?? ''),
-            );
-          }),
-        ),
-      ),
-      drawer: _drawer(),
-      body: TabBarView(
-          children: _controllerClient.categories.map((Category category){
-            return Text('Hola');
-          }).toList();
-      ),
-      ),
-    ));*/
     return DefaultTabController(  // Faltaba envolver con DefaultTabController
       length: _controllerClient.categories.length,
       child: Scaffold(
@@ -127,13 +88,22 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
         drawer: _drawer(),
         body: TabBarView(
           children: _controllerClient.categories.map((Category category) {
-            return GridView.count(
-              crossAxisCount: 2,
-              childAspectRatio: 0.7,
-              children: List.generate(10, (index) {
-                return _cardProduct();
-              }),
-            );
+             return FutureBuilder(
+               future: _controllerClient.getProducts(category.id!),
+               builder:(context, AsyncSnapshot<List<Product>> snapshot) {
+                  return GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio:0.7
+                    ) ,
+                    itemCount: snapshot.data?.length ?? 0,
+                    itemBuilder: (_, index) {
+                      return _cardProduct();
+                    }
+
+                  );
+               }
+             );
           }).toList(),
         ),
       ),

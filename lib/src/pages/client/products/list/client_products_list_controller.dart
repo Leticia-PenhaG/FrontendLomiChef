@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lomi_chef_to_go/src/models/category.dart';
 import 'package:lomi_chef_to_go/src/provider/categories_provider.dart';
+import 'package:lomi_chef_to_go/src/provider/products_provider.dart';
 import 'package:lomi_chef_to_go/src/utils/shared_preferences_helper.dart';
 
+import '../../../../models/product.dart';
 import '../../../../models/user.dart';
 
 class ClientProductsListController {
@@ -12,6 +14,7 @@ class ClientProductsListController {
   late User user;
   late Function refresh;
   CategoriesProvider _categoriesProvider = new CategoriesProvider();
+  ProductsProvider _productsProvider = new ProductsProvider();
 
   List<Category> categories = [];
 
@@ -20,8 +23,13 @@ class ClientProductsListController {
     this.refresh = refresh;
     user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user')); //datos de usuario guardados
     _categoriesProvider.init(context, user);
+    _productsProvider.init(context, user);
     getCategories();
     refresh();
+  }
+
+  Future<List<Product>> getProducts(String idCategory) async{
+    return await _productsProvider.getProductByCategory(idCategory);
   }
 
   void logout() {
