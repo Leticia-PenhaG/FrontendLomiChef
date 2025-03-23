@@ -117,85 +117,88 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
 
   //opcion 1
   Widget _cardProduct(Product product) {
-    return Container(
-      height: 280,
-      child: Card(
-        elevation: 3.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 140,
-              width: MediaQuery.of(context).size.width * 0.45,
-              padding: EdgeInsets.all(5),
-              child: ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-                child: FadeInImage(
-                  image: product.image1 != null
-                      ? NetworkImage(product.image1!)
-                      : AssetImage('assets/img/burger.png') as ImageProvider,
-                  fit: BoxFit.contain,
-                  placeholder: AssetImage('assets/img/no-image-icon.png'),
-                  fadeInDuration: Duration(milliseconds: 50),
+    return GestureDetector(
+      onTap: _controllerClient.openBottomSheet,
+      child: Container(
+        height: 280,
+        child: Card(
+          elevation: 3.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 140,
+                width: MediaQuery.of(context).size.width * 0.45,
+                padding: EdgeInsets.all(5),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                  child: FadeInImage(
+                    image: product.image1 != null
+                        ? NetworkImage(product.image1!)
+                        : AssetImage('assets/img/burger.png') as ImageProvider,
+                    fit: BoxFit.contain,
+                    placeholder: AssetImage('assets/img/no-image-icon.png'),
+                    fadeInDuration: Duration(milliseconds: 50),
+                  ),
                 ),
               ),
-            ),
-
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Text(
-                product.name ?? '',
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+      
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: Text(
+                  product.name ?? '',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 5),
-
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Text(
-                '${formatPrice(product.price ?? 0)} Gs.',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green[700],
+              SizedBox(height: 5),
+      
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: Text(
+                  '${formatPrice(product.price ?? 0)} Gs.',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green[700],
+                  ),
                 ),
               ),
-            ),
-
-            Spacer(),
-
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Container(
-                margin: EdgeInsets.only(right: 10, bottom: 10),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryColor,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 4,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: IconButton(
-                  icon: Icon(Icons.add, color: Colors.white, size: 22),
-                  onPressed: () {
-                    // Acción de agregar producto
-                  },
+      
+              Spacer(),
+      
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  margin: EdgeInsets.only(right: 10, bottom: 10),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.add, color: Colors.white, size: 22),
+                    onPressed: () {
+                      // Acción de agregar producto
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

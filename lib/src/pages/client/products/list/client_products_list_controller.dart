@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lomi_chef_to_go/src/models/category.dart';
+import 'package:lomi_chef_to_go/src/pages/client/products/detail/client_products_detail_page.dart';
 import 'package:lomi_chef_to_go/src/provider/categories_provider.dart';
 import 'package:lomi_chef_to_go/src/provider/products_provider.dart';
 import 'package:lomi_chef_to_go/src/utils/shared_preferences_helper.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../../models/product.dart';
 import '../../../../models/user.dart';
@@ -38,6 +40,13 @@ class ClientProductsListController {
       return;
     }
     _sharedPreferencesHelper.logout(context!, user.id!);
+  }
+
+  void openBottomSheet() {
+    showMaterialModalBottomSheet(
+        context: context!,
+        builder: (context) => ClientProductsDetailPage()
+    );
   }
 
   void getCategories() async{
