@@ -74,7 +74,14 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
               isScrollable: true,
               tabs: List<Widget>.generate(_controllerClient.categories.length, (index) {
                 return Tab(
-                  child: Text(_controllerClient.categories[index].name ?? ''),
+                  child: Padding(
+                    padding: EdgeInsets.zero,
+                    child: Text(
+                      _controllerClient.categories[index].name ?? '',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
                 );
               }),
             ),
@@ -119,7 +126,6 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🔹 Imagen del producto
             Container(
               height: 140,
               width: MediaQuery.of(context).size.width * 0.45,
@@ -149,9 +155,8 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                 ),
               ),
             ),
-            SizedBox(height: 5), // Espaciado
+            SizedBox(height: 5),
 
-            // 🔹 Precio del producto
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: Text(
