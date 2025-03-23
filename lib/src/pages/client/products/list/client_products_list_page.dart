@@ -91,16 +91,17 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
              return FutureBuilder(
                future: _controllerClient.getProducts(category.id!),
                builder:(context, AsyncSnapshot<List<Product>> snapshot) {
+                 //son los card de los productos que se muestran
                   return GridView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       childAspectRatio:0.7
                     ) ,
                     itemCount: snapshot.data?.length ?? 0,
                     itemBuilder: (_, index) {
-                      return _cardProduct();
+                      return _cardProduct(snapshot.data![index]);
                     }
-
                   );
                }
              );
@@ -110,7 +111,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
     );
   }
 
-  Widget _cardProduct() {
+  Widget _cardProduct(Product product) {
     return Container(
       height: 250,
       child: Card(
@@ -137,6 +138,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                 )
             ),
             Column(
+              //el recycler view que hace que se carguen los productos por categoría que hay en la base de datos
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
@@ -145,7 +147,9 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                   width: MediaQuery.of(context).size.width * 0.45,
                   padding: EdgeInsets.all(10),
                   child: FadeInImage(
-                      image: AssetImage('assets/img/burger.png'),
+                      image: product.image1 != null
+                        ? NetworkImage(product.image1!)
+                        : AssetImage('assets/img/burger.png'),
                       fit: BoxFit.contain,
                       fadeInDuration: Duration(milliseconds: 50),
                       placeholder: AssetImage('assets/img/no-image-icon.png'),
@@ -155,7 +159,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                   margin: EdgeInsets.symmetric(horizontal: 20),
                   height: 37,
                   child: Text(
-                    'Nombre del producto nuevo',
+                    product.name ?? '',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -167,7 +171,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                 Spacer(),
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text('1.000 \Gs.',
+                  child: Text('${product.price ?? 0} \Gs.',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold
