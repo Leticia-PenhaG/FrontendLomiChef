@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
-import 'package:lomi_chef_to_go/src/pages/client/products/list/client_products_list_controller.dart';
 import 'package:lomi_chef_to_go/src/utils/app_colors.dart';
 
 import '../../../../models/product.dart';
@@ -26,7 +25,10 @@ class _ClientProductsDetailPageState extends State<ClientProductsDetailPage> {
       height: MediaQuery.of(context).size.height * 0.9,
       child: Column(
         children: [
-          _imageSlideshow()
+          _imageSlideshow(),
+          _textName(),
+          _textDescription(),
+          _addRemoveItem()
         ],
       ),
     );
@@ -79,6 +81,81 @@ class _ClientProductsDetailPageState extends State<ClientProductsDetailPage> {
           fadeInDuration: Duration(milliseconds: 50),
         ),
       ],
+    );
+  }
+
+  Widget _textName() {
+    return Container(
+      alignment: Alignment.centerLeft,
+      margin: EdgeInsets.only(right: 30, left: 30, top: 15),
+      child: Text (
+        _controllerProductsDetail.product?.name ?? '',
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold
+        ),
+      ),
+    );
+  }
+
+  Widget _textDescription() {
+    return Container(
+      alignment: Alignment.centerLeft,
+      margin: EdgeInsets.only(right: 30, left: 30, top: 15),
+      child: Text(
+        _controllerProductsDetail.product?.description ?? '',
+        style: TextStyle(
+            fontSize: 13,
+            color: Colors.blueGrey
+        ),
+      ),
+    );
+  }
+
+  Widget _addRemoveItem() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 17),
+      child: Row (
+        children: [
+          IconButton(
+              onPressed: () {} ,
+              icon: Icon(
+                Icons.add_circle_outline_outlined,
+                color: Colors.grey,
+                size: 30,
+              )
+          ),
+
+          Text(
+            '1',
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey
+            ),
+          ),
+
+          IconButton(
+              onPressed: () {} ,
+              icon: Icon(
+                Icons.remove_circle_outline_outlined,
+                color: Colors.grey,
+                size: 30,
+              )
+          ),
+          Spacer(), //alinea a la derecha
+          Container(
+            margin: EdgeInsets.only(right: 10),
+            child: Text(
+              '${_controllerProductsDetail.product?.price ?? 0} Gs.',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
