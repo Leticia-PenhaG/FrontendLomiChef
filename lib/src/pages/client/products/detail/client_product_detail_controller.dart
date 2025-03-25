@@ -12,7 +12,7 @@ class ClientProductDetailController {
     this.context = context;
     this.refresh = refresh;
     this.product = product;
-    //refresh();
+    refresh();
   }
 
 

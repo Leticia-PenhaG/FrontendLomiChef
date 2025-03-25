@@ -34,9 +34,6 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
        });
     });
 
-    // SchedulerBinding.instance.addPostFrameCallback((timeStamp)  {
-    //  _controllerClient.init(context, refresh);
-    // });
   }
 
   @override

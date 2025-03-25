@@ -42,33 +42,41 @@ class _ClientProductsDetailPageState extends State<ClientProductsDetailPage> {
   }
 
   Widget _imageSlideshow() {
-     return ImageSlideshow(
+    return ImageSlideshow(
       width: double.infinity,
       height: MediaQuery.of(context).size.height * 0.4,
       initialPage: 0,
       indicatorColor: AppColors.primaryColor,
       indicatorBackgroundColor: Colors.grey,
+      autoPlayInterval: 3000,
+      isLoop: true,
       onPageChanged: (value) {
         debugPrint('Page changed: $value');
       },
-      autoPlayInterval: 3000,
-      isLoop: true,
       children: [
-     FadeInImage(
-       image: (_controllerProductsDetail.product?.image1 != null)
-           ? NetworkImage(_controllerProductsDetail.product!.image1!)
-           : const AssetImage('assets/img/burger.png') as ImageProvider,
-    fit: BoxFit.contain,
-    placeholder: AssetImage('assets/img/no-image-icon.png'),
-    fadeInDuration: Duration(milliseconds: 50),
-    ),
-        Image.asset(
-          'images/sample_image_2.jpg',
-          fit: BoxFit.cover,
+        FadeInImage(
+          image: (_controllerProductsDetail.product?.image1 != null)
+              ? NetworkImage(_controllerProductsDetail.product!.image1!)
+              : AssetImage('assets/img/burger.png') as ImageProvider,  // Se asegura de que sea un ImageProvider
+          fit: BoxFit.contain,
+          placeholder: AssetImage('assets/img/no-image-icon.png'),
+          fadeInDuration: Duration(milliseconds: 50),
         ),
-        Image.asset(
-          'images/sample_image_3.jpg',
-          fit: BoxFit.cover,
+        FadeInImage(
+          image: (_controllerProductsDetail.product?.image2 != null)
+              ? NetworkImage(_controllerProductsDetail.product!.image2!)
+              : AssetImage('assets/img/burger.png') as ImageProvider,
+          fit: BoxFit.contain,
+          placeholder: AssetImage('assets/img/no-image-icon.png'),
+          fadeInDuration: Duration(milliseconds: 50),
+        ),
+        FadeInImage(
+          image: (_controllerProductsDetail.product?.image3 != null)
+              ? NetworkImage(_controllerProductsDetail.product!.image3!)
+              : AssetImage('assets/img/burger.png') as ImageProvider,
+          fit: BoxFit.contain,
+          placeholder: AssetImage('assets/img/no-image-icon.png'),
+          fadeInDuration: Duration(milliseconds: 50),
         ),
       ],
     );
