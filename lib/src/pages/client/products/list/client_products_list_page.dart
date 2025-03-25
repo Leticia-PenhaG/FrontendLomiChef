@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lomi_chef_to_go/src/pages/client/products/list/client_products_list_controller.dart';
 import 'package:lomi_chef_to_go/src/utils/app_colors.dart';
+import 'package:lomi_chef_to_go/src/widgets/no_data_widget.dart';
 import 'dart:io';
 import '../../../../models/category.dart';
 import '../../../../models/product.dart';
@@ -22,6 +23,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
   void initState() {
     super.initState();
 
+    //estaba así
     SchedulerBinding.instance.addPostFrameCallback((_) async {
        await _controllerClient.init(context, refresh).then((_) {
          if (mounted) {
@@ -31,6 +33,10 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
          }
        });
     });
+
+    // SchedulerBinding.instance.addPostFrameCallback((timeStamp)  {
+    //  _controllerClient.init(context, refresh);
+    // });
   }
 
   @override
@@ -94,18 +100,28 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
              return FutureBuilder(
                future: _controllerClient.getProducts(category.id!),
                builder:(context, AsyncSnapshot<List<Product>> snapshot) {
-                 //son los card de los productos que se muestran
-                  return GridView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio:0.7
-                    ) ,
-                    itemCount: snapshot.data?.length ?? 0,
-                    itemBuilder: (_, index) {
-                      return _cardProduct(snapshot.data![index]);
-                    }
-                  );
+
+                 if(snapshot.hasData) {
+                   if(snapshot.data!.isNotEmpty ) {
+                     //son los card de los productos que se muestran
+                     return GridView.builder(
+                         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                             crossAxisCount: 2,
+                             childAspectRatio:0.7
+                         ) ,
+                         itemCount: snapshot.data?.length ?? 0,
+                         itemBuilder: (_, index) {
+                           return _cardProduct(snapshot.data![index]);
+                         }
+                     );
+                   }
+                   else {
+                     return NoDataWidget(text: 'No hay productos en esta categoría');
+                   }
+                 } else {
+                   return NoDataWidget(text: 'No hay productos en esta categoría');
+                 }
                }
              );
           }).toList(),
@@ -118,7 +134,9 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
   //opcion 1
   Widget _cardProduct(Product product) {
     return GestureDetector(
-      onTap: _controllerClient.openBottomSheet,
+      onTap: () {
+        _controllerClient.openBottomSheet(product);
+      },
       child: Container(
         height: 280,
         child: Card(

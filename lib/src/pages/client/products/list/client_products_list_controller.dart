@@ -42,10 +42,10 @@ class ClientProductsListController {
     _sharedPreferencesHelper.logout(context!, user.id!);
   }
 
-  void openBottomSheet() {
+  void openBottomSheet(Product product) {
     showMaterialModalBottomSheet(
         context: context!,
-        builder: (context) => ClientProductsDetailPage()
+        builder: (context) => ClientProductsDetailPage(product: product)
     );
   }
 
