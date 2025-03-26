@@ -28,7 +28,10 @@ class _ClientProductsDetailPageState extends State<ClientProductsDetailPage> {
           _imageSlideshow(),
           _textName(),
           _textDescription(),
-          _addRemoveItem()
+          Spacer(),
+          _addRemoveItem(),
+          _deliveryUi(),
+          _buttonShoppingBag()
         ],
       ),
     );
@@ -44,42 +47,55 @@ class _ClientProductsDetailPageState extends State<ClientProductsDetailPage> {
   }
 
   Widget _imageSlideshow() {
-    return ImageSlideshow(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.4,
-      initialPage: 0,
-      indicatorColor: AppColors.primaryColor,
-      indicatorBackgroundColor: Colors.grey,
-      autoPlayInterval: 3000,
-      isLoop: true,
-      onPageChanged: (value) {
-        debugPrint('Page changed: $value');
-      },
+    return Stack(
       children: [
-        FadeInImage(
-          image: (_controllerProductsDetail.product?.image1 != null)
-              ? NetworkImage(_controllerProductsDetail.product!.image1!)
-              : AssetImage('assets/img/burger.png') as ImageProvider,  // Se asegura de que sea un ImageProvider
-          fit: BoxFit.contain,
-          placeholder: AssetImage('assets/img/no-image-icon.png'),
-          fadeInDuration: Duration(milliseconds: 50),
+        ImageSlideshow(
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height * 0.4,
+          initialPage: 0,
+          indicatorColor: AppColors.primaryColor,
+          indicatorBackgroundColor: Colors.grey,
+          autoPlayInterval: 3000,
+          isLoop: true,
+          onPageChanged: (value) {
+            debugPrint('Page changed: $value');
+          },
+          children: [
+            FadeInImage(
+              image: (_controllerProductsDetail.product?.image1 != null)
+                  ? NetworkImage(_controllerProductsDetail.product!.image1!)
+                  : AssetImage('assets/img/burger.png') as ImageProvider,  // Se asegura de que sea un ImageProvider
+              fit: BoxFit.contain,
+              placeholder: AssetImage('assets/img/no-image-icon.png'),
+              fadeInDuration: Duration(milliseconds: 50),
+            ),
+            FadeInImage(
+              image: (_controllerProductsDetail.product?.image2 != null)
+                  ? NetworkImage(_controllerProductsDetail.product!.image2!)
+                  : AssetImage('assets/img/burger.png') as ImageProvider,
+              fit: BoxFit.contain,
+              placeholder: AssetImage('assets/img/no-image-icon.png'),
+              fadeInDuration: Duration(milliseconds: 50),
+            ),
+            FadeInImage(
+              image: (_controllerProductsDetail.product?.image3 != null)
+                  ? NetworkImage(_controllerProductsDetail.product!.image3!)
+                  : AssetImage('assets/img/burger.png') as ImageProvider,
+              fit: BoxFit.contain,
+              placeholder: AssetImage('assets/img/no-image-icon.png'),
+              fadeInDuration: Duration(milliseconds: 50),
+            ),
+          ],
         ),
-        FadeInImage(
-          image: (_controllerProductsDetail.product?.image2 != null)
-              ? NetworkImage(_controllerProductsDetail.product!.image2!)
-              : AssetImage('assets/img/burger.png') as ImageProvider,
-          fit: BoxFit.contain,
-          placeholder: AssetImage('assets/img/no-image-icon.png'),
-          fadeInDuration: Duration(milliseconds: 50),
-        ),
-        FadeInImage(
-          image: (_controllerProductsDetail.product?.image3 != null)
-              ? NetworkImage(_controllerProductsDetail.product!.image3!)
-              : AssetImage('assets/img/burger.png') as ImageProvider,
-          fit: BoxFit.contain,
-          placeholder: AssetImage('assets/img/no-image-icon.png'),
-          fadeInDuration: Duration(milliseconds: 50),
-        ),
+        Positioned(
+          left: 10,
+          top: 5,
+          child: IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.arrow_back_ios_new_outlined),
+            color: AppColors.primaryColor,
+          ),
+        )
       ],
     );
   }
@@ -87,7 +103,7 @@ class _ClientProductsDetailPageState extends State<ClientProductsDetailPage> {
   Widget _textName() {
     return Container(
       alignment: Alignment.centerLeft,
-      margin: EdgeInsets.only(right: 30, left: 30, top: 15),
+      margin: EdgeInsets.only(right: 30, left: 30, top: 30),
       child: Text (
         _controllerProductsDetail.product?.name ?? '',
         style: TextStyle(
@@ -155,6 +171,70 @@ class _ClientProductsDetailPageState extends State<ClientProductsDetailPage> {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Widget _deliveryUi() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      child: Row(
+        children: [
+          Image.asset(
+            'assets/img/delivery.png',
+            height: 45
+          ),
+          SizedBox(width: 7),
+          Text(
+            'Cobro por delivery',
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.green
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buttonShoppingBag() {
+    return Container(
+      margin: EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 30 ),
+      child: ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primaryColor,
+          padding: EdgeInsets.symmetric(vertical: 5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12)
+          )
+        ),
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                height: 50,
+                alignment: Alignment.center,
+                child: Text(
+                    'Agregar al carrito',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                margin: EdgeInsets.only(left: 50, top: 6),
+                height: 35,
+                child: Image.asset('assets/img/bag.png'),
+              ),
+            )
+          ],
+        ), // Agrega un texto u otro widget dentro del botón
       ),
     );
   }
