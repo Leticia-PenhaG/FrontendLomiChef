@@ -17,7 +17,7 @@ class NoDataWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset('assets/img/zero_items.png'),
+          Image.asset('assets/img/no_items.png'),
           SizedBox(height: 10),
           Text(text, style: TextStyle(fontSize: 16)),
         ],
