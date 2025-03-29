@@ -375,21 +375,21 @@ class _ClientProductsDetailPageState extends State<ClientProductsDetailPage> {
         Row(
           children: [
             IconButton(
-              onPressed: () {},
+              onPressed: _controllerProductsDetail.removeItem,
               icon: Icon(Icons.remove_circle_outline, size: 30, color: Colors.redAccent),
             ),
             Text(
-              '1',
+              '${_controllerProductsDetail.counter}',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: _controllerProductsDetail.addItem,
               icon: Icon(Icons.add_circle_outline, size: 30, color: Colors.green),
             ),
           ],
         ),
         Text(
-          '${_formatPrice(_controllerProductsDetail.product?.price ?? 0)} Gs.',
+          '${_formatPrice(_controllerProductsDetail.productPrice ?? 0)} Gs.',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.primaryColor),
         ),
       ],
