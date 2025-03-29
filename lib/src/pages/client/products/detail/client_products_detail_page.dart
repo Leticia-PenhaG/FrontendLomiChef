@@ -419,7 +419,7 @@ class _ClientProductsDetailPageState extends State<ClientProductsDetailPage> {
 
   Widget _buttonShoppingBag() {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: _controllerProductsDetail.addToShoppingCart,
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primaryColor,
         padding: EdgeInsets.symmetric(vertical: 15),
