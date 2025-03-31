@@ -156,7 +156,7 @@ class _RegisterPageState extends State<RegisterPage> {
       child: CircleAvatar(
         backgroundImage: _controllerRegister.imageFile != null
             ? FileImage(_controllerRegister.imageFile!)
-            : const AssetImage('assets/img/user.png'),
+            : const AssetImage('assets/img/user.jpg'),
         radius: 70,
         backgroundColor: Colors.grey[200],
       ),

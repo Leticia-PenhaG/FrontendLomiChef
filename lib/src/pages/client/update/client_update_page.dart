@@ -146,7 +146,7 @@ class _ClientUpdatePageState extends State<ClientUpdatePage> {
             : (_controllerClientUpdate.user.image != null &&
             _controllerClientUpdate.user.image!.isNotEmpty
             ? NetworkImage(_controllerClientUpdate.user.image!)
-            : const AssetImage('assets/img/client.png')) as ImageProvider,
+            : const AssetImage('assets/img/user.jpg')) as ImageProvider,
         radius: 70,
         backgroundColor: Colors.grey[200],
       ),
