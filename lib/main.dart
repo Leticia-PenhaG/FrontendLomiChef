@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lomi_chef_to_go/src/pages/client/orders/create/client_orders_create_page.dart';
 import 'package:lomi_chef_to_go/src/pages/client/products/list/client_products_list_page.dart';
 import 'package:lomi_chef_to_go/src/pages/client/update/client_update_page.dart';
 import 'package:lomi_chef_to_go/src/pages/delivery/orders/list/delivery_orders_list_page.dart';
@@ -37,6 +38,7 @@ class _LomiChefDeliveryAppState extends State<LomiChefDeliveryApp> {
         'restaurant/categories/create': (BuildContext context) => RestaurantCategoriesCreatePage(),
         'restaurant/products/create': (BuildContext context) => RestaurantProductsCreatePage(),
         'client/update': (BuildContext context) => ClientUpdatePage(),
+        'client/orders/create': (BuildContext context) => ClientOrdersCreatePage(),
         'roles': (BuildContext context) => RolesPage(),
       },
       theme: ThemeData(
