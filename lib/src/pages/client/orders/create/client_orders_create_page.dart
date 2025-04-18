@@ -278,7 +278,9 @@ class _ClientOrdersCreatePageState extends State<ClientOrdersCreatePage> {
                 ),
                 IconButton(
                   icon: Icon(Icons.delete, color: Colors.redAccent.shade200),
-                  onPressed: () {}, // Implementar eliminar
+                  onPressed: () {
+                    _controller.deleteItem(product);
+                  },
                 ),
               ],
             ),
@@ -309,7 +311,7 @@ class _ClientOrdersCreatePageState extends State<ClientOrdersCreatePage> {
     return Row(
       children: [
         _quantityButton(Icons.remove, () {
-          // Acción restar
+          _controller.increaseQuantity(product);
         }),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -319,7 +321,7 @@ class _ClientOrdersCreatePageState extends State<ClientOrdersCreatePage> {
           ),
         ),
         _quantityButton(Icons.add, () {
-          // Acción sumar
+          _controller.decreaseQuantity(product);
         }),
       ],
     );
@@ -363,9 +365,9 @@ class _ClientOrdersCreatePageState extends State<ClientOrdersCreatePage> {
   Widget _textTotalPrice() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: const [
+      children: [
         Text('Total:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        Text('0 Gs.', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green)),
+        Text('${_controller.total} Gs.', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
       ],
     );
   }
