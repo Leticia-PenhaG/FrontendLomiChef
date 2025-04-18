@@ -69,4 +69,9 @@ class ClientProductDetailController {
     _sharedPreferencesHelper.saveSessionToken('order', selectedProducts); //se van guardando en el share preference los productos seleccionados
     Fluttertoast.showToast(msg: 'PRODUCTO AGREGADO');
   }
+
+  String formatPrice(double price) {
+    return price.toInt().toString().replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.');
+  }
 }

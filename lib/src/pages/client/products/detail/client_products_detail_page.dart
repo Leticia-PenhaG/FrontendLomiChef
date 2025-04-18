@@ -389,7 +389,7 @@ class _ClientProductsDetailPageState extends State<ClientProductsDetailPage> {
           ],
         ),
         Text(
-          '${_formatPrice(_controllerProductsDetail.productPrice ?? 0)} Gs.',
+          '${_controllerProductsDetail.formatPrice(_controllerProductsDetail.productPrice ?? 0)} Gs.',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.primaryColor),
         ),
       ],

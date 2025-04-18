@@ -272,7 +272,7 @@ class _ClientOrdersCreatePageState extends State<ClientOrdersCreatePage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('${(product.price! * product.quantity!).toInt()} Gs.',
+                Text('${_controller.formatPrice(product.price! * product.quantity!)} Gs.',
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black54),
                 ),
                 IconButton(
@@ -366,7 +366,7 @@ class _ClientOrdersCreatePageState extends State<ClientOrdersCreatePage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text('Total:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        Text('${_controller.total.toInt()} Gs.', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        Text('${_controller.formatPrice(_controller.total)} Gs.', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
       ],
     );
   }
