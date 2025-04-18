@@ -272,6 +272,7 @@ class _ClientOrdersCreatePageState extends State<ClientOrdersCreatePage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
+                const SizedBox(height: 10),
                 Text('${_controller.formatPrice(product.price! * product.quantity!)} Gs.',
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black54),
                 ),
@@ -372,16 +373,22 @@ class _ClientOrdersCreatePageState extends State<ClientOrdersCreatePage> {
   }
 
   Widget _buttonNext() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: () {},
-        icon: const Icon(Icons.check_circle, color: Colors.white),
-        label: const Text('Continuar', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryColor,
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton.icon(
+          onPressed: () {},
+          icon: const Icon(Icons.check_circle, color: Colors.white),
+          label: const Text(
+            'Continuar',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primaryColor,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
         ),
       ),
     );
