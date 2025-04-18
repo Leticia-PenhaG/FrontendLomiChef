@@ -272,8 +272,7 @@ class _ClientOrdersCreatePageState extends State<ClientOrdersCreatePage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  '${product.price! * product.quantity!} Gs.',
+                Text('${(product.price! * product.quantity!).toInt()} Gs.',
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black54),
                 ),
                 IconButton(
@@ -311,7 +310,7 @@ class _ClientOrdersCreatePageState extends State<ClientOrdersCreatePage> {
     return Row(
       children: [
         _quantityButton(Icons.remove, () {
-          _controller.increaseQuantity(product);
+          _controller.decreaseQuantity(product);
         }),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -321,7 +320,7 @@ class _ClientOrdersCreatePageState extends State<ClientOrdersCreatePage> {
           ),
         ),
         _quantityButton(Icons.add, () {
-          _controller.decreaseQuantity(product);
+          _controller.increaseQuantity(product);
         }),
       ],
     );
@@ -367,7 +366,7 @@ class _ClientOrdersCreatePageState extends State<ClientOrdersCreatePage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text('Total:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        Text('${_controller.total} Gs.', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        Text('${_controller.total.toInt()} Gs.', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
       ],
     );
   }

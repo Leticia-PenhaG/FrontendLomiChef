@@ -40,16 +40,17 @@ class ClientsOrdersCreateController {
     refresh!();
   }
 
-  void increaseQuantity(Product product){
-    int index = selectedProducts.indexWhere((prod) => prod.id == product?.id);
-    selectedProducts[index].quantity = (selectedProducts[index].quantity! - 1);
+  void increaseQuantity(Product product) {
+    int index = selectedProducts.indexWhere((prod) => prod.id == product.id);
+    selectedProducts[index].quantity = (selectedProducts[index].quantity! + 1);
     _sharedPreferencesHelper.saveSessionToken('order', selectedProducts);
     getTotal();
   }
 
-  void decreaseQuantity(Product product){
-    if(product.quantity! > 1) {
-      int index = selectedProducts.indexWhere((prod) => prod.id == product?.id);
+  void decreaseQuantity(Product product) {
+    int index = selectedProducts.indexWhere((prod) => prod.id == product.id);
+    if (selectedProducts[index].quantity! > 1) {
+      selectedProducts[index].quantity = (selectedProducts[index].quantity! - 1);
       _sharedPreferencesHelper.saveSessionToken('order', selectedProducts);
       getTotal();
     }
@@ -59,6 +60,10 @@ class ClientsOrdersCreateController {
     selectedProducts.removeWhere((p) => p.id == product.id);
     _sharedPreferencesHelper.saveSessionToken('order', selectedProducts);
     getTotal();
+  }
+
+  String formatPrice(double price) {
+    return price.toInt().toString(); // O usar NumberFormat si querés separador de miles
   }
 
 }
