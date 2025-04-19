@@ -67,4 +67,8 @@ class ClientsOrdersCreateController {
         RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.');
   }
 
+  void goToAddress() {
+    Navigator.pushNamed(context!, 'client/address/list');
+  }
+
 }

@@ -378,7 +378,7 @@ class _ClientOrdersCreatePageState extends State<ClientOrdersCreatePage> {
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton.icon(
-          onPressed: () {},
+          onPressed: _controller.goToAddress,
           icon: const Icon(Icons.check_circle, color: Colors.white),
           label: const Text(
             'Continuar',

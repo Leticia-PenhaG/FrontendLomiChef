@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lomi_chef_to_go/src/pages/client/address/create/client_address_create_page.dart';
+import 'package:lomi_chef_to_go/src/pages/client/address/list/client_address_list_page.dart';
 import 'package:lomi_chef_to_go/src/pages/client/orders/create/client_orders_create_page.dart';
 import 'package:lomi_chef_to_go/src/pages/client/products/list/client_products_list_page.dart';
 import 'package:lomi_chef_to_go/src/pages/client/update/client_update_page.dart';
@@ -40,6 +42,8 @@ class _LomiChefDeliveryAppState extends State<LomiChefDeliveryApp> {
         'client/update': (BuildContext context) => ClientUpdatePage(),
         'client/orders/create': (BuildContext context) => ClientOrdersCreatePage(),
         'roles': (BuildContext context) => RolesPage(),
+        'client/address/list': (BuildContext context) => ClientAddressListPage(),
+        'client/address/create': (BuildContext context) => ClientAddressCreatePage(),
       },
       theme: ThemeData(
         primaryColor: AppColors.primaryColor,
