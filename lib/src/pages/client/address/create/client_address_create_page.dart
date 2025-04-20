@@ -3,6 +3,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:lomi_chef_to_go/src/pages/client/address/list/client_address_list_controller.dart';
 import 'package:lomi_chef_to_go/src/utils/app_colors.dart';
 
+import 'client_address_create_controller.dart';
+
 class ClientAddressCreatePage extends StatefulWidget {
   const ClientAddressCreatePage({super.key});
 
@@ -11,7 +13,7 @@ class ClientAddressCreatePage extends StatefulWidget {
 }
 
 class _ClientAddressCreatePageState extends State<ClientAddressCreatePage> {
-  final ClientAddressListController _controller = ClientAddressListController();
+  final ClientAddressCreateController _controller = ClientAddressCreateController();
 
   @override
   void initState() {
@@ -51,17 +53,18 @@ class _ClientAddressCreatePageState extends State<ClientAddressCreatePage> {
                 icon: Icons.location_city,
               ),
               const SizedBox(height: 20),
-              _buildInputField(
+              /*_buildInputField(
                 label: 'Punto de referencia',
                 hint: 'Dejá algún punto de referencia',
                 icon: Icons.map,
-              ),
+              ),*/
+              _textFieldRefPoint(),
               const SizedBox(height: 40),
-              _buildCreateButton(),
             ],
           ),
         ),
       ),
+      bottomNavigationBar: _buildCreateButton(),
     );
   }
 
@@ -94,26 +97,47 @@ class _ClientAddressCreatePageState extends State<ClientAddressCreatePage> {
   }
 
   Widget _buildCreateButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 50,
-      child: ElevatedButton(
-        onPressed: () {
-          // Acción de creación
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
+      child: SizedBox(
+        width: double.infinity,
+        height: 50,
+        child: ElevatedButton(
+          onPressed: () {
+            // Acción de creación
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primaryColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: const Text(
+            'CREAR DIRECCIÓN',
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold
+            ),
           ),
         ),
-        child: const Text(
-          'CREAR DIRECCIÓN',
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.bold
-          ),
+      ),
+    );
+  }
+
+  Widget _textFieldRefPoint() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: TextField(
+        onTap: _controller.openMap,
+        autofocus: false,
+        focusNode: AlwaysDisabledFocusNode(),
+        decoration: InputDecoration(
+          labelText: 'Punto de referencia',
+          suffixIcon: Icon(
+            Icons.map,
+            color: AppColors.primaryColor,
+          )
         ),
       ),
     );
@@ -122,4 +146,9 @@ class _ClientAddressCreatePageState extends State<ClientAddressCreatePage> {
   void refresh() {
     setState(() {});
   }
+}
+
+class AlwaysDisabledFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
 }
