@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lomi_chef_to_go/src/pages/client/address/map/client_address_map_controller.dart';
 
 class ClientAddressMapPage extends StatefulWidget {
@@ -26,6 +27,19 @@ class _ClientAddressMapPageState extends State<ClientAddressMapPage> {
       appBar: AppBar(
         title: const Text('Ubicá tu dirección en el mapa'),
       ),
+      body: Stack(
+        children: [
+          _googleMaps()
+        ],
+      ),
+    );
+  }
+
+  Widget _googleMaps() {
+    return GoogleMap(
+      mapType: MapType.normal,
+      initialCameraPosition: _controller.initialPosition,
+      onMapCreated: _controller.onMapCreated
     );
   }
 
