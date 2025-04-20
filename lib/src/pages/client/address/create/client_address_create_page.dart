@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:lomi_chef_to_go/src/pages/client/address/list/client_address_list_controller.dart';
 import 'package:lomi_chef_to_go/src/utils/app_colors.dart';
-
 import 'client_address_create_controller.dart';
 
 class ClientAddressCreatePage extends StatefulWidget {
@@ -41,24 +39,28 @@ class _ClientAddressCreatePageState extends State<ClientAddressCreatePage> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 30),
+
               _buildInputField(
                 label: 'Dirección',
                 hint: 'Ingresá tu dirección',
                 icon: Icons.location_on,
               ),
               const SizedBox(height: 20),
+
               _buildInputField(
                 label: 'Barrio',
-                hint: '',
+                hint: 'Ingresá tu barrio',
                 icon: Icons.location_city,
               ),
               const SizedBox(height: 20),
-              /*_buildInputField(
+
+              _buildInputField(
                 label: 'Punto de referencia',
-                hint: 'Dejá algún punto de referencia',
+                hint: 'Marcá el punto en el mapa',
                 icon: Icons.map,
-              ),*/
-              _textFieldRefPoint(),
+                onTap: _controller.openMap,
+                readOnly: true,
+              ),
               const SizedBox(height: 40),
             ],
           ),
@@ -68,11 +70,18 @@ class _ClientAddressCreatePageState extends State<ClientAddressCreatePage> {
     );
   }
 
-  Widget _buildInputField({required String label, required String hint, required IconData icon}) {
+  Widget _buildInputField({
+    required String label,
+    required String hint,
+    required IconData icon,
+    VoidCallback? onTap,
+    bool readOnly = false,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
+        Text(
+          label,
           style: const TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 14,
@@ -81,6 +90,8 @@ class _ClientAddressCreatePageState extends State<ClientAddressCreatePage> {
         ),
         const SizedBox(height: 6),
         TextFormField(
+          onTap: onTap,
+          readOnly: readOnly,
           decoration: InputDecoration(
             hintText: hint,
             prefixIcon: Icon(icon, color: AppColors.primaryColor),
