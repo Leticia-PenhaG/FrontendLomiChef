@@ -27,10 +27,28 @@ class _ClientAddressMapPageState extends State<ClientAddressMapPage> {
       appBar: AppBar(
         title: const Text('Ubicá tu dirección en el mapa'),
       ),
-      body: Stack(
-        children: [
-          _googleMaps()
-        ],
+      body: SafeArea(
+        child: Stack(
+          children: [
+            _googleMaps(),
+            Align(
+              alignment: Alignment.center,
+              child: _iconActualLocation(),
+            ),
+            Positioned(
+              top: 20,
+              left: 20,
+              right: 20,
+              child: _cardAddress(),
+            ),
+            Positioned(
+              bottom: 30,
+              left: 20,
+              right: 20,
+              child: _buttonAccept(),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -40,8 +58,61 @@ class _ClientAddressMapPageState extends State<ClientAddressMapPage> {
       mapType: MapType.normal,
       initialCameraPosition: _controller.initialPosition,
       onMapCreated: _controller.onMapCreated,
-      myLocationButtonEnabled: true,
-      myLocationEnabled: true,
+      myLocationButtonEnabled: false,
+      myLocationEnabled: false,
+    );
+  }
+
+  Widget _cardAddress() {
+    return Card(
+      color: Colors.grey[800],
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        child: Text(
+          'Calle',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _iconActualLocation() {
+    return Image.asset(
+      'assets/img/location_map_pin_mark_icon.png',
+      width: 65,
+      height: 65,
+    );
+  }
+
+  Widget _buttonAccept() {
+    return SizedBox(
+      height: 50,
+      child: ElevatedButton.icon(
+        onPressed: () {},
+        icon: const Icon(Icons.location_on, color: Colors.white),
+        label: const Text(
+          'Aceptar',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blueAccent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+      ),
     );
   }
 
