@@ -39,7 +39,9 @@ class _ClientAddressMapPageState extends State<ClientAddressMapPage> {
     return GoogleMap(
       mapType: MapType.normal,
       initialCameraPosition: _controller.initialPosition,
-      onMapCreated: _controller.onMapCreated
+      onMapCreated: _controller.onMapCreated,
+      myLocationButtonEnabled: true,
+      myLocationEnabled: true,
     );
   }
 
