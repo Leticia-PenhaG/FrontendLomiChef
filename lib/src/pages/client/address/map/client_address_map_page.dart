@@ -60,6 +60,12 @@ class _ClientAddressMapPageState extends State<ClientAddressMapPage> {
       onMapCreated: _controller.onMapCreated,
       myLocationButtonEnabled: false,
       myLocationEnabled: false,
+      onCameraMove: (position) {
+        _controller.initialPosition = position;
+      },
+      onCameraIdle: () async{
+        await _controller.setLocationDraggableInfo();
+      },
     );
   }
 
@@ -73,7 +79,7 @@ class _ClientAddressMapPageState extends State<ClientAddressMapPage> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         child: Text(
-          'Calle',
+          _controller.addressName ?? '',
           style: const TextStyle(
             color: Colors.white,
             fontSize: 14,
