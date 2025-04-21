@@ -58,6 +58,7 @@ class _ClientAddressCreatePageState extends State<ClientAddressCreatePage> {
                 label: 'Punto de referencia',
                 hint: 'Marcá el punto en el mapa',
                 icon: Icons.map,
+                controller:_controller.referencePointController,
                 onTap: _controller.openMap,
                 readOnly: true,
               ),
@@ -70,10 +71,13 @@ class _ClientAddressCreatePageState extends State<ClientAddressCreatePage> {
     );
   }
 
+  /// Widget personalizado para campos de entrada con ícono y diseño.
+  /// Acepta un controlador externo para mostrar/actualizar valores.
   Widget _buildInputField({
     required String label,
     required String hint,
     required IconData icon,
+    TextEditingController? controller,
     VoidCallback? onTap,
     bool readOnly = false,
   }) {
@@ -90,6 +94,7 @@ class _ClientAddressCreatePageState extends State<ClientAddressCreatePage> {
         ),
         const SizedBox(height: 6),
         TextFormField(
+          controller: controller, //Asociamos el controlador
           onTap: onTap,
           readOnly: readOnly,
           decoration: InputDecoration(
@@ -136,30 +141,7 @@ class _ClientAddressCreatePageState extends State<ClientAddressCreatePage> {
     );
   }
 
-  Widget _textFieldRefPoint() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: TextField(
-        onTap: _controller.openMap,
-        autofocus: false,
-        focusNode: AlwaysDisabledFocusNode(),
-        decoration: InputDecoration(
-          labelText: 'Punto de referencia',
-          suffixIcon: Icon(
-            Icons.map,
-            color: AppColors.primaryColor,
-          )
-        ),
-      ),
-    );
-  }
-
   void refresh() {
     setState(() {});
   }
-}
-
-class AlwaysDisabledFocusNode extends FocusNode {
-  @override
-  bool get hasFocus => false;
 }

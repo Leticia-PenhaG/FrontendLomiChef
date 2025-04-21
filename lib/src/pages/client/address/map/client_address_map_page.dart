@@ -102,10 +102,10 @@ class _ClientAddressMapPageState extends State<ClientAddressMapPage> {
     return SizedBox(
       height: 50,
       child: ElevatedButton.icon(
-        onPressed: () {},
+        onPressed: _controller.selectReferencePoint,
         icon: const Icon(Icons.location_on, color: Colors.white),
         label: const Text(
-          'Aceptar',
+          'Seleccionar este punto',
           style: TextStyle(
             color: Colors.white,
             fontSize: 16,

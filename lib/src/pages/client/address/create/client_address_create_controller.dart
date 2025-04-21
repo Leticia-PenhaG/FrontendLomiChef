@@ -8,19 +8,32 @@ class ClientAddressCreateController {
   BuildContext? context;
   Function? refresh;
 
+  // Controlador para el campo de texto del punto de referencia
+  TextEditingController referencePointController = new TextEditingController();
+
+  // Mapa que contiene la dirección seleccionada desde el mapa
+  late Map<String, dynamic> referencePoint;
+
   Future init(BuildContext context, Function refresh) async {
     this.context = context;
     this.refresh = refresh;
-
   }
 
-  void openMap(){
-    showMaterialModalBottomSheet(
+  /// Abre el mapa en un modal inferior y espera que el usuario seleccione una ubicación.
+  /// Al volver, actualiza el campo de texto con la dirección seleccionada.
+  void openMap() async {
+    referencePoint = await showMaterialModalBottomSheet(
         context: context!,
         isDismissible: false,
         enableDrag: false,
         builder: (context) => ClientAddressMapPage()
     );
+
+    if(referencePoint!= null) {
+      // Actualiza el campo de texto con la dirección obtenida desde el mapa
+      referencePointController.text = referencePoint['address']; //addressName dentro de selectReferencePoint
+      refresh!();
+    }
   }
 
 

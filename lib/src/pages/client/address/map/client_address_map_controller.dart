@@ -118,6 +118,14 @@ class ClientAddressMapController {
     }
   }
 
+  void selectReferencePoint() {
+    Map<String, dynamic> data = {
+      'address':addressName,
+      'lat':addressLatLng.latitude,
+      'lng':addressLatLng.longitude,
+    };
+    Navigator.pop(context!, data);
+  }
+
 }
-//print('Latitud: ${addressLatLng.latitude}');
-//         print('Longitud: ${addressLatLng.longitude}');
+
