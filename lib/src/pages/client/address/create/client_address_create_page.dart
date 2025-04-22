@@ -44,6 +44,7 @@ class _ClientAddressCreatePageState extends State<ClientAddressCreatePage> {
                 label: 'Dirección',
                 hint: 'Ingresá tu dirección',
                 icon: Icons.location_on,
+                controller:_controller.addressController,
               ),
               const SizedBox(height: 20),
 
@@ -51,6 +52,7 @@ class _ClientAddressCreatePageState extends State<ClientAddressCreatePage> {
                 label: 'Barrio',
                 hint: 'Ingresá tu barrio',
                 icon: Icons.location_city,
+                controller:_controller.neighborhoodController,
               ),
               const SizedBox(height: 20),
 
@@ -120,7 +122,7 @@ class _ClientAddressCreatePageState extends State<ClientAddressCreatePage> {
         height: 50,
         child: ElevatedButton(
           onPressed: () {
-            // Acción de creación
+            _controller.createAddress();
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primaryColor,
