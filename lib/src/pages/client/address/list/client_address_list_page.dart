@@ -190,7 +190,7 @@ class _ClientAddressListPageState extends State<ClientAddressListPage> {
                 },
               )),
               const SizedBox(height: 24),
-              _buttonNewAddress(),
+              //_buttonNewAddress(),
             ],
           );
         },
@@ -218,7 +218,7 @@ class _ClientAddressListPageState extends State<ClientAddressListPage> {
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 24),
-            _buttonNewAddress(),
+            //_buttonNewAddress(),
           ],
         ),
       ),
@@ -250,7 +250,7 @@ class _ClientAddressListPageState extends State<ClientAddressListPage> {
     );
   }
 
-  Widget _buttonNewAddress() {
+/*  Widget _buttonNewAddress() {
     return SizedBox(
       height: 45,
       width: double.infinity,
@@ -273,7 +273,7 @@ class _ClientAddressListPageState extends State<ClientAddressListPage> {
         ),
       ),
     );
-  }
+  }*/
 }
 
 
