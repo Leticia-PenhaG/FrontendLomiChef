@@ -20,9 +20,9 @@ class AddressProvider {
     this.sessionUser = sessionUser;
   }
 
-  /*Future<List<Category>> getAll() async {
+  Future<List<Address>> getByUser(String idUser) async {
     try {
-      Uri url = Uri.parse('http://$_url$_api/getAll');
+      Uri url = Uri.http(_url, '$_api/findByUser/$idUser');
       Map<String, String> headers = {
         'Content-type': 'application/json',
         'Authorization': sessionUser.sessionToken ?? ''
@@ -35,19 +35,16 @@ class AddressProvider {
         new SharedPreferencesHelper().logout(context, sessionUser.id!);
       }
 
-      final List<dynamic> data = json.decode(res.body); // Asegurar que es una lista
-      List<Category> categories = data.map((item) => Category.fromJson(item)).toList();
+      final List<dynamic> data = json.decode(res.body);
+      return data.map((item) => Address.fromJson(item)).toList();
 
-      print("Categorías obtenidas en frontend: $categories");
-
-      return categories;
     } catch (e) {
       print('Error: $e');
       return [];
     }
-  }*/
+  }
 
-Future<ResponseApi?> createAddress(Address address) async {
+  Future<ResponseApi?> createAddress(Address address) async {
     try {
       Uri url = Uri.http(_url, '$_api/create');
       String bodyParams = json.encode(address);

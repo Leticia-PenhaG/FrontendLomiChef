@@ -26,8 +26,8 @@ class Address {
     idUser: json["id_user"],
     address: json["address"],
     neighborhood: json["neighborhood"],
-    lat: json["lat"] is String? double.parse(json["lat"]) : json["lat"],
-    lng: json["lat"] is String? double.parse(json["lng"]) : json["lng"],
+    lat: json["lat"] is String ? double.parse(json["lat"]) : json["lat"].toDouble(),
+    lng: json["lng"] is String ? double.parse(json["lng"]) : json["lng"].toDouble(),
   );
 
   Map<String, dynamic> toJson() => {
