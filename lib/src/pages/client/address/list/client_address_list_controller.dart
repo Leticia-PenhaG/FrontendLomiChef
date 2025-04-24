@@ -11,6 +11,7 @@ class ClientAddressListController {
 
   BuildContext? context;
   Function? refresh;
+  String? selectedAddressId;
 
   List<Address> address = [];
   AddressProvider _addressProvider = new AddressProvider();
@@ -23,6 +24,7 @@ class ClientAddressListController {
     user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
     _addressProvider.init(context, user);
     await getAddress();
+    await loadSelectedAddress();
     refresh();
   }
 
@@ -31,32 +33,44 @@ class ClientAddressListController {
     return address;
   }
 
+  // Function onAddressSelected(String addressId) {
+  //   return () async {
+  //     print('Iniciando selección de dirección...');
+  //
+  //     Address? selectedAddress = address.firstWhereOrNull((a) => a.id == addressId);
+  //     if (selectedAddress == null) {
+  //       print('Dirección con ID $addressId no encontrada');
+  //       return;
+  //     }
+  //
+  //     print('Dirección encontrada: ${selectedAddress.toJson()}');
+  //
+  //     String addressJson = json.encode(selectedAddress.toJson());
+  //     print('Guardando en SharedPreferences: $addressJson');
+  //
+  //     await _sharedPreferencesHelper.saveSessionToken('address', addressJson);
+  //
+  //     String? savedJson = await _sharedPreferencesHelper.readSessionToken('address');
+  //     print('Leído de SharedPreferences: $savedJson');
+  //
+  //     if (savedJson != null) {
+  //       Address a = Address.fromJson(json.decode(savedJson));
+  //       print('Se guardó la dirección: ${a.toJson()}');
+  //     }
+  //
+  //     print('Dirección seleccionada: $addressId');
+  //   };
+  // }
+
   Function onAddressSelected(String addressId) {
     return () async {
-      print('Iniciando selección de dirección...');
-
       Address? selectedAddress = address.firstWhereOrNull((a) => a.id == addressId);
-      if (selectedAddress == null) {
-        print('Dirección con ID $addressId no encontrada');
-        return;
-      }
-
-      print('Dirección encontrada: ${selectedAddress.toJson()}');
+      if (selectedAddress == null) return;
 
       String addressJson = json.encode(selectedAddress.toJson());
-      print('Guardando en SharedPreferences: $addressJson');
-
       await _sharedPreferencesHelper.saveSessionToken('address', addressJson);
-
-      String? savedJson = await _sharedPreferencesHelper.readSessionToken('address');
-      print('Leído de SharedPreferences: $savedJson');
-
-      if (savedJson != null) {
-        Address a = Address.fromJson(json.decode(savedJson));
-        print('Se guardó la dirección: ${a.toJson()}');
-      }
-
-      print('Dirección seleccionada: $addressId');
+      selectedAddressId = selectedAddress.id;
+      refresh!();
     };
   }
 
@@ -64,7 +78,16 @@ class ClientAddressListController {
     final result = await Navigator.pushNamed(context!, 'client/address/create');
     if (result == true) {
       await getAddress();
+      await loadSelectedAddress();
       refresh!();
+    }
+  }
+
+  Future<void> loadSelectedAddress() async {
+    String? savedJson = await _sharedPreferencesHelper.readSessionToken('address');
+    if (savedJson != null) {
+      Address a = Address.fromJson(json.decode(savedJson));
+      selectedAddressId = a.id;
     }
   }
 

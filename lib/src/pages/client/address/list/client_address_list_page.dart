@@ -63,12 +63,17 @@ class _ClientAddressListPageState extends State<ClientAddressListPage> {
               ...addresses.map((address) => RadioListTile(
                 title: Text(address.address),
                 subtitle: Text(address.neighborhood),
+                // value: address.id,
+                // groupValue: _selectedAddressId,
+                // onChanged: (value) {
+                //   setState(() {
+                //     _selectedAddressId = value.toString();
+                //   });
+                // },
                 value: address.id,
-                groupValue: _selectedAddressId,
+                groupValue: _controller.selectedAddressId,
                 onChanged: (value) {
-                  setState(() {
-                    _selectedAddressId = value.toString();
-                  });
+                  _controller.onAddressSelected(value.toString())();
                 },
               )),
               const SizedBox(height: 24),
@@ -114,9 +119,12 @@ class _ClientAddressListPageState extends State<ClientAddressListPage> {
         height: 50,
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: _selectedAddressId == null
+          // onPressed: _selectedAddressId == null
+          //     ? null
+          //     : () => _controller.onAddressSelected(_selectedAddressId!)(),
+          onPressed: _controller.selectedAddressId == null
               ? null
-              : () => _controller.onAddressSelected(_selectedAddressId!)(), // ✅ CAMBIO AQUÍ
+              : () => _controller.onAddressSelected(_controller.selectedAddressId!)(),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primaryColor,
             shape: RoundedRectangleBorder(
@@ -124,7 +132,7 @@ class _ClientAddressListPageState extends State<ClientAddressListPage> {
             ),
           ),
           child: const Text(
-            'ACEPTAR',
+            'Aceptar',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
