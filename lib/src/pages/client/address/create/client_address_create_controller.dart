@@ -58,7 +58,8 @@ class ClientAddressCreateController {
     ResponseApi? responseApi = await _addressProvider.createAddress(address);
     if (responseApi!.success) {
       Fluttertoast.showToast(msg: responseApi.message);
-      Navigator.pop(context!);
+      //Navigator.pop(context!);
+      Navigator.pop(context!, true);
     }
   }
 

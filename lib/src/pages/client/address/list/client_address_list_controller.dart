@@ -68,8 +68,12 @@ class ClientAddressListController {
     };
   }
 
-  void goToNewAddress() {
-    Navigator.pushNamed(context!, 'client/address/create');
+  void goToNewAddress() async {
+    final result = await Navigator.pushNamed(context!, 'client/address/create');
+    if (result == true) {
+      await getAddress();
+      refresh!();
+    }
   }
 
 }
