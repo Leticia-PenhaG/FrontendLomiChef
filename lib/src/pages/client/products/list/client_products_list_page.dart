@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lomi_chef_to_go/src/pages/client/products/list/client_products_list_controller.dart';
 import 'package:lomi_chef_to_go/src/utils/app_colors.dart';
+import 'package:lomi_chef_to_go/src/widgets/no_data_widget.dart';
+import 'dart:io';
+import '../../../../models/category.dart';
+import '../../../../models/product.dart';
+import 'package:intl/intl.dart';
 
 class ClientProductsListPage extends StatefulWidget {
   const ClientProductsListPage({super.key});
@@ -18,42 +23,280 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
   void initState() {
     super.initState();
 
+    //estaba así
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      await _controllerClient.init(context, refresh);
-      setState(() {
-        _isInitialized = true; // Cambia el estado una vez que `context` está listo
-      });
+       await _controllerClient.init(context, refresh).then((_) {
+         if (mounted) {
+           setState(() {
+             _isInitialized = true; // Cambia el estado una vez que `context` está listo
+           });
+         }
+       });
     });
+
   }
 
   @override
   Widget build(BuildContext context) {
     if (!_isInitialized) {
       // Se muestra un indicador de carga mientras el controlador se inicializa
-      return Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
+      return DefaultTabController(
+        length: _controllerClient.categories.length,
+        child: Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
         ),
       );
     }
 
-    // Se construye la UI una vez que `context` está inicializado
-    return Scaffold(
-      key: _controllerClient.key,
-      appBar: AppBar(
-        leading: _menuDrawer(),
-      ),
-      drawer: _drawer(),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            // TODO
-          },
-          child: const Text('Client Page'),
+    return DefaultTabController(
+      length: _controllerClient.categories.length,
+      child: Scaffold(
+        key: _controllerClient.key,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(180),
+          child: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+            actions: [
+              _shoppingBag()
+            ],
+            flexibleSpace: Column(
+              children: [
+                SizedBox(height: 70),
+                _menuDrawer(),
+                SizedBox(height: 15),
+                _textFieldSearch(),
+                SizedBox(height: 20),
+              ],
+            ),
+            bottom: TabBar(
+              indicatorColor: AppColors.primaryColor,
+              labelColor: Colors.black,
+              unselectedLabelColor: Colors.grey[400],
+              isScrollable: true,
+              tabs: List<Widget>.generate(_controllerClient.categories.length, (index) {
+                return Tab(
+                  child: Padding(
+                    padding: EdgeInsets.zero,
+                    child: Text(
+                      _controllerClient.categories[index].name ?? '',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ),
+        drawer: _drawer(),
+        body: TabBarView(
+          children: _controllerClient.categories.map((Category category) {
+             return FutureBuilder(
+               future: _controllerClient.getProducts(category.id!),
+               builder:(context, AsyncSnapshot<List<Product>> snapshot) {
+
+                 if(snapshot.hasData) {
+                   if(snapshot.data!.isNotEmpty ) {
+                     //son los card de los productos que se muestran
+                     return GridView.builder(
+                         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                             crossAxisCount: 2,
+                             childAspectRatio:0.7
+                         ) ,
+                         itemCount: snapshot.data?.length ?? 0,
+                         itemBuilder: (_, index) {
+                           return _cardProduct(snapshot.data![index]);
+                         }
+                     );
+                   }
+                   else {
+                     return NoDataWidget(text: 'No hay productos en esta categoría');
+                   }
+                 } else {
+                   return NoDataWidget(text: 'No hay productos en esta categoría');
+                 }
+               }
+             );
+          }).toList(),
         ),
       ),
     );
   }
+
+
+  //opcion 1
+  Widget _cardProduct(Product product) {
+    return GestureDetector(
+      onTap: () {
+        _controllerClient.openBottomSheet(product);
+      },
+      child: Container(
+        height: 280,
+        child: Card(
+          elevation: 3.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 140,
+                width: MediaQuery.of(context).size.width * 0.45,
+                padding: EdgeInsets.all(5),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                  child: FadeInImage(
+                    image: product.image1 != null
+                        ? NetworkImage(product.image1!)
+                        : AssetImage('assets/img/burger.png') as ImageProvider,
+                    fit: BoxFit.contain,
+                    placeholder: AssetImage('assets/img/no-image-icon.png'),
+                    fadeInDuration: Duration(milliseconds: 50),
+                  ),
+                ),
+              ),
+      
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: Text(
+                  product.name ?? '',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(height: 5),
+      
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: Text(
+                  '${formatPrice(product.price ?? 0)} Gs.',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green[700],
+                  ),
+                ),
+              ),
+      
+              Spacer(),
+      
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  margin: EdgeInsets.only(right: 10, bottom: 10),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.add, color: Colors.white, size: 22),
+                    onPressed: () {
+                      // Acción de agregar producto
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+
+  //ORIGINAL OPTION CARD PRODUCT
+  // Widget _cardProduct(Product product) {
+  //   return Container(
+  //     height: 250,
+  //     child: Card(
+  //       elevation: 3.0,
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(15)
+  //       ),
+  //       child: Stack(
+  //         children: [
+  //           Positioned(
+  //               top: -1.0,
+  //               right: -1.0,
+  //               child: Container(
+  //                 width: 40,
+  //                 height: 40,
+  //                 decoration: BoxDecoration(
+  //                   color: AppColors.primaryColor,
+  //                   borderRadius: BorderRadius.only(
+  //                     bottomLeft: Radius.circular(15),
+  //                     topRight: Radius.circular(20)
+  //                   )
+  //                 ),
+  //                 child: Icon(Icons.add, color: Colors.white),
+  //               )
+  //           ),
+  //           Column(
+  //             //el recycler view que hace que se carguen los productos por categoría que hay en la base de datos
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Container(
+  //                 height: 150,
+  //                 margin: EdgeInsets.only(top: 20),
+  //                 width: MediaQuery.of(context).size.width * 0.45,
+  //                 padding: EdgeInsets.all(10),
+  //                 child: FadeInImage(
+  //                     image: product.image1 != null
+  //                       ? NetworkImage(product.image1!)
+  //                       : AssetImage('assets/img/burger.png'),
+  //                     fit: BoxFit.contain,
+  //                     fadeInDuration: Duration(milliseconds: 50),
+  //                     placeholder: AssetImage('assets/img/no-image-icon.png'),
+  //                 ),
+  //               ),
+  //               Container(
+  //                 margin: EdgeInsets.symmetric(horizontal: 20),
+  //                 height: 37,
+  //                 child: Text(
+  //                   product.name ?? '',
+  //                   maxLines: 2,
+  //                   overflow: TextOverflow.ellipsis,
+  //                   style: TextStyle(
+  //                     fontSize: 15,
+  //                     //fontStyle: 'Nimbusans'
+  //                   ),
+  //                 ),
+  //               ),
+  //               Spacer(),
+  //               Container(
+  //                 margin: EdgeInsets.symmetric(horizontal: 20),
+  //                 child: Text('${product.price ?? 0} \Gs.',
+  //                   style: TextStyle(
+  //                     fontSize: 15,
+  //                     fontWeight: FontWeight.bold
+  //                     //fontFamily: ''
+  //                   ),
+  //                 ),
+  //               )
+  //             ],
+  //           )
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
 
   Widget _menuDrawer() {
     return GestureDetector(
@@ -176,76 +419,103 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
     });
   }
 
-/*Widget _drawer() {
-    return Drawer (
-      child: ListView(
-        padding: EdgeInsets.zero,
+  Widget _shoppingBag(){
+    return GestureDetector(
+      onTap: _controllerClient.goToOrdersCreatePage,
+      child: Stack(
         children: [
-          DrawerHeader(
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start, //izq.
-                children: [
-                  Text('Nombre de usuario',
-                    style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold
-                    ),
-                    maxLines: 1,
-                  ),
-                  Text('Email',
-                    style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey[300],
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic
-                    ),
-                    maxLines: 1,
-                  ),
-                  Text('Teléfono',
-                    style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey[300],
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic
-                    ),
-                    maxLines: 1,
-                  ),
-                  Container(
-                    height: 60,
-                    margin: EdgeInsets.only(top: 8),
-                    child: FadeInImage(
-                        image: AssetImage('assets/img/no-image-icon.png'),
-                        fit: BoxFit.contain,
-                      fadeInDuration: Duration(milliseconds: 50),
-                      placeholder: AssetImage('assets/img/no-image.png'),
-                    ),
-                  )
-                ]
-              )
+          Container(
+            margin: EdgeInsets.only(right: 15),
+            child: Icon(
+              Icons.shopping_bag_outlined,
+              color: Colors.black,
+            ),
           ),
-          ListTile(
-            title: Text('Actualizar perfil'),
-            trailing: Icon(Icons.edit)
-          ),
-          ListTile(
-              title: Text('Mis pedidos'),
-              trailing: Icon(Icons.shopping_cart)
-          ),
-          ListTile(
-              title: Text('Seleccionar rol'),
-              trailing: Icon(Icons.person)
-          ),
-          ListTile(
-              onTap: _controllerClient.logout,
-              title: Text('Cerrar sesión'),
-              trailing: Icon(Icons.power_settings_new)
-          ),
+          Positioned(
+            right: 16,
+            child: Container(
+            width: 9,
+            height: 9,
+            decoration: BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.all(Radius.circular(30))
+            ),
+          ))
         ],
       ),
     );
-  }*/
+  }
+
+  Widget _textFieldSearch() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(25),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: 'Buscar...',
+          prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+          hintStyle: TextStyle(fontSize: 16, color: Colors.grey[500]),
+          filled: true,
+          fillColor: Colors.white,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(color: Colors.grey.shade400),
+          ),
+          contentPadding: EdgeInsets.all(14),
+        ),
+      ),
+    );
+  }
+
+  String formatPrice(double price) {
+    final formatter = NumberFormat("#,###", "es_PY"); // Formato con punto para miles
+    return formatter.format(price);
+  }
+
+  //ORIGINAL OPTION
+  // Widget _textFieldSearch() {
+  //   return Container(
+  //     margin: EdgeInsets.symmetric(horizontal: 20),
+  //     child: TextField(
+  //       decoration: InputDecoration(
+  //         hintText: 'Buscar',
+  //         suffixIcon: Icon(
+  //             Icons.search_rounded,
+  //           color: Colors.grey[400]
+  //         ),
+  //         hintStyle: TextStyle(
+  //           fontSize: 17,
+  //           color: Colors.grey[500]
+  //         ),
+  //         enabledBorder: OutlineInputBorder(
+  //           borderRadius: BorderRadius.circular(25),
+  //           borderSide: BorderSide(
+  //             color: Colors.grey
+  //           )
+  //         ),
+  //         focusedBorder: OutlineInputBorder(
+  //             borderRadius: BorderRadius.circular(25),
+  //             borderSide: BorderSide(
+  //                 color: Colors.grey
+  //             )
+  //         ),
+  //         contentPadding: EdgeInsets.all(15)
+  //       ),
+  //     ),
+  //   );
+  // }
 }

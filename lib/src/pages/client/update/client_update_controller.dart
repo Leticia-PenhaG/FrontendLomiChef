@@ -162,7 +162,7 @@ class ClientUpdateController {
       return 'El teléfono es obligatorio';
     }
     if (!RegExp(r'^\d{7,15}$').hasMatch(value)) {
-      return 'Ingresa un número de teléfono válido';
+      return 'Nº inválido (debe tener mínimo 9 caracteres)';
     }
     return null;
   }

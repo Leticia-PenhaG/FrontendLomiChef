@@ -131,7 +131,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                     } : null, // se deshabilita el botón de registro cuando isBtnRegisterEnabled es false con el null
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff38c2a6),
+                      backgroundColor: AppColors.primaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -156,7 +156,7 @@ class _RegisterPageState extends State<RegisterPage> {
       child: CircleAvatar(
         backgroundImage: _controllerRegister.imageFile != null
             ? FileImage(_controllerRegister.imageFile!)
-            : const AssetImage('assets/img/client.png'),
+            : const AssetImage('assets/img/user.jpg'),
         radius: 70,
         backgroundColor: Colors.grey[200],
       ),
