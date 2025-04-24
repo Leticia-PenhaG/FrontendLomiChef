@@ -17,14 +17,6 @@ class ClientAddressListController {
   late User user;
   SharedPreferencesHelper _sharedPreferencesHelper = new SharedPreferencesHelper();
 
-  /*Future init(BuildContext context, Function refresh) async {
-    this.context = context;
-    this.refresh = refresh;
-    user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
-
-    _addressProvider.init(context, user);
-  }*/
-
   Future init(BuildContext context, Function refresh) async {
     this.context = context;
     this.refresh = refresh;
