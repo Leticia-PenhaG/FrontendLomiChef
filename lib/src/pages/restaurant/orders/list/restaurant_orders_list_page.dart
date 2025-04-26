@@ -27,16 +27,91 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
     });
   }
 
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _controllerRestaurant.key,
-      appBar: AppBar(
-        leading: _menuDrawer(),
-      ),
-      drawer: _drawer(),
-      body: Center(
-        child:Text('Restaurant Page'),
+    if (!_isInitialized) {
+      // Se muestra un indicador de carga mientras el controlador se inicializa
+      return DefaultTabController(
+        length: _controllerRestaurant.categories.length,
+        child: Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      );
+    }
+
+    return DefaultTabController(
+      length: _controllerRestaurant.categories.length,
+      child: Scaffold(
+        key: _controllerRestaurant.key,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(100),
+          child: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+            // actions: [
+            //   _shoppingBag()
+            // ],
+            flexibleSpace: Column(
+              children: [
+                SizedBox(height: 70),
+                _menuDrawer(),
+                SizedBox(height: 15),
+              ],
+            ),
+            bottom: TabBar(
+              indicatorColor: AppColors.primaryColor,
+              labelColor: Colors.black,
+              unselectedLabelColor: Colors.grey[400],
+              isScrollable: true,
+              tabs: List<Widget>.generate(_controllerRestaurant.categories.length, (index) {
+                return Tab(
+                  child: Padding(
+                    padding: EdgeInsets.zero,
+                    child: Text(
+                      _controllerRestaurant.categories[index],
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ),
+        drawer: _drawer(),
+        body: TabBarView(
+          children: _controllerRestaurant.categories.map((String category) {
+            return Container();
+            // return FutureBuilder(
+            //     future: _controllerRestaurant.getProducts(category.id!),
+            //     builder:(context, AsyncSnapshot<List<Product>> snapshot) {
+            //
+            //       if(snapshot.hasData) {
+            //         if(snapshot.data!.isNotEmpty ) {
+            //           //son los card de los productos que se muestran
+            //           return GridView.builder(
+            //               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            //               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //                   crossAxisCount: 2,
+            //                   childAspectRatio:0.7
+            //               ) ,
+            //               itemCount: snapshot.data?.length ?? 0,
+            //               itemBuilder: (_, index) {
+            //                 return _cardProduct(snapshot.data![index]);
+            //               }
+            //           );
+            //         }
+            //         else {
+            //           return NoDataWidget(text: 'No hay productos en esta categoría');
+            //         }
+            //       } else {
+            //         return NoDataWidget(text: 'No hay productos en esta categoría');
+            //       }
+            //     }
+            // );
+          }).toList(),
+        ),
       ),
     );
   }
@@ -171,73 +246,4 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
 
     });
   }
-
-
-/*  Widget _drawer() {
-    return Drawer (
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-              decoration: BoxDecoration(
-                  color: AppColors.primaryColor
-              ),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start, //izq.
-                  children: [
-                    Text('Nombre de usuario',
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold
-                      ),
-                      maxLines: 1,
-                    ),
-                    Text('Email',
-                      style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey[300],
-                          fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.italic
-                      ),
-                      maxLines: 1,
-                    ),
-                    Text('Teléfono',
-                      style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey[300],
-                          fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.italic
-                      ),
-                      maxLines: 1,
-                    ),
-                    Container(
-                      height: 60,
-                      margin: EdgeInsets.only(top: 8),
-                      child: FadeInImage(
-                        image: AssetImage('assets/img/no-image-icon.png'),
-                        fit: BoxFit.contain,
-                        fadeInDuration: Duration(milliseconds: 50),
-                        placeholder: AssetImage('assets/img/no-image.png'),
-                      ),
-                    )
-                  ]
-              )
-          ),
-          ListTile(
-              title: Text('Seleccionar rol'),
-              trailing: Icon(Icons.person)
-          ),
-          ListTile(
-              onTap: _controllerRestaurant.logout,
-              title: Text('Cerrar sesión'),
-              trailing: Icon(Icons.power_settings_new)
-          ),
-        ],
-      ),
-    );
-  }*/
-
-
-
 }

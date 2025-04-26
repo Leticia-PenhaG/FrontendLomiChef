@@ -9,6 +9,7 @@ class RestaurantOrdersListController {
   final GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>(); //para poder desplegar el menu de opciones lateral
   late User user;
   late Function refresh;
+  List<String> categories = ['Abonado','Listo para envío','En ruta','Entrega completada'];
 
   Future<void> init(BuildContext context, Function refresh) async {
     this.context = context;
