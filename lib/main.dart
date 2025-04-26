@@ -9,6 +9,7 @@ import 'package:lomi_chef_to_go/src/pages/delivery/orders/list/delivery_orders_l
 import 'package:lomi_chef_to_go/src/pages/login/login_page.dart';
 import 'package:lomi_chef_to_go/src/pages/register/register_page.dart';
 import 'package:lomi_chef_to_go/src/pages/restaurant/categories/create/restaurant_categories_create_page.dart';
+import 'package:lomi_chef_to_go/src/pages/restaurant/categories/edit/restaurant_categories_edit_page.dart';
 import 'package:lomi_chef_to_go/src/pages/restaurant/orders/list/restaurant_orders_list_page.dart';
 import 'package:lomi_chef_to_go/src/pages/restaurant/products/create/restaurant_products_create_page.dart';
 import 'package:lomi_chef_to_go/src/roles/roles_page.dart';
@@ -39,6 +40,8 @@ class _LomiChefDeliveryAppState extends State<LomiChefDeliveryApp> {
         'delivery/orders/list': (BuildContext context) => DeliveryOrdersListPage(),
         'restaurant/orders/list': (BuildContext context) => RestaurantOrdersListPage(),
         'restaurant/categories/create': (BuildContext context) => RestaurantCategoriesCreatePage(),
+        'restaurant/categories/update': (BuildContext context) => RestaurantCategoriesEditPage(),
+        'restaurant/categories/delete': (BuildContext context) => RestaurantCategoriesCreatePage(),
         'restaurant/products/create': (BuildContext context) => RestaurantProductsCreatePage(),
         'client/update': (BuildContext context) => ClientUpdatePage(),
         'client/orders/create': (BuildContext context) => ClientOrdersCreatePage(),

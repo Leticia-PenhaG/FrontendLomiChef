@@ -71,7 +71,7 @@ class RestaurantCategoriesCreateController {
   }
 
   void deleteCategory(int idCategory) async {
-    bool confirmed = await _showConfirmDialog('Confirmación', '¿Deseás eliminar esta categoría?');
+    bool confirmed = await _showConfirmDialog('Confirmación', '¿Querés eliminar esta categoría?');
 
     if (confirmed) {
       ResponseApi? responseApi = await _categoriesProvider.deleteCategory(idCategory as String);

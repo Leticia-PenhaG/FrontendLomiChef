@@ -41,7 +41,23 @@ class RestaurantOrdersListController {
     Navigator.pushNamed( context!, 'restaurant/categories/create');
   }
 
+  void goToCategoriesDelete() {
+    Navigator.pushNamed( context!, 'restaurant/categories/update');
+  }
+
+  void goToCategoriesUpdate() {
+    Navigator.pushNamed( context!, 'restaurant/categories/delete');
+  }
+
   void goToProductsCreate() {
     Navigator.pushNamed( context!, 'restaurant/products/create');
+  }
+
+  void goToProductsDelete() {
+    Navigator.pushNamed( context!, 'restaurant/categories/delete');
+  }
+
+  void goToProductsUpdate() {
+    Navigator.pushNamed( context!, 'restaurant/categories/update');
   }
 }

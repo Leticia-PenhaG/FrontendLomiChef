@@ -128,10 +128,30 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
                     'Crear categoría',
                     _controllerRestaurant.goToCategoriesCreate,
                   ) ,
+                _buildDrawerItem(
+                  Icons.list_alt_outlined,
+                  'Editar categoría',
+                  _controllerRestaurant.goToCategoriesUpdate,
+                ) ,
+                _buildDrawerItem(
+                  Icons.list_alt_outlined,
+                  'Eliminar categoría',
+                  _controllerRestaurant.goToCategoriesDelete,
+                ) ,
 
                 _buildDrawerItem(
                   Icons.local_pizza,
                   'Crear producto',
+                  _controllerRestaurant.goToProductsCreate,
+                ) ,
+                _buildDrawerItem(
+                  Icons.local_pizza,
+                  'Editar producto',
+                  _controllerRestaurant.goToProductsCreate,
+                ) ,
+                _buildDrawerItem(
+                  Icons.local_pizza,
+                  'Eliminar producto',
                   _controllerRestaurant.goToProductsCreate,
                 ) ,
 
