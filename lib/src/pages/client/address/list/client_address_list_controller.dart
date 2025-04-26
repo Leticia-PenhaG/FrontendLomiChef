@@ -18,14 +18,28 @@ class ClientAddressListController {
   late User user;
   SharedPreferencesHelper _sharedPreferencesHelper = new SharedPreferencesHelper();
 
+  // Future init(BuildContext context, Function refresh) async {
+  //   this.context = context;
+  //   this.refresh = refresh;
+  //   user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
+  //   _addressProvider.init(context, user);
+  //   await getAddress();
+  //   await loadSelectedAddress();
+  //   refresh();
+  // }
+
   Future init(BuildContext context, Function refresh) async {
     this.context = context;
     this.refresh = refresh;
     user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
     _addressProvider.init(context, user);
-    await getAddress();
-    await loadSelectedAddress();
-    refresh();
+
+    await getAddress(); // carga las direcciones
+    await loadSelectedAddress(); // carga la dirección seleccionada desde SharedPreferences
+
+    print('Dirección seleccionada al iniciar: $selectedAddressId');
+
+    refresh(); // refresca la vista
   }
 
   Future<List<Address>> getAddress() async {
@@ -62,13 +76,25 @@ class ClientAddressListController {
   //   };
   // }
 
-  Function onAddressSelected(String addressId) {
+  /*Function onAddressSelected(String addressId) {
     return () async {
       Address? selectedAddress = address.firstWhereOrNull((a) => a.id == addressId);
       if (selectedAddress == null) return;
 
       String addressJson = json.encode(selectedAddress.toJson());
-      await _sharedPreferencesHelper.saveSessionToken('address', addressJson);
+      //await _sharedPreferencesHelper.saveSessionToken('address', addressJson);
+      await _sharedPreferencesHelper.saveSessionToken('address', selectedAddress.toJson());
+      selectedAddressId = selectedAddress.id;
+      refresh!();
+    };
+  }*/
+
+  Function onAddressSelected(String addressId) {
+    return () async {
+      Address? selectedAddress = address.firstWhereOrNull((a) => a.id == addressId);
+      if (selectedAddress == null) return;
+
+      await _sharedPreferencesHelper.saveSessionToken('address', selectedAddress.toJson());
       selectedAddressId = selectedAddress.id;
       refresh!();
     };
@@ -83,10 +109,29 @@ class ClientAddressListController {
     }
   }
 
+  // Future<void> loadSelectedAddress() async {
+  //   dynamic saved = await _sharedPreferencesHelper.readSessionToken('address');
+  //   if (saved != null && saved is Map<String, dynamic>) {
+  //     Address a = Address.fromJson(saved);
+  //     selectedAddressId = a.id;
+  //   }
+  // }
+
+  // Future<void> loadSelectedAddress() async {
+  //   dynamic saved = await _sharedPreferencesHelper.readSessionToken('address');
+  //   if (saved != null && saved is Map<String, dynamic>) {
+  //     Address a = Address.fromJson(saved);
+  //     bool existsInList = address.any((addr) => addr.id == a.id);
+  //     if (existsInList) {
+  //       selectedAddressId = a.id;
+  //     }
+  //   }
+  // }
+
   Future<void> loadSelectedAddress() async {
-    String? savedJson = await _sharedPreferencesHelper.readSessionToken('address');
-    if (savedJson != null) {
-      Address a = Address.fromJson(json.decode(savedJson));
+    dynamic saved = await _sharedPreferencesHelper.readSessionToken('address');
+    if (saved != null && saved is Map<String, dynamic>) {
+      Address a = Address.fromJson(saved);
       selectedAddressId = a.id;
     }
   }
