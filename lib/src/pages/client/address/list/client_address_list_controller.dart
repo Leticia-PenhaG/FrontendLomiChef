@@ -1,6 +1,7 @@
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lomi_chef_to_go/src/models/Address.dart';
 import 'package:lomi_chef_to_go/src/models/product.dart';
 import 'package:lomi_chef_to_go/src/models/response_api.dart';
@@ -88,6 +89,8 @@ class ClientAddressListController {
     );
     
     ResponseApi? responseApi = await _ordersProvider.createOrder(order);
+
+    Fluttertoast.showToast(msg: 'ORDEN CREADA CORRECTAMENTE');
 
     print('Respuesta orden: ${responseApi?.message}');
 
