@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lomi_chef_to_go/src/pages/restaurant/orders/list/restaurant_orders_list_controller.dart';
 import '../../../../utils/app_colors.dart';
+import '../../../../models/order.dart';
+
 
 class RestaurantOrdersListPage extends StatefulWidget {
   const RestaurantOrdersListPage({super.key});
@@ -82,7 +84,7 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
         drawer: _drawer(),
         body: TabBarView(
           children: _controllerRestaurant.categories.map((String category) {
-            return Container();
+            return _cardOrder(null);
             // return FutureBuilder(
             //     future: _controllerRestaurant.getProducts(category.id!),
             //     builder:(context, AsyncSnapshot<List<Product>> snapshot) {
@@ -241,6 +243,73 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
     );
   }
 
+  Widget _cardOrder(Order? order) {
+    return Container(
+     height: 160,
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      child: Card(
+        elevation: 3.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15)
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+                child: Container(
+                  height: 30,
+                  width: MediaQuery.of(context).size.width * 1,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15)
+                    )
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    child: Text(
+                        'Orden#1',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.white
+                      ),
+                    ),
+                  ),
+                ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 50, left: 20, right: 20),
+              child: Column(
+                children: [
+                    Text(
+                      'Pedido:15-03-2025',
+                      style: TextStyle(
+                        fontSize: 13
+                      ),
+                    ),
+                  Text(
+                    'Cliente:Leti',
+                    style: TextStyle(
+                        fontSize: 13
+                    ),
+                    maxLines: 1,
+                  ),
+                  Text(
+                    'Entregar en:Dirección',
+                    style: TextStyle(
+                        fontSize: 13
+                    ),
+                    maxLines: 2,
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
   void refresh(){
     setState(() {
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../../../models/user.dart';
 import '../../../../utils/shared_preferences_helper.dart';
 
