@@ -243,73 +243,165 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
     );
   }
 
+  // Widget _cardOrder(Order? order) {
+  //   return Container(
+  //    height: 160,
+  //     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+  //     child: Card(
+  //       elevation: 3.0,
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(15)
+  //       ),
+  //       child: Stack(
+  //         children: [
+  //           Positioned(
+  //               child: Container(
+  //                 height: 30,
+  //                 width: MediaQuery.of(context).size.width * 1,
+  //                 decoration: BoxDecoration(
+  //                   color: AppColors.primaryColor,
+  //                   borderRadius: BorderRadius.only(
+  //                     topLeft: Radius.circular(15),
+  //                     topRight: Radius.circular(15)
+  //                   )
+  //                 ),
+  //                 child: Container(
+  //                   width: double.infinity,
+  //                   alignment: Alignment.center,
+  //                   child: Text(
+  //                       'Orden#1',
+  //                     style: TextStyle(
+  //                       fontSize: 15,
+  //                       color: Colors.white
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //           ),
+  //           Container(
+  //             margin: EdgeInsets.only(top: 50, left: 20, right: 20),
+  //             child: Column(
+  //               children: [
+  //                   Text(
+  //                     'Pedido:15-03-2025',
+  //                     style: TextStyle(
+  //                       fontSize: 13
+  //                     ),
+  //                   ),
+  //                 Text(
+  //                   'Cliente:Leti',
+  //                   style: TextStyle(
+  //                       fontSize: 13
+  //                   ),
+  //                   maxLines: 1,
+  //                 ),
+  //                 Text(
+  //                   'Entregar en:Dirección',
+  //                   style: TextStyle(
+  //                       fontSize: 13
+  //                   ),
+  //                   maxLines: 2,
+  //                 ),
+  //               ],
+  //             ),
+  //           )
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
   Widget _cardOrder(Order? order) {
     return Container(
-     height: 160,
-      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Card(
-        elevation: 3.0,
+        elevation: 6,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15)
+          borderRadius: BorderRadius.circular(20),
         ),
-        child: Stack(
-          children: [
-            Positioned(
-                child: Container(
-                  height: 30,
-                  width: MediaQuery.of(context).size.width * 1,
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryColor,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15)
-                    )
-                  ),
-                  child: Container(
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    child: Text(
-                        'Orden#1',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.white
-                      ),
-                    ),
-                  ),
-                ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 50, left: 20, right: 20),
-              child: Column(
+        shadowColor: AppColors.primaryColor.withOpacity(0.4),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Número de orden
+              Row(
                 children: [
-                    Text(
-                      'Pedido:15-03-2025',
-                      style: TextStyle(
-                        fontSize: 13
-                      ),
-                    ),
+                  Icon(Icons.receipt_long, color: AppColors.primaryColor),
+                  const SizedBox(width: 10),
                   Text(
-                    'Cliente:Leti',
+                    'Orden #${order?.id ?? "1"}',
                     style: TextStyle(
-                        fontSize: 13
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
-                    maxLines: 1,
-                  ),
-                  Text(
-                    'Entregar en:Dirección',
-                    style: TextStyle(
-                        fontSize: 13
-                    ),
-                    maxLines: 2,
                   ),
                 ],
               ),
-            )
-          ],
+              const SizedBox(height: 12),
+              // Fecha del pedido
+              Row(
+                children: [
+                  Icon(Icons.calendar_today, size: 18, color: Colors.grey[600]),
+                  const SizedBox(width: 8),
+                  Text(
+                    //'Pedido: ${order?.timestamp ?? "15-03-2025"}',
+                    'Pedido: "15-03-2025"',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              // Nombre del cliente
+              Row(
+                children: [
+                  Icon(Icons.person, size: 18, color: Colors.grey[600]),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      //'Cliente: ${order?.client?.name ?? "Leti"}',
+                      'Cliente: "Leti"',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[700],
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              // Dirección de entrega
+              Row(
+                children: [
+                  Icon(Icons.location_on, size: 18, color: Colors.grey[600]),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      //'Entregar en: ${order?.address?.address ?? "Dirección"}',
+                      'Entregar en: "Dirección"',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[700],
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+
   void refresh(){
     setState(() {
 
