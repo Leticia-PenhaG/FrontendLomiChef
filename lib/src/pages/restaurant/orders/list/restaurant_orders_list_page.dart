@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:lomi_chef_to_go/src/pages/restaurant/orders/list/restaurant_orders_list_controller.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../models/order.dart';
+import '../../../../widgets/no_data_widget.dart';
 
 
 class RestaurantOrdersListPage extends StatefulWidget {
@@ -33,7 +34,7 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
     if (!_isInitialized) {
       // Se muestra un indicador de carga mientras el controlador se inicializa
       return DefaultTabController(
-        length: _controllerRestaurant.categories.length,
+        length: _controllerRestaurant.status.length,
         child: Scaffold(
           body: Center(
             child: CircularProgressIndicator(),
@@ -43,7 +44,7 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
     }
 
     return DefaultTabController(
-      length: _controllerRestaurant.categories.length,
+      length: _controllerRestaurant.status.length,
       child: Scaffold(
         key: _controllerRestaurant.key,
         appBar: PreferredSize(
@@ -66,12 +67,12 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
               labelColor: Colors.black,
               unselectedLabelColor: Colors.grey[400],
               isScrollable: true,
-              tabs: List<Widget>.generate(_controllerRestaurant.categories.length, (index) {
+              tabs: List<Widget>.generate(_controllerRestaurant.status.length, (index) {
                 return Tab(
                   child: Padding(
                     padding: EdgeInsets.zero,
                     child: Text(
-                      _controllerRestaurant.categories[index],
+                      _controllerRestaurant.status[index],
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 16),
                     ),
@@ -83,35 +84,31 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
         ),
         drawer: _drawer(),
         body: TabBarView(
-          children: _controllerRestaurant.categories.map((String category) {
-            return _cardOrder(null);
-            // return FutureBuilder(
-            //     future: _controllerRestaurant.getProducts(category.id!),
-            //     builder:(context, AsyncSnapshot<List<Product>> snapshot) {
-            //
-            //       if(snapshot.hasData) {
-            //         if(snapshot.data!.isNotEmpty ) {
-            //           //son los card de los productos que se muestran
-            //           return GridView.builder(
-            //               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            //               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            //                   crossAxisCount: 2,
-            //                   childAspectRatio:0.7
-            //               ) ,
-            //               itemCount: snapshot.data?.length ?? 0,
-            //               itemBuilder: (_, index) {
-            //                 return _cardProduct(snapshot.data![index]);
-            //               }
-            //           );
-            //         }
-            //         else {
-            //           return NoDataWidget(text: 'No hay productos en esta categoría');
-            //         }
-            //       } else {
-            //         return NoDataWidget(text: 'No hay productos en esta categoría');
-            //       }
-            //     }
-            // );
+          children: _controllerRestaurant.status.map((String status) {
+            //return _cardOrder(null);
+            return FutureBuilder(
+                future: _controllerRestaurant.getOrders(status),
+                builder:(context, AsyncSnapshot<List<Order>> snapshot) {
+
+                  if(snapshot.hasData) {
+                    if(snapshot.data!.isNotEmpty ) {
+                      //son los card de los productos que se muestran
+                      return ListView.builder(
+                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                          itemCount: snapshot.data?.length ?? 0,
+                          itemBuilder: (_, index) {
+                            return _cardOrder(snapshot.data![index]);
+                          }
+                      );
+                    }
+                    else {
+                      return NoDataWidget(text: 'No hay órdenes');
+                    }
+                  } else {
+                    return NoDataWidget(text: 'No hay órdenes');
+                  }
+                }
+            );
           }).toList(),
         ),
       ),
@@ -242,74 +239,6 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
       onTap: onTap,
     );
   }
-
-  // Widget _cardOrder(Order? order) {
-  //   return Container(
-  //    height: 160,
-  //     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-  //     child: Card(
-  //       elevation: 3.0,
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(15)
-  //       ),
-  //       child: Stack(
-  //         children: [
-  //           Positioned(
-  //               child: Container(
-  //                 height: 30,
-  //                 width: MediaQuery.of(context).size.width * 1,
-  //                 decoration: BoxDecoration(
-  //                   color: AppColors.primaryColor,
-  //                   borderRadius: BorderRadius.only(
-  //                     topLeft: Radius.circular(15),
-  //                     topRight: Radius.circular(15)
-  //                   )
-  //                 ),
-  //                 child: Container(
-  //                   width: double.infinity,
-  //                   alignment: Alignment.center,
-  //                   child: Text(
-  //                       'Orden#1',
-  //                     style: TextStyle(
-  //                       fontSize: 15,
-  //                       color: Colors.white
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //           ),
-  //           Container(
-  //             margin: EdgeInsets.only(top: 50, left: 20, right: 20),
-  //             child: Column(
-  //               children: [
-  //                   Text(
-  //                     'Pedido:15-03-2025',
-  //                     style: TextStyle(
-  //                       fontSize: 13
-  //                     ),
-  //                   ),
-  //                 Text(
-  //                   'Cliente:Leti',
-  //                   style: TextStyle(
-  //                       fontSize: 13
-  //                   ),
-  //                   maxLines: 1,
-  //                 ),
-  //                 Text(
-  //                   'Entregar en:Dirección',
-  //                   style: TextStyle(
-  //                       fontSize: 13
-  //                   ),
-  //                   maxLines: 2,
-  //                 ),
-  //               ],
-  //             ),
-  //           )
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget _cardOrder(Order? order) {
     return Container(
