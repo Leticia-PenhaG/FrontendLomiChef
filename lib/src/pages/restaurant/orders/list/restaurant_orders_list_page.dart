@@ -5,7 +5,6 @@ import '../../../../utils/app_colors.dart';
 import '../../../../models/order.dart';
 import '../../../../widgets/no_data_widget.dart';
 
-
 class RestaurantOrdersListPage extends StatefulWidget {
   const RestaurantOrdersListPage({super.key});
 
@@ -275,9 +274,9 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
                 children: [
                   Icon(Icons.calendar_today, size: 18, color: Colors.grey[600]),
                   const SizedBox(width: 8),
+
                   Text(
-                    'Pedido: ${order?.timeStamp ?? "15-03-2025"}',
-                    //'Pedido: ""',
+                    'Pedido: ${_formatTimestamp(order?.timeStamp ?? 0)}',
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey[700],
@@ -331,6 +330,15 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
         ),
       ),
     );
+  }
+
+  String _formatTimestamp(int timestamp) {
+    try {
+      final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+      return '${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year}';
+    } catch (e) {
+      return '';
+    }
   }
 
   void refresh(){
