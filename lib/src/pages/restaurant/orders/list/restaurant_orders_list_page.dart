@@ -276,8 +276,8 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
                   Icon(Icons.calendar_today, size: 18, color: Colors.grey[600]),
                   const SizedBox(width: 8),
                   Text(
-                    //'Pedido: ${order?.timestamp ?? "15-03-2025"}',
-                    'Pedido: "15-03-2025"',
+                    'Pedido: ${order?.timeStamp ?? "15-03-2025"}',
+                    //'Pedido: ""',
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey[700],
@@ -293,8 +293,9 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      //'Cliente: ${order?.client?.name ?? "Leti"}',
-                      'Cliente: "Leti"',
+                      //'Cliente: ${order?.client?.name ?? ""}',
+                      //'Cliente: "Leti"',
+                      'Cliente: ${order?.client?['name'] ?? ''} ${order?.client?['lastname'] ?? ''}',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[700],
@@ -312,8 +313,9 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      //'Entregar en: ${order?.address?.address ?? "Dirección"}',
-                      'Entregar en: "Dirección"',
+                      //'Entregar en: ${order?.address?.address ?? ""}',
+                      //'Entregar en: "Dirección"',
+                      'Entregar en: ${order?.address?['address'] ?? ''} - ${order?.address?['neighborhood'] ?? ''}',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[700],
