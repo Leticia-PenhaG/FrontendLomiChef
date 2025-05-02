@@ -44,7 +44,11 @@ class Order {
           ? int.parse(json["timestamp"])
           : (json["timestamp"] ?? 0),
       products: json["products"] != null
-          ? List<Product>.from(json["products"].map((model) => Product.fromJson(model)))
+          ? (json["products"] is String
+          ? List<Product>.from(
+          jsonDecode(json["products"]).map((model) => Product.fromJson(model)))
+          : List<Product>.from(
+          json["products"].map((model) => Product.fromJson(model))))
           : [],
       client: json["client"] != null ? jsonDecode(json["client"]) : null,
       address: json["address"] != null ? jsonDecode(json["address"]) : null,

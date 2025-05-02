@@ -240,92 +240,97 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
   }
 
   Widget _cardOrder(Order? order) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Card(
-        elevation: 6,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        shadowColor: AppColors.primaryColor.withOpacity(0.4),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Número de orden
-              Row(
-                children: [
-                  Icon(Icons.receipt_long, color: AppColors.primaryColor),
-                  const SizedBox(width: 10),
-                  Text(
-                    'Orden #${order?.id ?? "1"}',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+    return GestureDetector(
+      onTap: () {
+        _controllerRestaurant.openBottomSheet(order!); //se abre el detalle de la orden
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Card(
+          elevation: 6,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          shadowColor: AppColors.primaryColor.withOpacity(0.4),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Número de orden
+                Row(
+                  children: [
+                    Icon(Icons.receipt_long, color: AppColors.primaryColor),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Orden #${order?.id ?? "1"}',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              // Fecha del pedido
-              Row(
-                children: [
-                  Icon(Icons.calendar_today, size: 18, color: Colors.grey[600]),
-                  const SizedBox(width: 8),
-
-                  Text(
-                    'Pedido: ${_formatTimestamp(order?.timeStamp ?? 0)}',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[700],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              // Nombre del cliente
-              Row(
-                children: [
-                  Icon(Icons.person, size: 18, color: Colors.grey[600]),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      //'Cliente: ${order?.client?.name ?? ""}',
-                      //'Cliente: "Leti"',
-                      'Cliente: ${order?.client?['name'] ?? ''} ${order?.client?['lastname'] ?? ''}',
+                  ],
+                ),
+                const SizedBox(height: 12),
+                // Fecha del pedido
+                Row(
+                  children: [
+                    Icon(Icons.calendar_today, size: 18, color: Colors.grey[600]),
+                    const SizedBox(width: 8),
+      
+                    Text(
+                      'Pedido: ${_formatTimestamp(order?.timeStamp ?? 0)}',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[700],
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              // Dirección de entrega
-              Row(
-                children: [
-                  Icon(Icons.location_on, size: 18, color: Colors.grey[600]),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      //'Entregar en: ${order?.address?.address ?? ""}',
-                      //'Entregar en: "Dirección"',
-                      'Entregar en: ${order?.address?['address'] ?? ''} - ${order?.address?['neighborhood'] ?? ''}',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[700],
+                  ],
+                ),
+                const SizedBox(height: 8),
+                // Nombre del cliente
+                Row(
+                  children: [
+                    Icon(Icons.person, size: 18, color: Colors.grey[600]),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        //'Cliente: ${order?.client?.name ?? ""}',
+                        //'Cliente: "Leti"',
+                        'Cliente: ${order?.client?['name'] ?? ''} ${order?.client?['lastname'] ?? ''}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[700],
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+                const SizedBox(height: 8),
+                // Dirección de entrega
+                Row(
+                  children: [
+                    Icon(Icons.location_on, size: 18, color: Colors.grey[600]),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        //'Entregar en: ${order?.address?.address ?? ""}',
+                        //'Entregar en: "Dirección"',
+                        'Entregar en: ${order?.address?['address'] ?? ''} - ${order?.address?['neighborhood'] ?? ''}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[700],
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
