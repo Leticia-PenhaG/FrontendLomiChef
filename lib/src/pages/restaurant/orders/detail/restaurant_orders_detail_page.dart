@@ -5,6 +5,8 @@ import '../../../../models/product.dart';
 import '../../../../models/user.dart';
 import 'restaurant_orders_detail_controller.dart';
 import '../../../../models/order.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
 
 class RestaurantOrdersDetailPage extends StatefulWidget {
   Order order;
@@ -20,6 +22,7 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
   @override
   void initState() {
     super.initState();
+    timeago.setLocaleMessages('es', timeago.EsMessages());
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _controller.init(context, refresh, widget.order);
     });
@@ -54,7 +57,8 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
                   const SizedBox(height: 8),
                   _infoRow('Entregar en:', _controller.order.address?['address'] ?? ''),
                   const SizedBox(height: 8),
-                  _infoRow('Fecha pedido:', _formatTimestamp(_controller.order.timeStamp)),
+                  //_infoRow('Fecha pedido:', _formatTimestamp(_controller.order.timeStamp)),
+                  _infoRow('Fecha pedido:', _formattedOrderTime(_controller.order.timeStamp)),
                   const Divider(height: 32),
                   _infoRow(
                     'Total:',
@@ -112,6 +116,18 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
         ),
       ],
     );
+  }
+
+  String _formattedOrderTime(int timestamp) {
+    final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inHours < 24) {
+      return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+    } else {
+      return timeago.format(date, locale: 'es');
+    }
   }
 
   Widget _dropDown(List<User> users) {
