@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lomi_chef_to_go/src/utils/app_colors.dart';
 import '../../../../models/product.dart';
+import '../../../../models/user.dart';
 import 'restaurant_orders_detail_controller.dart';
 import '../../../../models/order.dart';
 
@@ -60,6 +61,8 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
                     isBold: true,
                     fontSize: 18,
                   ),
+                  const SizedBox(height: 8),
+                  _dropDown([]),
                 ],
               ),
             ),
@@ -108,6 +111,73 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
         ),
       ],
     );
+  }
+
+  Widget _dropDown(List<User> users) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Asignar repartidor',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Material(
+            elevation: 3,
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.white,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: users.isEmpty
+                  ? Row(
+                children: const [
+                  Icon(Icons.info_outline, color: Colors.grey),
+                  SizedBox(width: 10),
+                  Text(
+                    'No hay repartidores disponibles',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ],
+              )
+                  : DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  hint: const Text(
+                    'Seleccioná el repartidor',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  //value: _controller.idCategory, // si corresponde
+                  items: _dropdownItems(users),
+                  onChanged: (option) {
+                    // setState(() {
+                    //   _controller.idCategory = option!;
+                    // });
+                  },
+                  icon: Icon(Icons.arrow_drop_down, color: AppColors.primaryColor),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<DropdownMenuItem<String>> _dropdownItems(List<User> users) {
+    return users.map((user) {
+      return DropdownMenuItem(
+        child: Text(user.name!),
+        value: user.id,
+      );
+    }).toList();
   }
 
   Widget _buttonDespatch() {
