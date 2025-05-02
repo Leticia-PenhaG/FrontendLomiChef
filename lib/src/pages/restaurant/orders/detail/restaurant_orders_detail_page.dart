@@ -39,10 +39,11 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
             Expanded(
               child: ListView(
                 children: [
-                  Text(
-                    'Productos',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+                  // Text(
+                  //   'Productos',
+                  //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  // ),
+                  _sectionTitle('Productos'),
                   const SizedBox(height: 8),
                   ..._controller.selectedProducts.map((p) => _productTile(p)).toList(),
                   const Divider(height: 32),
@@ -119,13 +120,14 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Asignar repartidor',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          // const Text(
+          //   'Asignar repartidor',
+          //   style: TextStyle(
+          //     fontSize: 18,
+          //     fontWeight: FontWeight.bold,
+          //   ),
+          // ),
+          _sectionTitle('Asignar repartidor'),
           const SizedBox(height: 10),
           Material(
             elevation: 3,
@@ -179,6 +181,26 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
       );
     }).toList();
   }
+
+  Widget _sectionTitle(String text) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8, top: 16),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+      // decoration: BoxDecoration(
+      //   color: AppColors.primaryColor.withOpacity(0.1),
+      //   borderRadius: BorderRadius.circular(8),
+      // ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: AppColors.primaryColor,
+        ),
+      ),
+    );
+  }
+
 
   Widget _buttonDespatch() {
     return Padding(
