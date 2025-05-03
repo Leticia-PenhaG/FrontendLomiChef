@@ -7,7 +7,6 @@ import 'restaurant_orders_detail_controller.dart';
 import '../../../../models/order.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-
 class RestaurantOrdersDetailPage extends StatefulWidget {
   Order order;
   RestaurantOrdersDetailPage({Key? key, required this.order});
@@ -18,6 +17,7 @@ class RestaurantOrdersDetailPage extends StatefulWidget {
 
 class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage> {
   final RestaurantOrdersDetailController _controller = RestaurantOrdersDetailController();
+
 
   @override
   void initState() {
@@ -57,7 +57,7 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
                   const SizedBox(height: 8),
                   _infoRow('Entregar en:', _controller.order?.address?['address'] ?? ''),
                   const SizedBox(height: 8),
-                  //_infoRow('Fecha pedido:', _formatTimestamp(_controller.order.timeStamp)),
+                  //_infoRow('Fecha pedido:', _formatTimestamp(_controller.order!.timeStamp)),
                   _infoRow('Fecha pedido:', _formattedOrderTime(_controller.order!.timeStamp)),
                   const Divider(height: 32),
                   _infoRow(
@@ -67,7 +67,9 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
                     fontSize: 18,
                   ),
                   const SizedBox(height: 8),
-                  _dropDown(_controller.users), //se listan usuarios repartidores
+  /*                _controller.order?.status == 'PAGADO' ? _dropDown(_controller.users) : Container(), //se listan usuarios repartidores
+                  _controller.order?.status != 'PAGADO' ? _deliveryData() : Container(), //se listan usuarios repartidores
+   */             _deliverySection(),
                 ],
               ),
             ),
@@ -118,15 +120,53 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
     );
   }
 
-  String _formattedOrderTime(int timestamp) {
-    final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    final now = DateTime.now();
-    final difference = now.difference(date);
+  //FECHA REAL
+  // String _formattedOrderTime(int timestamp) {
+  //   final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+  //   final now = DateTime.now();
+  //   final difference = now.difference(date);
+  //
+  //   if (difference.inHours < 24) {
+  //     return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+  //   } else {
+  //     return timeago.format(date, locale: 'es');
+  //   }
+  // }
 
-    if (difference.inHours < 24) {
-      return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+  //FECHA RELATIVA
+  String _formattedOrderTime(int timestamp) {
+    final orderDate = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    final now = DateTime.now();
+
+    final isSameDay = orderDate.year == now.year &&
+        orderDate.month == now.month &&
+        orderDate.day == now.day;
+
+    if (isSameDay) {
+      // Mostrar fecha y hora si es del mismo día
+      return '${orderDate.day}/${orderDate.month}/${orderDate.year} '
+          '${orderDate.hour}:${orderDate.minute.toString().padLeft(2, '0')}';
     } else {
-      return timeago.format(date, locale: 'es');
+      // Mostrar tiempo relativo si es de otro día
+      return timeago.format(orderDate, locale: 'es');
+    }
+  }
+
+  Widget _deliverySection() {
+    if (_controller.order?.status == 'PAGADO') {
+      return _dropDown(_controller.users);
+    } else {
+      return Container(
+        margin: const EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _sectionTitle('Repartidor asignado'),
+            const SizedBox(height: 10),
+            _deliveryData(),
+          ],
+        ),
+      );
     }
   }
 //original
@@ -136,7 +176,8 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionTitle('Asignar repartidor'),
+          const SizedBox(height: 10),
+          _controller.order?.status == 'PAGADO' ? _sectionTitle('Asignar repartidor') : _sectionTitle('Repartidor asignado'),
           const SizedBox(height: 10),
           Material(
             elevation: 3,
@@ -162,7 +203,7 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
                 child: DropdownButton<String>(
                   isExpanded: true,
                   hint: const Text(
-                    'Seleccioná el repartidor',
+                    'Seleccioná un repartidor',
                     style: TextStyle(fontSize: 16),
                   ),
                   value: _controller.idDelivery, //id del courier seleccionado
@@ -203,6 +244,30 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
         ),
       );
     }).toList();
+  }
+
+  Widget _deliveryData() {
+    final delivery = _controller.order?.delivery;
+    final imageUrl = delivery?['image'];
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 30),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 18,
+            backgroundImage: (imageUrl != null && imageUrl.isNotEmpty)
+                ? NetworkImage(imageUrl)
+                : const AssetImage('assets/img/user.jpg') as ImageProvider,
+          ),
+          const SizedBox(width: 10),
+          Text(
+            '${delivery?['name'] ?? ''} ${delivery?['lastname'] ?? ''}',
+            style: const TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _sectionTitle(String text) {
@@ -252,7 +317,10 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
     return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
   }
 
+
   void refresh() {
     setState(() {});
   }
 }
+
+

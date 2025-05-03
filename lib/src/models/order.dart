@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:lomi_chef_to_go/src/models/product.dart';
+import 'package:lomi_chef_to_go/src/models/user.dart';
 
 class Order {
   String id;
@@ -15,6 +16,8 @@ class Order {
   // Nuevos campos
   Map<String, dynamic>? client;
   Map<String, dynamic>? address;
+  //User? delivery;
+  Map<String, dynamic>? delivery;
 
   Order({
     required this.id,
@@ -28,6 +31,7 @@ class Order {
     required this.products,
     this.client,
     this.address,
+    this.delivery,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -51,6 +55,7 @@ class Order {
           json["products"].map((model) => Product.fromJson(model))))
           : [],
       client: json["client"] != null ? jsonDecode(json["client"]) : null,
+      delivery: json["delivery"] != null ? jsonDecode(json["delivery"]) : null,
       address: json["address"] != null ? jsonDecode(json["address"]) : null,
     );
   }
@@ -67,6 +72,7 @@ class Order {
     "products": products.map((p) => p.toJson()).toList(),
     "client": client != null ? jsonEncode(client) : null,
     "address": address != null ? jsonEncode(address) : null,
+    "delivery": delivery != null ? jsonEncode(delivery) : null,
   };
 }
 
