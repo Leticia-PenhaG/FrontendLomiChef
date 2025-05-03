@@ -184,9 +184,23 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
 
   List<DropdownMenuItem<String>> _dropdownItems(List<User> users) {
     return users.map((user) {
-      return DropdownMenuItem(
-        child: Text(user.name!),
+      return DropdownMenuItem<String>(
         value: user.id,
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 18,
+              backgroundImage: user.image != null
+                  ? NetworkImage(user.image!)
+                  : AssetImage('assets/img/user.jpg') as ImageProvider,
+            ),
+            const SizedBox(width: 10),
+            Text(
+              '${user.name} ${user.lastname ?? ''}',
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
       );
     }).toList();
   }
