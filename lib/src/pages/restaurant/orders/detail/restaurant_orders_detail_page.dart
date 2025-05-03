@@ -232,7 +232,7 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
         width: double.infinity,
         height: 50,
         child: ElevatedButton(
-          onPressed: _controller.goToAddress,
+          onPressed: _controller.updateOrder,
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primaryColor,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

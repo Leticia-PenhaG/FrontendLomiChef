@@ -1,8 +1,12 @@
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lomi_chef_to_go/src/models/response_api.dart';
 import 'package:lomi_chef_to_go/src/models/user.dart';
+import 'package:lomi_chef_to_go/src/provider/orders_provider.dart';
 import 'package:lomi_chef_to_go/src/provider/user_provider.dart';
 import 'package:lomi_chef_to_go/src/utils/shared_preferences_helper.dart';
+import 'package:lomi_chef_to_go/src/utils/snackbar_helper.dart';
 import '../../../../models/product.dart';
 import '../../../../models/order.dart';
 
@@ -25,6 +29,7 @@ class RestaurantOrdersDetailController {
   String? idDelivery;
 
   UserProvider _userProvider = new UserProvider();
+  OrdersProvider _ordersProvider = new OrdersProvider();
 
   void init(BuildContext context, Function refresh, Order order) async{
     this.context = context;
@@ -33,7 +38,7 @@ class RestaurantOrdersDetailController {
 
     user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
     _userProvider.init(context, sessionUser: user);
-
+    _ordersProvider.init(context,  user!);
 
     selectedProducts = Product.fromJsonList(await _sharedPreferencesHelper.readSessionToken('order')).toList; //trae del sharepreference la orden    //PARA CONTROLAR QUÉ PRODUCTOS YA FUERON AÑADIDOS Y NO PERDER LA LISTA AL AGREGAR NUEVOS PRODUCTOS
 
@@ -90,6 +95,23 @@ class RestaurantOrdersDetailController {
     users = await _userProvider.loadCouriers();
      print('REPARTIDORES OBTENIDOS: ${users.length}');
      print('NOMBRES: ${users.map((e) => e.name).toList()}');
+  }
+
+  void updateOrder() async {
+    if (idDelivery != null) {
+      order?.idDelivery = idDelivery;
+
+      ResponseApi? responseApi = await _ordersProvider.markOrderAsReadyToDeliver(order!);
+
+      if (responseApi != null) {
+        SnackbarHelper.show(context: context!, message: responseApi.message);
+      } else {
+        Fluttertoast.showToast(msg: 'Error al actualizar la orden');
+      }
+
+    } else {
+      Fluttertoast.showToast(msg: 'Seleccioná un repartidor');
+    }
   }
 
 }
