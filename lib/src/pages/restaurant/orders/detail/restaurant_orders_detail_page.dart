@@ -130,65 +130,6 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
     }
   }
 //original
-//   Widget _dropDown(List<User> users) {
-//     return Container(
-//       margin: const EdgeInsets.symmetric(vertical: 20),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           // const Text(
-//           //   'Asignar repartidor',
-//           //   style: TextStyle(
-//           //     fontSize: 18,
-//           //     fontWeight: FontWeight.bold,
-//           //   ),
-//           // ),
-//           _sectionTitle('Asignar repartidor'),
-//           const SizedBox(height: 10),
-//           Material(
-//             elevation: 3,
-//             borderRadius: BorderRadius.circular(8),
-//             color: Colors.white,
-//             child: Container(
-//               padding: const EdgeInsets.all(16),
-//               decoration: BoxDecoration(
-//                 borderRadius: BorderRadius.circular(8),
-//               ),
-//               child: users.isEmpty
-//                   ? Row(
-//                 children: const [
-//                   Icon(Icons.info_outline, color: Colors.grey),
-//                   SizedBox(width: 10),
-//                   Text(
-//                     'No hay repartidores disponibles',
-//                     style: TextStyle(color: Colors.grey),
-//                   ),
-//                 ],
-//               )
-//                   : DropdownButtonHideUnderline(
-//                 child: DropdownButton<String>(
-//                   isExpanded: true,
-//                   hint: const Text(
-//                     'Seleccioná el repartidor',
-//                     style: TextStyle(fontSize: 16),
-//                   ),
-//                   value: _controller.idDelivery, //id del courier seleccionado
-//                   items: _dropdownItems(users),
-//                   onChanged: (option) {
-//                     setState(() {
-//                       _controller.idDelivery = option!; //idDelivery es igual a la opción seleccionada
-//                     });
-//                   },
-//                   icon: Icon(Icons.arrow_drop_down, color: AppColors.primaryColor),
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
   Widget _dropDown(List<User> users) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 20),
@@ -224,11 +165,11 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
                     'Seleccioná el repartidor',
                     style: TextStyle(fontSize: 16),
                   ),
-                  value: _controller.idDelivery, // id del courier seleccionado
+                  value: _controller.idDelivery, //id del courier seleccionado
                   items: _dropdownItems(users),
                   onChanged: (option) {
                     setState(() {
-                      _controller.idDelivery = option!; // idDelivery es igual a la opción seleccionada
+                      _controller.idDelivery = option!; //idDelivery es igual a la opción seleccionada
                     });
                   },
                   icon: Icon(Icons.arrow_drop_down, color: AppColors.primaryColor),
