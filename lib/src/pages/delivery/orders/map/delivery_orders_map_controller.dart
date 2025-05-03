@@ -149,19 +149,13 @@ class DeliveryOrdersMapController {
     Navigator.pop(context!, data);
   }
 
-  /// Crea un marcador personalizado a partir de una imagen en assets, con tamaño reducido.
-  // Future<BitmapDescriptor> createMarkerFromImage(String path) async {
-  //   ImageConfiguration configuration = new ImageConfiguration();
-  //   BitmapDescriptor descriptor = await BitmapDescriptor.fromAssetImage(configuration, path);
-  //   return descriptor;
-  // }
 
-  /// Crea un marcador personalizado a partir de una imagen de assets, con tamaño reducido.
+  /// Crea un marcador personalizado a partir de una imagen de assets.
   Future<BitmapDescriptor> createMarkerFromImage(String path) async {
     final ByteData byteData = await rootBundle.load(path);
     final ui.Codec codec = await ui.instantiateImageCodec(
       byteData.buffer.asUint8List(),
-      targetWidth: 150,  // <= Reducí acá el tamaño (ajustá a gusto)
+      targetWidth: 150,
       targetHeight: 150,
     );
     final ui.FrameInfo fi = await codec.getNextFrame();
