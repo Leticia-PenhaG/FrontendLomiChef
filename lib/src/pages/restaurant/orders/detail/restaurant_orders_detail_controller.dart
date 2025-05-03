@@ -104,7 +104,9 @@ class RestaurantOrdersDetailController {
       ResponseApi? responseApi = await _ordersProvider.markOrderAsReadyToDeliver(order!);
 
       if (responseApi != null) {
-        SnackbarHelper.show(context: context!, message: responseApi.message);
+        //SnackbarHelper.show(context: context!, message: responseApi.message);
+        Fluttertoast.showToast(msg: responseApi.message, toastLength: Toast.LENGTH_LONG);
+        Navigator.pop(context!, true);
       } else {
         Fluttertoast.showToast(msg: 'Error al actualizar la orden');
       }

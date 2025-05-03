@@ -14,6 +14,7 @@ class RestaurantOrdersListController {
   late Function refresh;
   List<String> status = ['Pagado','Listo para envío','En ruta','Entrega completada'];
   OrdersProvider _ordersProvider = new OrdersProvider();
+  late bool isOrderStatusUpdate ;
 
   Future<void> init(BuildContext context, Function refresh) async {
     this.context = context;
@@ -70,11 +71,15 @@ class RestaurantOrdersListController {
   }
 
   //se abre este method cuando se presiona el card para ver el detalle de la orden
-  void openBottomSheet(Order order) {
-    showMaterialModalBottomSheet
+  void openBottomSheet(Order order) async {
+    isOrderStatusUpdate = await showMaterialModalBottomSheet
       (
         context: context!,
         builder: (context) => RestaurantOrdersDetailPage(order: order)
     );
+
+    if(isOrderStatusUpdate) {
+      refresh();
+    }
   }
 }
