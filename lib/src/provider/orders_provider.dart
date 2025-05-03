@@ -73,6 +73,34 @@ class OrdersProvider {
     }
   }
 
+  Future<ResponseApi?> updateOrderToOnTheWay(Order order) async {
+    try {
+      Uri url = Uri.http(_url, '$_api/updateOrderToOnTheWay');
+
+      String bodyParams = json.encode(order);
+
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Authorization': sessionUser.sessionToken ?? ''
+      };
+
+      final res = await http.put(url, headers: headers, body: bodyParams);
+
+      if (res.statusCode == 401) {
+        Fluttertoast.showToast(msg: 'Sesión expirada');
+        new SharedPreferencesHelper().logout(context, sessionUser.id!);
+        return null;
+      }
+
+      final data = json.decode(res.body);
+      return ResponseApi.fromJson(data);
+
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
   Future<List<Order>>getByStatus(String status) async {
     try {
       Uri url = Uri.parse('http://$_url$_api/findByStatus/$status');

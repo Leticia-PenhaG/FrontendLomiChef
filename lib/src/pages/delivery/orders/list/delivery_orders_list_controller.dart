@@ -5,7 +5,7 @@ import '../../../../models/order.dart';
 import '../../../../models/user.dart';
 import '../../../../provider/orders_provider.dart';
 import '../../../../utils/shared_preferences_helper.dart';
-import 'delivery_orders_list_page.dart';
+import '../detail/delivery_orders_detail_page.dart';
 
 class DeliveryOrdersListController {
   BuildContext? context;
@@ -76,7 +76,7 @@ class DeliveryOrdersListController {
     isOrderStatusUpdate = await showMaterialModalBottomSheet
       (
         context: context!,
-        builder: (context) => DeliveryOrdersListPage()
+        builder: (context) => DeliveryOrdersDetailPage(order: order)
     );
 
     if(isOrderStatusUpdate) {
