@@ -45,36 +45,6 @@ class OrdersProvider {
     }
   }
 
-  // Future<ResponseApi?> markOrderAsReadyToDeliver(String orderId) async {
-  //   try {
-  //     Uri url = Uri.http(_url, '$_api/markAsReadyToDeliver');
-  //
-  //     Map<String, dynamic> body = {
-  //       'id': orderId,
-  //     };
-  //
-  //     Map<String, String> headers = {
-  //       'Content-type': 'application/json',
-  //       'Authorization': sessionUser.sessionToken ?? ''
-  //     };
-  //
-  //     final res = await http.put(url, headers: headers, body: json.encode(body));
-  //
-  //     if (res.statusCode == 401) {
-  //       Fluttertoast.showToast(msg: 'Sesión expirada');
-  //       new SharedPreferencesHelper().logout(context, sessionUser.id!);
-  //       return null;
-  //     }
-  //
-  //     final data = json.decode(res.body);
-  //     return ResponseApi.fromJson(data);
-  //
-  //   } catch (e) {
-  //     print('Error: $e');
-  //     return null;
-  //   }
-  // }
-
   Future<ResponseApi?> markOrderAsReadyToDeliver(Order order) async {
     try {
       Uri url = Uri.http(_url, '$_api/markAsReadyToDeliver');
@@ -86,7 +56,6 @@ class OrdersProvider {
         'Authorization': sessionUser.sessionToken ?? ''
       };
 
-      //final res = await http.put(url, headers: headers, body: json.encode(bodyParams));
       final res = await http.put(url, headers: headers, body: bodyParams);
 
       if (res.statusCode == 401) {
