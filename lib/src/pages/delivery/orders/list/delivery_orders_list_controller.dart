@@ -45,14 +45,6 @@ class DeliveryOrdersListController {
     Navigator.pushNamedAndRemoveUntil(context!, 'roles', (route) => false);
   }
 
-  void goToCategoriesCreate() {
-    Navigator.pushNamed( context!, 'restaurant/categories/create');
-  }
-
-  void goToProductsCreate() {
-    Navigator.pushNamed( context!, 'restaurant/products/create');
-  }
-
   Future<List<Order>> getOrders(String status) async {
     print('Buscando órdenes con status: $status');
 

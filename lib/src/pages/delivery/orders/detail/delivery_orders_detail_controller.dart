@@ -103,7 +103,7 @@ class DeliveryOrdersDetailController {
     if (responseApi != null) {
       //SnackbarHelper.show(context: context!, message: responseApi.message);
       Fluttertoast.showToast(msg: responseApi.message, toastLength: Toast.LENGTH_LONG);
-      //Navigator.pop(context!, true);
+      Navigator.pop(context!, true); //para visualizar cambios inmediatos en el frontend cuando se actualiza el estado de la orden
     } else {
       Fluttertoast.showToast(msg: 'Error al actualizar la orden');
     }
