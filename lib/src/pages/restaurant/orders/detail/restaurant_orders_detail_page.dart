@@ -76,7 +76,9 @@ class _RestaurantOrdersDetailPageState extends State<RestaurantOrdersDetailPage>
           ],
         ),
       ),
-      bottomNavigationBar: _buttonDespatch(),
+      bottomNavigationBar: _controller.order?.status == 'PAGADO'
+          ? _buttonDespatch()
+          : const SizedBox.shrink(),
     );
   }
 
