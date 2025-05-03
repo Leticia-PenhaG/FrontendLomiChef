@@ -97,13 +97,18 @@ class DeliveryOrdersDetailController {
      print('NOMBRES: ${users.map((e) => e.name).toList()}');
   }
 
-  void updateOrderStatus() async {
+  void updateOrderStatus() async { //CAMBIAR DE ESTADO A 'EN RUTA'
     ResponseApi? responseApi = await _ordersProvider.updateOrderToOnTheWay(order!);
 
     if (responseApi != null) {
       //SnackbarHelper.show(context: context!, message: responseApi.message);
       Fluttertoast.showToast(msg: responseApi.message, toastLength: Toast.LENGTH_LONG);
       Navigator.pop(context!, true); //para visualizar cambios inmediatos en el frontend cuando se actualiza el estado de la orden
+
+      if(responseApi.success) {
+        Navigator.pushNamed(context!, 'delivery/orders/map', arguments: order?.toJson()); //SE ENVÍA A LA PANTALLA DEL MAPA
+      }
+
     } else {
       Fluttertoast.showToast(msg: 'Error al actualizar la orden');
     }
