@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:lomi_chef_to_go/src/models/user.dart';
+import 'package:lomi_chef_to_go/src/provider/user_provider.dart';
 import 'package:lomi_chef_to_go/src/utils/shared_preferences_helper.dart';
 import '../../../../models/product.dart';
 import '../../../../models/order.dart';
@@ -17,17 +19,28 @@ class RestaurantOrdersDetailController {
 
   List<Product> selectedProducts = [];
   double total = 0;
+  Order? order;
+  User? user;
+  List<User> users = [];
+  String? idDelivery;
 
-  late Order order;
+  UserProvider _userProvider = new UserProvider();
 
   void init(BuildContext context, Function refresh, Order order) async{
     this.context = context;
     this.refresh = refresh;
     this.order = order;
 
+    user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
+    _userProvider.init(context, sessionUser: user);
+
+
     selectedProducts = Product.fromJsonList(await _sharedPreferencesHelper.readSessionToken('order')).toList; //trae del sharepreference la orden    //PARA CONTROLAR QUÉ PRODUCTOS YA FUERON AÑADIDOS Y NO PERDER LA LISTA AL AGREGAR NUEVOS PRODUCTOS
 
     getTotal();
+    await getUsers();
+    print('REPARTIDORES OBTENIDOS: ${users.length}');
+    print('NOMBRES: ${users.map((u) => u.name).toList()}');
     refresh();
   }
 
@@ -71,6 +84,19 @@ class RestaurantOrdersDetailController {
 
   void goToAddress() {
     Navigator.pushNamed(context!, 'client/address/list');
+  }
+
+  // void getUsers () async {
+  //   users = await _userProvider.loadCouriers();
+  //   print('REPARTIDORES OBTENIDOS: ${users.length}');
+  //   print('NOMBRES: ${users.map((e) => e.name).toList()}');
+  //   refresh!();
+  // }
+
+  Future<void> getUsers() async {
+    users = await _userProvider.loadCouriers();
+    // print('REPARTIDORES OBTENIDOS: ${users.length}');
+    // print('NOMBRES: ${users.map((e) => e.name).toList()}');
   }
 
 }
