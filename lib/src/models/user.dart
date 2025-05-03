@@ -62,23 +62,6 @@ class User {
     );
   }
 
-  // User.fromJsonList(List<dynamic> jsonList) {
-  //   if(jsonList == null) return;
-  //   jsonList.forEach((item) {
-  //     User user = User.fromJson(item);
-  //     toList?.add(user);
-  //   });
-  //
-  // }
-  //
-  // static List<User> fromJsonList(List<dynamic> jsonList) {
-  //   List<User> users = [];
-  //   for (var item in jsonList) {
-  //     users.add(User.fromJson(item));
-  //   }
-  //   return users;
-  // }
-
   // Convertir una lista de JSONs a una lista de User
   static List<User> fromJsonList(List<dynamic> jsonList) {
     return jsonList.map((item) => User.fromJson(item)).toList();

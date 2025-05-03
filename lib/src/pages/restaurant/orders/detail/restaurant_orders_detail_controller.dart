@@ -86,17 +86,10 @@ class RestaurantOrdersDetailController {
     Navigator.pushNamed(context!, 'client/address/list');
   }
 
-  // void getUsers () async {
-  //   users = await _userProvider.loadCouriers();
-  //   print('REPARTIDORES OBTENIDOS: ${users.length}');
-  //   print('NOMBRES: ${users.map((e) => e.name).toList()}');
-  //   refresh!();
-  // }
-
   Future<void> getUsers() async {
     users = await _userProvider.loadCouriers();
-    // print('REPARTIDORES OBTENIDOS: ${users.length}');
-    // print('NOMBRES: ${users.map((e) => e.name).toList()}');
+     print('REPARTIDORES OBTENIDOS: ${users.length}');
+     print('NOMBRES: ${users.map((e) => e.name).toList()}');
   }
 
 }

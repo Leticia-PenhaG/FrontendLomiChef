@@ -138,10 +138,6 @@ class UserProvider {
 
       final data = json.decode(res.body);
 
-      // Si tu backend responde con un array directo:
-      // List<User> userList = User.fromJsonList(data);
-      // return userList;
-
       // Si responde con un objeto con clave 'data', usá esto:
       List<User> userList = User.fromJsonList(data['data']);
       return userList;
