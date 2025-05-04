@@ -1,16 +1,22 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as location;
+import 'package:lomi_chef_to_go/src/models/response_api.dart';
+import 'package:lomi_chef_to_go/src/provider/orders_provider.dart';
+
 import '../../../../api/environment.dart';
 import '../../../../models/order.dart';
-
+import '../../../../models/user.dart';
+import '../../../../utils/shared_preferences_helper.dart';
+import '../../../../utils/snackbar_helper.dart';
 
 class DeliveryOrdersMapController {
   BuildContext? context;
@@ -26,6 +32,10 @@ class DeliveryOrdersMapController {
   Set<Polyline> polylines = {}; //trazado de ruta
   List<LatLng> points = [];
   StreamSubscription? _positionStream;
+  OrdersProvider _ordersProvider = new OrdersProvider();
+  late User sessionUser;
+  final SharedPreferencesHelper _sharedPreferencesHelper = SharedPreferencesHelper();
+  late double _distanceBetween;
 
   Future init(BuildContext context, Function refresh) async {
     this.context = context;
@@ -33,6 +43,9 @@ class DeliveryOrdersMapController {
     order = Order.fromJson(ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>);
     deliveryMarker = await createMarkerFromImage('assets/img/delivery.png');
     homeMarker = await createMarkerFromImage('assets/img/house.png');
+    sessionUser = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
+    _ordersProvider.init(context, sessionUser);
+
     print('ORDEN:${order?.toJson()}');
     checkGPS();
   }
@@ -116,6 +129,7 @@ class DeliveryOrdersMapController {
         );
 
         animateCameraToPosition(_position.latitude, _position.longitude);
+        isCloseToDeliveryPosition();
       });
 
       refresh!();
@@ -284,6 +298,24 @@ class DeliveryOrdersMapController {
     }
 
     refresh?.call();
+  }
+
+  void updateToDeliveryCompleted() async {
+    ResponseApi? responseApi = await _ordersProvider.updateToDeliveryCompleted(order!);
+    if (_distanceBetween <= 1500) {
+      if (responseApi!.success) {
+        Fluttertoast.showToast(msg: responseApi.message, toastLength: Toast.LENGTH_LONG);
+        Navigator.pushNamedAndRemoveUntil(
+            context!, 'delivery/orders/list', (route) => false);
+      }
+    } else {
+      SnackbarHelper.show(context: context!, message: 'Tenés que estar cerca de la dirección de entrega');
+    }
+  }
+
+  void isCloseToDeliveryPosition() {
+    _distanceBetween = Geolocator.distanceBetween(_position.latitude, _position.longitude, order!.address?['lat'], order!.address?['lng']);
+    print('Distancia del delivery:${_distanceBetween}');
   }
 }
 

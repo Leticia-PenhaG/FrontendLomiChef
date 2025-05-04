@@ -66,7 +66,7 @@ class _DeliveryOrdersDetailPageState extends State<DeliveryOrdersDetailPage> {
                     fontSize: 18,
                   ),
                   const SizedBox(height: 8),
-                  _buttonOnTheWay(),
+                  _controller.order?.status != 'ENTREGA_COMPLETADA' ? _buttonOnTheWay() : Container(),
                 ],
               ),
             ),
@@ -177,13 +177,15 @@ class _DeliveryOrdersDetailPageState extends State<DeliveryOrdersDetailPage> {
         child: ElevatedButton(
           onPressed: _controller.updateOrderStatus,
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primaryColor,
+            backgroundColor: _controller.order?.status == 'LISTO_PARA_ENVIO'
+                ? Colors.blue
+                : Colors.green,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             elevation: 5,
           ),
-          child: const Text(
-            'Iniciar Entrega',
-            style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+          child: Text(
+            _controller.order?.status == 'LISTO_PARA_ENVIO' ? 'Iniciar Entrega' :'Ver el mapa',
+            style: const TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
       ),

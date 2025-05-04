@@ -214,7 +214,7 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
         width: double.infinity,
         height: 50,
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: _controller.updateToDeliveryCompleted,
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primaryColor,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

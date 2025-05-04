@@ -302,7 +302,7 @@ class _ClientProductsDetailPageState extends State<ClientProductsDetailPage> {
                   SizedBox(height: 20),
                   _addRemoveItem(),
                   SizedBox(height: 10),
-                  _deliveryUi(),
+                  //_deliveryUi(),
                   Spacer(),
                   _buttonShoppingBag(),
                   SizedBox(height: 50),
@@ -409,7 +409,7 @@ class _ClientProductsDetailPageState extends State<ClientProductsDetailPage> {
           children: [
             Icon(Icons.delivery_dining, color: Colors.green, size: 30),
             SizedBox(width: 8),
-            Text('Cobro por delivery', style: TextStyle(fontSize: 15, color: Colors.green[700])),
+            //Text('Cobro por delivery', style: TextStyle(fontSize: 15, color: Colors.green[700])),
           ],
         ),
         Text('5.000 Gs', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.green[700])),
