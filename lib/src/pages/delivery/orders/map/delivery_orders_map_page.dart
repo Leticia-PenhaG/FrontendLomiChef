@@ -106,8 +106,8 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
       ),
       child: Column(
         children: [
-          _listTitleAddress(_controller.order?.address?['neighborhood'], 'Barrio', Icons.my_location_outlined),
-          _listTitleAddress(_controller.order?.address?['address'], 'Dirección', Icons.location_on_outlined),
+          _listTitleAddress(_controller.order?.address?['neighborhood'] ?? '', 'Barrio', Icons.my_location_outlined),
+          _listTitleAddress(_controller.order?.address?['address'] ?? '', 'Dirección', Icons.location_on_outlined),
           Divider(color: Colors.grey[400], endIndent: 30, indent: 30),
           _clientInfo(),
           Positioned(
