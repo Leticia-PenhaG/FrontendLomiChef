@@ -8,7 +8,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as location;
-import 'package:lomi_chef_to_go/src/utils/app_colors.dart';
 import '../../../../api/environment.dart';
 import '../../../../models/order.dart';
 
@@ -26,6 +25,7 @@ class DeliveryOrdersMapController {
   };
   Set<Polyline> polylines = {}; //trazado de ruta
   List<LatLng> points = [];
+  StreamSubscription? _positionStream;
 
   Future init(BuildContext context, Function refresh) async {
     this.context = context;
@@ -61,6 +61,10 @@ class DeliveryOrdersMapController {
     _mapController.complete(controller);
   }
 
+  void dispose() {
+    _positionStream?.cancel(); //para evitar que se quede escuchando cuando el usuario se mueve constantemente o cierre la página
+  }
+
   /// Actualiza la ubicación del usuario y centra la cámara en esa posición.
   void updateLocation() async {
     try {
@@ -93,6 +97,29 @@ class DeliveryOrdersMapController {
         LatLng to = new LatLng(order?.address?['lat'], order?.address?['lng']);
 
         setPolylines(from, to);
+
+      _positionStream = Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.best,
+          distanceFilter: 1,
+        ),
+      ).listen((Position position) {
+        _position = position;
+
+        addMarker(
+          'delivery',
+          _position.latitude,
+          _position.longitude,
+          'Tu posición',
+          '',
+          deliveryMarker,
+        );
+
+        animateCameraToPosition(_position.latitude, _position.longitude);
+      });
+
+      refresh!();
+
     } catch (e) {
       print('Error: $e');
     }

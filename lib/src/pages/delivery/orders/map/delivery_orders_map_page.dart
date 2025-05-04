@@ -23,6 +23,12 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
   }
 
   @override
+  void dispose() { //Cancelar el stream para evitar memory leaks
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -186,7 +192,7 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
             ),
           ),
           Spacer(),
-          Container(
+          /*Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(15)),
               color: Colors.grey[200],
@@ -195,7 +201,7 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
               onPressed: () {},
               icon: Icon(Icons.phone_android, color: Colors.black),
             ),
-          )
+          )*/ //PHONE ICON
         ],
       ),
     );
@@ -224,6 +230,7 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
   }
 
   void refresh() {
+    if(!mounted) return;
     setState(() {});
   }
 }
