@@ -34,31 +34,68 @@ class Order {
     this.delivery,
   });
 
-  factory Order.fromJson(Map<String, dynamic> json) {
-    return Order(
-      id: json["id"] is int ? json["id"].toString() : json["id"] ?? '',
-      idClient: json["id_client"] ?? '',
-      idDelivery: json["id_delivery"],
-      idAddress: json["id_address"] ?? '',
-      status: json["status"] ?? '',
-      lat: json["lat"] is String ? double.parse(json["lat"]) : (json["lat"] ?? 0.0),
-      lng: json["lng"] is String ? double.parse(json["lng"]) : (json["lng"] ?? 0.0),
-      //timeStamp: json["timeStamp"] is String ? int.parse(json["timeStamp"]) : (json["timeStamp"] ?? 0),
-      timeStamp: json["timestamp"] is String
-          ? int.parse(json["timestamp"])
-          : (json["timestamp"] ?? 0),
-      products: json["products"] != null
-          ? (json["products"] is String
-          ? List<Product>.from(
-          jsonDecode(json["products"]).map((model) => Product.fromJson(model)))
-          : List<Product>.from(
-          json["products"].map((model) => Product.fromJson(model))))
-          : [],
-      client: json["client"] != null ? jsonDecode(json["client"]) : null,
-      delivery: json["delivery"] != null ? jsonDecode(json["delivery"]) : null,
-      address: json["address"] != null ? jsonDecode(json["address"]) : null,
-    );
-  }
+  // factory Order.fromJson(Map<String, dynamic> json) {
+  //   return Order(
+  //     id: json["id"] is int ? json["id"].toString() : json["id"] ?? '',
+  //     idClient: json["id_client"] ?? '',
+  //     idDelivery: json["id_delivery"],
+  //     idAddress: json["id_address"] ?? '',
+  //     status: json["status"] ?? '',
+  //     lat: json["lat"] is String ? double.parse(json["lat"]) : (json["lat"] ?? 0.0),
+  //     lng: json["lng"] is String ? double.parse(json["lng"]) : (json["lng"] ?? 0.0),
+  //     //timeStamp: json["timeStamp"] is String ? int.parse(json["timeStamp"]) : (json["timeStamp"] ?? 0),
+  //     timeStamp: json["timestamp"] is String
+  //         ? int.parse(json["timestamp"])
+  //         : (json["timestamp"] ?? 0),
+  //     products: json["products"] != null
+  //         ? (json["products"] is String
+  //         ? List<Product>.from(
+  //         jsonDecode(json["products"]).map((model) => Product.fromJson(model)))
+  //         : List<Product>.from(
+  //         json["products"].map((model) => Product.fromJson(model))))
+  //         : [],
+  //     client: json["client"] != null ? jsonDecode(json["client"]) : null,
+  //     delivery: json["delivery"] != null ? jsonDecode(json["delivery"]) : null,
+  //     address: json["address"] != null ? jsonDecode(json["address"]) : null,
+  //   );
+  // }
+
+
+    factory Order.fromJson(Map<String, dynamic> json) {
+      dynamic decodeIfString(dynamic value) {
+        if (value is String) {
+          try {
+            return jsonDecode(value);
+          } catch (_) {
+            return null;
+          }
+        }
+        return value;
+      }
+
+      return Order(
+        id: json["id"] is int ? json["id"].toString() : json["id"] ?? '',
+        idClient: json["id_client"] ?? '',
+        idDelivery: json["id_delivery"],
+        idAddress: json["id_address"] ?? '',
+        status: json["status"] ?? '',
+        lat: json["lat"] is String ? double.parse(json["lat"]) : (json["lat"] ?? 0.0),
+        lng: json["lng"] is String ? double.parse(json["lng"]) : (json["lng"] ?? 0.0),
+        timeStamp: json["timestamp"] is String
+            ? int.parse(json["timestamp"])
+            : (json["timestamp"] ?? 0),
+        products: json["products"] != null
+            ? (json["products"] is String
+            ? List<Product>.from(
+            jsonDecode(json["products"]).map((model) => Product.fromJson(model)))
+            : List<Product>.from(
+            json["products"].map((model) => Product.fromJson(model))))
+            : [],
+        client: decodeIfString(json["client"]),
+        delivery: decodeIfString(json["delivery"]),
+        address: decodeIfString(json["address"]),
+      );
+    }
 
   Map<String, dynamic> toJson() => {
     "id": id,

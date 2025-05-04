@@ -7,6 +7,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as location;
+import '../../../../models/order.dart';
 
 class DeliveryOrdersMapController {
   BuildContext? context;
@@ -15,13 +16,18 @@ class DeliveryOrdersMapController {
   String? addressName = '';
   late LatLng addressLatLng;
   late BitmapDescriptor deliveryMarker;
+  late BitmapDescriptor homeMarker;
+  Order? order;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{
   };
 
   Future init(BuildContext context, Function refresh) async {
     this.context = context;
     this.refresh = refresh;
+    order = Order.fromJson(ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>);
     deliveryMarker = await createMarkerFromImage('assets/img/delivery.png');
+    homeMarker = await createMarkerFromImage('assets/img/house.png');
+    print('ORDEN:${order?.toJson()}');
     checkGPS();
   }
 
@@ -40,7 +46,7 @@ class DeliveryOrdersMapController {
 
   /// Posición inicial por defecto en el mapa
   CameraPosition initialPosition =
-      CameraPosition(target: LatLng(-25.1234927, -57.3510361), zoom: 14);
+  CameraPosition(target: LatLng(-25.1234927, -57.3510361), zoom: 14);
 
   Completer<GoogleMapController> _mapController = Completer();
 
@@ -57,8 +63,25 @@ class DeliveryOrdersMapController {
           .getLastKnownPosition())!; //latitud y longitud actual
       /// Mueve la cámara del mapa a la latitud y longitud especificada.
       animateCameraToPosition(_position.latitude, _position.longitude);
-      addMarker('delivery', _position.latitude, _position.longitude,
-          'Tu posición', '', deliveryMarker);
+
+      addMarker
+        (
+          'delivery',
+          _position.latitude,
+          _position.longitude,
+          'Tu posición',
+          '',
+          deliveryMarker
+      );
+
+        addMarker(
+          'home',
+          order?.address?['lat'],
+          order?.address?['lng'],
+          'Lugar de entrega',
+          '',
+          homeMarker,
+        );
     } catch (e) {
       print('Error: $e');
     }
@@ -120,7 +143,7 @@ class DeliveryOrdersMapController {
       double longitud = initialPosition.target.longitude;
 
       List<Placemark> address =
-          await placemarkFromCoordinates(latitud, longitud);
+      await placemarkFromCoordinates(latitud, longitud);
 
       if (address.isNotEmpty) {
         String? direction = address[0].thoroughfare ?? '';
@@ -163,4 +186,5 @@ class DeliveryOrdersMapController {
     return BitmapDescriptor.fromBytes(resizedData!.buffer.asUint8List());
   }
 }
+
 
