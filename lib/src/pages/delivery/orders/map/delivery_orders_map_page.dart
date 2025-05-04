@@ -60,6 +60,7 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
       myLocationButtonEnabled: false,
       myLocationEnabled: false,
       markers: Set<Marker>.of(_controller.markers.values),
+      polylines: _controller.polylines,
     );
   }
 
@@ -126,7 +127,7 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
       child: ListTile(
         contentPadding: EdgeInsets.zero,
         title: Text(
-          title ?? '',
+          title ?? 'Sin información',
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
@@ -200,33 +201,9 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
     );
   }
 
-  // Widget _buttonAccept() {
-  //   return SizedBox(
-  //     height: 50,
-  //     child: ElevatedButton.icon(
-  //       onPressed: (){},
-  //       icon: const Icon(Icons.location_on, color: Colors.white),
-  //       label: const Text(
-  //         'Entregar producto',
-  //         style: TextStyle(
-  //           color: Colors.white,
-  //           fontSize: 16,
-  //           fontWeight: FontWeight.bold,
-  //         ),
-  //       ),
-  //       style: ElevatedButton.styleFrom(
-  //         backgroundColor: Colors.blueAccent,
-  //         shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.circular(14),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget _buttonAccept() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),  // Reduce vertical padding para evitar desbordamiento
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: SizedBox(
         width: double.infinity,
         height: 50,

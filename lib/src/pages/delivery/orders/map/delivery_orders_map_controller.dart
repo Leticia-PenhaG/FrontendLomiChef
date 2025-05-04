@@ -3,11 +3,15 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as location;
+import 'package:lomi_chef_to_go/src/utils/app_colors.dart';
+import '../../../../api/environment.dart';
 import '../../../../models/order.dart';
+
 
 class DeliveryOrdersMapController {
   BuildContext? context;
@@ -20,6 +24,8 @@ class DeliveryOrdersMapController {
   Order? order;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{
   };
+  Set<Polyline> polylines = {}; //trazado de ruta
+  List<LatLng> points = [];
 
   Future init(BuildContext context, Function refresh) async {
     this.context = context;
@@ -82,6 +88,11 @@ class DeliveryOrdersMapController {
           '',
           homeMarker,
         );
+
+        LatLng from = new LatLng(_position.latitude, _position.longitude);
+        LatLng to = new LatLng(order?.address?['lat'], order?.address?['lng']);
+
+        setPolylines(from, to);
     } catch (e) {
       print('Error: $e');
     }
@@ -184,6 +195,68 @@ class DeliveryOrdersMapController {
     final ui.FrameInfo fi = await codec.getNextFrame();
     final ByteData? resizedData = await fi.image.toByteData(format: ui.ImageByteFormat.png);
     return BitmapDescriptor.fromBytes(resizedData!.buffer.asUint8List());
+  }
+
+  /*Future<void> setPolylines(LatLng from, LatLng to) async {
+    PointLatLng pointFrom = PointLatLng(from.latitude, from.longitude);
+    PointLatLng pointTo = PointLatLng(from.latitude, from.longitude);
+    PolylineResult result = await PolylinePoints().getRouteBetweenCoordinates(
+        Environment.API_KEY_GOOGLE_MAPS,
+        pointFrom,
+        pointTo
+    );
+
+    for(PointLatLng point in result.points) {
+      points.add(LatLng(point.latitude, point.longitude));
+    }
+
+    Polyline polyline = Polyline(polylineId: PolylineId('poly-routes'),
+    color: AppColors.primaryColor,
+    points: points,
+    width: 5);
+
+    polylines.add(polyline); // ← Aquí va el correcto uso de `add`
+    refresh!();
+  }*/
+
+  Future<void> setPolylines(LatLng from, LatLng to) async {
+    // Limpiar puntos anteriores si es necesario
+    points.clear();
+
+    // Crear los puntos de origen y destino correctamente
+    PointLatLng pointFrom = PointLatLng(from.latitude, from.longitude);
+    PointLatLng pointTo = PointLatLng(to.latitude, to.longitude);
+
+    // Obtener la ruta usando la nueva API con PolylineRequest
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      googleApiKey: Environment.API_KEY_GOOGLE_MAPS,
+      request: PolylineRequest(
+        origin: pointFrom,
+        destination: pointTo,
+        mode: TravelMode.driving,
+      ),
+    );
+
+    // Verificar si hay puntos válidos
+    if (result.points.isNotEmpty) {
+      for (PointLatLng point in result.points) {
+        points.add(LatLng(point.latitude, point.longitude));
+      }
+
+      Polyline polyline = Polyline(
+        polylineId: PolylineId('poly-routes'),
+        color: Colors.deepOrange,
+        points: points,
+        width: 5,
+      );
+
+      polylines.add(polyline); // Agregar la polilínea al conjunto
+    } else {
+      print('No se encontraron puntos en la ruta.');
+    }
+
+    refresh?.call();
   }
 }
 

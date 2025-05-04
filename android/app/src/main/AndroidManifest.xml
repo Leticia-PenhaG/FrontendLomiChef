@@ -35,17 +35,19 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCU51c7EsEyE1_pTXrPsDdMMrpqjstx_pI"/>
-    </application>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <!-- Required to query activities that can process text, see:
-         https://developer.android.com/training/package-visibility and
-         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+    <!-- <meta-data android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyCU51c7EsEyE1_pTXrPsDdMMrpqjstx_pI"/> -->
+    <meta-data android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyADHClcjUO9FiXxuIaOdM_nau9YVUny8k8"/>
+</application>
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+<!-- Required to query activities that can process text, see:
+     https://developer.android.com/training/package-visibility and
+     https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
 
-         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+     In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
