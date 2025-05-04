@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import '../../../../utils/app_colors.dart';
 import 'delivery_orders_map_controller.dart';
 
@@ -87,22 +86,22 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
 
   Widget _cardOrderInfo() {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.4 ,
+      height: MediaQuery.of(context).size.height * 0.4,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white, // Fondo blanco
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(30),
           topLeft: Radius.circular(30),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
+            color: Colors.grey.withOpacity(0.3), // Sombra ligera
             spreadRadius: 5,
             blurRadius: 7,
-            offset: Offset(0,3)
-          )
-        ]
+            offset: Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -125,27 +124,44 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 30),
       child: ListTile(
+        contentPadding: EdgeInsets.zero,
         title: Text(
           title ?? '',
           style: TextStyle(
-              fontSize: 13
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textColor,
           ),
         ),
-        subtitle: Text(subtitle),
-        trailing: Icon(iconData),
+        subtitle: Text(
+          subtitle,
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey,
+          ),
+        ),
+        trailing: Icon(
+          iconData,
+          color: AppColors.secondaryColor,
+        ),
       ),
     );
   }
+
   Widget _clientInfo() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 35, vertical: 20),
       child: Row(
         children: [
           Container(
-            height: 50,
-            width: 50,
+            height: 55,
+            width: 55,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.grey, width: 2),
+            ),
             child: ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+              borderRadius: BorderRadius.circular(30),
               child: FadeInImage(
                 image: _controller.order?.client?['image'] != null
                     ? NetworkImage(_controller.order?.client?['image'])
@@ -158,11 +174,12 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
           ),
           Container(
             margin: EdgeInsets.only(left: 10),
-            child: Text
-            (
-              '${_controller.order?.client?['name'] ?? ''}' '${_controller.order?.client?['lastname'] ?? ''}',
+            child: Text(
+              '${_controller.order?.client?['name'] ?? ''} ${_controller.order?.client?['lastname'] ?? ''}',
               style: TextStyle(
-                fontSize: 16
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textColor,
               ),
               maxLines: 1,
             ),
@@ -171,12 +188,11 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(15)),
-              color: Colors.grey[200]
+              color: Colors.grey[200],
             ),
-            child: IconButton
-            (
+            child: IconButton(
               onPressed: () {},
-              icon: Icon(Icons.phone_android, color:Colors.black)
+              icon: Icon(Icons.phone_android, color: Colors.black),
             ),
           )
         ],
@@ -210,7 +226,7 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
 
   Widget _buttonAccept() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),  // Reduce vertical padding para evitar desbordamiento
       child: SizedBox(
         width: double.infinity,
         height: 50,
