@@ -222,4 +222,51 @@ class OrdersProvider {
       return [];
     }
   }
+
+  Future<List<Order>>getOrdersByClientAndStatus(String idClient, String status) async {
+    try {
+      Uri url = Uri.parse('http://$_url$_api/getOrdersByClientAndStatus/$idClient/$status');
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Authorization': sessionUser.sessionToken ?? '',
+      };
+
+      // Verificación del token antes de realizar la solicitud
+      if (sessionUser.sessionToken == null || sessionUser.sessionToken!.isEmpty) {
+        Fluttertoast.showToast(msg: 'Token de sesión inválido');
+        return [];
+      }
+
+      final res = await http.get(url, headers: headers);
+
+      print('URL solicitada: $url');
+      print('Código de respuesta: ${res.statusCode}');
+      print('Respuesta del servidor: ${res.body}');
+
+      // Manejo de respuesta
+      if (res.statusCode == 401) {
+        Fluttertoast.showToast(msg: 'Sesión expirada');
+        new SharedPreferencesHelper().logout(context, sessionUser.id!);
+        return [];
+      } else if (res.statusCode == 200 || res.statusCode == 201) {
+        try {
+          final List<dynamic> data = json.decode(res.body);
+          List<Order> orders = data.map((item) => Order.fromJson(item)).toList();
+          print("Órdenes obtenidas en frontend: $orders");
+          return orders;
+        } catch (e) {
+          print('Error al parsear JSON: $e');
+          Fluttertoast.showToast(msg: 'Error al procesar las órdenes');
+          return [];
+        }
+      } else {
+        Fluttertoast.showToast(msg: 'Error al traer órdenes: ${res.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print('Error en getByStatus: $e');
+      Fluttertoast.showToast(msg: 'Error en la conexión');
+      return [];
+    }
+  }
 }

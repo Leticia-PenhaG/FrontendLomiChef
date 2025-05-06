@@ -377,7 +377,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
               padding: EdgeInsets.zero,
               children: [
                 _buildDrawerItem(Icons.edit, 'Actualizar perfil', _controllerClient.goToUpdatePage),
-                _buildDrawerItem(Icons.shopping_cart, 'Mis pedidos', () {}),
+                _buildDrawerItem(Icons.shopping_cart, 'Mis pedidos', _controllerClient.goToOrdersList),
 
                 //se controla que el usuario tenga más de un rol para mostrar la opción 'Seleccionar rol'
                 if (_controllerClient.user != null &&

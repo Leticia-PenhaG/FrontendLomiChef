@@ -70,6 +70,10 @@ class ClientProductsListController {
     Navigator.pushNamed(context!, 'client/update');
   }
 
+  void goToOrdersList(){
+    Navigator.pushNamed(context!, 'client/orders/list');
+  }
+
   void goToOrdersCreatePage(){
     Navigator.pushNamed(context!, 'client/orders/create');
   }
