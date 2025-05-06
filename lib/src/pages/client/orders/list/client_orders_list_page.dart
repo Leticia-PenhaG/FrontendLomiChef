@@ -63,7 +63,7 @@ class _ClientOrdersListPageState extends State<ClientOrdersListPage> {
             bottom: TabBar(
               indicatorColor: AppColors.primaryColor,
               labelColor: Colors.black,
-              unselectedLabelColor: Colors.grey[400],
+              unselectedLabelColor: Colors.blueGrey,
               isScrollable: true,
               tabs: List<Widget>.generate(_controllerRestaurant.status.length, (index) {
                 return Tab(
@@ -184,10 +184,10 @@ class _ClientOrdersListPageState extends State<ClientOrdersListPage> {
                       child: Text(
                         //'Cliente: ${order?.client?.name ?? ""}',
                         //'Cliente: "Leti"',
-                        'Cliente: ${order?.client?['name'] ?? ''} ${order?.client?['lastname'] ?? ''}',
+                        'Repartidor: ${order?.delivery?['name'] ?? 'No asignado'} ${order?.delivery?['lastname'] ?? ''}',
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey[700],
+                          color: Colors.black,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),

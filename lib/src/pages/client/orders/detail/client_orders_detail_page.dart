@@ -50,8 +50,8 @@ class _ClientOrdersDetailPageState extends State<ClientOrdersDetailPage> {
                   ...?_controller.selectedProducts.map((p) => _productTile(p)).toList() ?? [],
                   const Divider(height: 32),
                   _infoRow(
-                    'Cliente:',
-                    '${_controller.order?.client?['name'] ?? ''} ${_controller.order?.client?['lastname'] ?? ''}',
+                    'Repartidor:',
+                    '${_controller.order?.delivery?['name'] ?? 'No asignado'} ${_controller.order?.delivery?['lastname'] ?? ''}',
                   ),
                   const SizedBox(height: 8),
                   _infoRow('Entregar en:', _controller.order?.address?['address'] ?? ''),
@@ -66,7 +66,7 @@ class _ClientOrdersDetailPageState extends State<ClientOrdersDetailPage> {
                     fontSize: 18,
                   ),
                   const SizedBox(height: 8),
-                  _controller.order?.status != 'ENTREGA_COMPLETADA' ? _buttonOnTheWay() : Container(),
+                  _controller.order?.status == 'EN_RUTA' ? _buttonOnTheWay() : Container(),
                 ],
               ),
             ),
@@ -177,14 +177,12 @@ class _ClientOrdersDetailPageState extends State<ClientOrdersDetailPage> {
         child: ElevatedButton(
           onPressed: _controller.updateOrderStatus,
           style: ElevatedButton.styleFrom(
-            backgroundColor: _controller.order?.status == 'LISTO_PARA_ENVIO'
-                ? Colors.blue
-                : Colors.green,
+            backgroundColor: Colors.blue,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             elevation: 5,
           ),
           child: Text(
-            _controller.order?.status == 'LISTO_PARA_ENVIO' ? 'Iniciar Entrega' :'Ver el mapa',
+            'Seguir entrega',
             style: const TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),

@@ -47,11 +47,6 @@ class _ClientOrdersMapPageState extends State<ClientOrdersMapPage> {
                 ],
               ),
             ),
-            Positioned(
-              top: 50,
-              left: 15,
-              child: _iconGoogleMaps(),
-            )
           ],
         ),
       ),
@@ -67,15 +62,6 @@ class _ClientOrdersMapPageState extends State<ClientOrdersMapPage> {
       myLocationEnabled: false,
       markers: Set<Marker>.of(_controller.markers.values),
       polylines: _controller.polylines,
-    );
-  }
-
-  Widget _iconGoogleMaps(){
-    return GestureDetector(
-      onTap: _controller.launchGoogleMaps,
-      child: Image.asset('assets/img/maps.png',
-      height: 75,
-      width: 75)
     );
   }
 
@@ -124,13 +110,7 @@ class _ClientOrdersMapPageState extends State<ClientOrdersMapPage> {
           _listTitleAddress(_controller.order?.address?['neighborhood'] ?? '', 'Barrio', Icons.my_location_outlined),
           _listTitleAddress(_controller.order?.address?['address'] ?? '', 'Dirección', Icons.location_on_outlined),
           Divider(color: Colors.grey[400], endIndent: 30, indent: 30),
-          _clientInfo(),
-          Positioned(
-            bottom: 30,
-            left: 20,
-            right: 20,
-            child: _buttonAccept(),
-          ),
+          _deliveryInfo(),
         ],
       ),
     );
@@ -164,7 +144,7 @@ class _ClientOrdersMapPageState extends State<ClientOrdersMapPage> {
     );
   }
 
-  Widget _clientInfo() {
+  Widget _deliveryInfo() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 35, vertical: 20),
       child: Row(
@@ -179,8 +159,8 @@ class _ClientOrdersMapPageState extends State<ClientOrdersMapPage> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(30),
               child: FadeInImage(
-                image: _controller.order?.client?['image'] != null
-                    ? NetworkImage(_controller.order?.client?['image'])
+                image: _controller.order?.delivery?['image'] != null
+                    ? NetworkImage(_controller.order?.delivery?['image'])
                     : AssetImage('assets/img/no-image-icon.png') as ImageProvider,
                 fit: BoxFit.cover,
                 placeholder: AssetImage('assets/img/no-image-icon.png'),
@@ -191,7 +171,7 @@ class _ClientOrdersMapPageState extends State<ClientOrdersMapPage> {
           Container(
             margin: EdgeInsets.only(left: 10),
             child: Text(
-              '${_controller.order?.client?['name'] ?? ''} ${_controller.order?.client?['lastname'] ?? ''}',
+              '${_controller.order?.delivery?['name'] ?? ''} ${_controller.order?.delivery?['lastname'] ?? ''}',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -212,28 +192,6 @@ class _ClientOrdersMapPageState extends State<ClientOrdersMapPage> {
             ),
           )*/ //PHONE ICON
         ],
-      ),
-    );
-  }
-
-  Widget _buttonAccept() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-      child: SizedBox(
-        width: double.infinity,
-        height: 50,
-        child: ElevatedButton(
-          onPressed: _controller.updateToDeliveryCompleted,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primaryColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            elevation: 5,
-          ),
-          child: const Text(
-            'Entregar producto',
-            style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-        ),
       ),
     );
   }
