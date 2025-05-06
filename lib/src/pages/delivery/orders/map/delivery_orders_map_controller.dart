@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:ui' as ui;
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -11,7 +11,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as location;
 import 'package:lomi_chef_to_go/src/models/response_api.dart';
 import 'package:lomi_chef_to_go/src/provider/orders_provider.dart';
-
 import '../../../../api/environment.dart';
 import '../../../../models/order.dart';
 import '../../../../models/user.dart';
@@ -310,6 +309,54 @@ class DeliveryOrdersMapController {
       }
     } else {
       SnackbarHelper.show(context: context!, message: 'Tenés que estar cerca de la dirección de entrega');
+    }
+  }
+
+  // void launchWaze() async {
+  //   var url = 'waze://?ll=${order!.address['lat'].toString()},${order?.address['lng'].toString()}';
+  //   var fallbackUrl =
+  //       'https://waze.com/ul?ll=${order!.address['lat'].toString()},${order?.address['lng'].toString()}&navigate=yes';
+  //   try {
+  //     bool launched =
+  //     await launch(url, forceSafariVC: false, forceWebView: false);
+  //     if (!launched) {
+  //       await launch(fallbackUrl, forceSafariVC: false, forceWebView: false);
+  //     }
+  //   } catch (e) {
+  //     await launch(fallbackUrl, forceSafariVC: false, forceWebView: false);
+  //   }
+  // }
+
+
+
+  void launchGoogleMaps() async {
+    final lat = order!.address?['lat'];
+    final lng = order!.address?['lng'];
+
+    if (lat == null || lng == null) return;
+
+    final url = 'google.navigation:q=$lat,$lng&mode=d';
+    final fallbackUrl = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+
+    try {
+      final bool launched = await launch(
+        url,
+        forceSafariVC: false,
+        forceWebView: false,
+      );
+      if (!launched) {
+        await launch(
+          fallbackUrl,
+          forceSafariVC: false,
+          forceWebView: false,
+        );
+      }
+    } catch (e) {
+      await launch(
+        fallbackUrl,
+        forceSafariVC: false,
+        forceWebView: false,
+      );
     }
   }
 

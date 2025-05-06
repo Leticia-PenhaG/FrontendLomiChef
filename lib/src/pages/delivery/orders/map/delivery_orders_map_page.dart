@@ -34,24 +34,24 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
       body: SafeArea(
         child: Stack(
           children: [
-            Container
-            (
-                height: MediaQuery.of(context).size.height * 0.6,
-                child: _googleMaps()
+            Container(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: _googleMaps(),
             ),
-            // Align(
-            //   alignment: Alignment.center,
-            //   child: _iconActualLocation(),
-            // ),
             SafeArea(
-                child: Column(
-              children:
-              [
-                _buttonCenterPosition(),
-                Spacer(), //UBICA ABAJO
-                _cardOrderInfo(),
-              ],
-            ))
+              child: Column(
+                children: [
+                  _buttonCenterPosition(),
+                  Spacer(),
+                  _cardOrderInfo(),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 50,
+              left: 15,
+              child: _iconGoogleMaps(),
+            )
           ],
         ),
       ),
@@ -67,6 +67,15 @@ class _DeliveryOrdersMapPageState extends State<DeliveryOrdersMapPage> {
       myLocationEnabled: false,
       markers: Set<Marker>.of(_controller.markers.values),
       polylines: _controller.polylines,
+    );
+  }
+
+  Widget _iconGoogleMaps(){
+    return GestureDetector(
+      onTap: _controller.launchGoogleMaps,
+      child: Image.asset('assets/img/maps.png',
+      height: 75,
+      width: 75)
     );
   }
 
