@@ -16,6 +16,7 @@ import '../../../../models/order.dart';
 import '../../../../models/user.dart';
 import '../../../../utils/shared_preferences_helper.dart';
 import '../../../../utils/snackbar_helper.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO ;
 
 class ClientOrdersMapController {
   BuildContext? context;
@@ -30,11 +31,11 @@ class ClientOrdersMapController {
   };
   Set<Polyline> polylines = {}; //trazado de ruta
   List<LatLng> points = [];
-  StreamSubscription? _positionStream;
   OrdersProvider _ordersProvider = new OrdersProvider();
   late User sessionUser;
   final SharedPreferencesHelper _sharedPreferencesHelper = SharedPreferencesHelper();
   late double _distanceBetween;
+  IO.Socket? socket;
 
   Future init(BuildContext context, Function refresh) async {
     this.context = context;
@@ -42,6 +43,18 @@ class ClientOrdersMapController {
     order = Order.fromJson(ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>);
     deliveryMarker = await createMarkerFromImage('assets/img/delivery.png');
     homeMarker = await createMarkerFromImage('assets/img/house.png');
+
+    socket = IO.io('http://${Environment.API_DELIVERY}/orders/delivery',<String, dynamic>{
+      'transports':['websocket'],
+      'autoConnect':false
+    });
+
+    socket?.connect();
+
+    socket?.on('position/${order?.id}', (data) {
+      print('Datos emitidos:${data}');
+    });
+
     sessionUser = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
     _ordersProvider.init(context, sessionUser);
 
@@ -74,7 +87,7 @@ class ClientOrdersMapController {
   }
 
   void dispose() {
-    _positionStream?.cancel(); //para evitar que se quede escuchando cuando el usuario se mueve constantemente o cierre la página
+    socket?.disconnect();
   }
 
   /// Actualiza la ubicación del usuario y centra la cámara en esa posición.
@@ -109,27 +122,6 @@ class ClientOrdersMapController {
         LatLng to = new LatLng(order?.address?['lat'], order?.address?['lng']);
 
         setPolylines(from, to);
-
-      _positionStream = Geolocator.getPositionStream(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.best,
-          distanceFilter: 1,
-        ),
-      ).listen((Position position) {
-        _position = position;
-
-        addMarker(
-          'delivery',
-          _position.latitude,
-          _position.longitude,
-          'Tu posición',
-          '',
-          deliveryMarker,
-        );
-
-        animateCameraToPosition(_position.latitude, _position.longitude);
-        isCloseToDeliveryPosition();
-      });
 
       refresh!();
 

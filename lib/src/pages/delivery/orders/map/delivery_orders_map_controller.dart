@@ -16,6 +16,7 @@ import '../../../../models/order.dart';
 import '../../../../models/user.dart';
 import '../../../../utils/shared_preferences_helper.dart';
 import '../../../../utils/snackbar_helper.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO ;
 
 class DeliveryOrdersMapController {
   BuildContext? context;
@@ -35,6 +36,7 @@ class DeliveryOrdersMapController {
   late User sessionUser;
   final SharedPreferencesHelper _sharedPreferencesHelper = SharedPreferencesHelper();
   late double _distanceBetween;
+  IO.Socket? socket;
 
   Future init(BuildContext context, Function refresh) async {
     this.context = context;
@@ -42,6 +44,14 @@ class DeliveryOrdersMapController {
     order = Order.fromJson(ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>);
     deliveryMarker = await createMarkerFromImage('assets/img/delivery.png');
     homeMarker = await createMarkerFromImage('assets/img/house.png');
+
+    socket = IO.io('http://${Environment.API_DELIVERY}/orders/delivery',<String, dynamic>{
+      'transports':['websocket'],
+      'autoConnect':false
+    });
+
+    socket?.connect();
+
     sessionUser = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
     _ordersProvider.init(context, sessionUser);
 
@@ -74,7 +84,8 @@ class DeliveryOrdersMapController {
   }
 
   void dispose() {
-    _positionStream?.cancel(); //para evitar que se quede escuchando cuando el usuario se mueve constantemente o cierre la página
+    _positionStream?.cancel(); // Detiene la escucha de la ubicación
+    socket?.disconnect();      // Cierra la conexión con el socket
   }
 
   /// Actualiza la ubicación del usuario y centra la cámara en esa posición.
@@ -117,6 +128,7 @@ class DeliveryOrdersMapController {
         ),
       ).listen((Position position) {
         _position = position;
+        emitPosition(); //cuando se tiene posición en tiempo real se emite a socket io
 
         addMarker(
           'delivery',
@@ -150,6 +162,14 @@ class DeliveryOrdersMapController {
         updateLocation();
       }
     }
+  }
+
+  void emitPosition() {
+    socket?.emit('position', {
+      '_id_order':order?.id,
+      'lat':_position.latitude,
+      'lng':_position.longitude,
+    });
   }
 
   /// Mueve la cámara del mapa a la latitud y longitud especificada.
