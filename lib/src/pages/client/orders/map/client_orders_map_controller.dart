@@ -53,6 +53,17 @@ class ClientOrdersMapController {
 
     socket?.on('position/${order?.id}', (data) {
       print('Datos emitidos:${data}');
+
+      addMarker
+        (
+          'delivery',
+          data['lat'],
+          data['lng'],
+          'Tu repartidor',
+          '',
+          deliveryMarker
+      );
+
     });
 
     sessionUser = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
@@ -94,17 +105,28 @@ class ClientOrdersMapController {
   void updateLocation() async {
     try {
       await _determinePosition(); //solicitar permisos y hallar la posición actual
-      _position = (await Geolocator
-          .getLastKnownPosition())!; //latitud y longitud actual
+     /* _position = (await Geolocator
+          .getLastKnownPosition())!;*/ //latitud y longitud actual
       /// Mueve la cámara del mapa a la latitud y longitud especificada.
-      animateCameraToPosition(_position.latitude, _position.longitude);
 
-      addMarker
+      /*addMarker
         (
           'delivery',
           _position.latitude,
           _position.longitude,
           'Tu posición',
+          '',
+          deliveryMarker
+      );*/
+
+      animateCameraToPosition(order!.lat, order!.lng);
+
+      addMarker
+        (
+          'delivery',
+          order!.lat,
+          order!.lng,
+          'Tu repartidor',
           '',
           deliveryMarker
       );
@@ -118,7 +140,7 @@ class ClientOrdersMapController {
           homeMarker,
         );
 
-        LatLng from = new LatLng(_position.latitude, _position.longitude);
+        LatLng from = new LatLng(order!.lat, order!.lng);
         LatLng to = new LatLng(order?.address?['lat'], order?.address?['lng']);
 
         setPolylines(from, to);
@@ -291,66 +313,6 @@ class ClientOrdersMapController {
     refresh?.call();
   }
 
-  void updateToDeliveryCompleted() async {
-    ResponseApi? responseApi = await _ordersProvider.updateToDeliveryCompleted(order!);
-    if (_distanceBetween <= 1500) {
-      if (responseApi!.success) {
-        Fluttertoast.showToast(msg: responseApi.message, toastLength: Toast.LENGTH_LONG);
-        Navigator.pushNamedAndRemoveUntil(
-            context!, 'delivery/orders/list', (route) => false);
-      }
-    } else {
-      SnackbarHelper.show(context: context!, message: 'Tenés que estar cerca de la dirección de entrega');
-    }
-  }
-
-  // void launchWaze() async {
-  //   var url = 'waze://?ll=${order!.address['lat'].toString()},${order?.address['lng'].toString()}';
-  //   var fallbackUrl =
-  //       'https://waze.com/ul?ll=${order!.address['lat'].toString()},${order?.address['lng'].toString()}&navigate=yes';
-  //   try {
-  //     bool launched =
-  //     await launch(url, forceSafariVC: false, forceWebView: false);
-  //     if (!launched) {
-  //       await launch(fallbackUrl, forceSafariVC: false, forceWebView: false);
-  //     }
-  //   } catch (e) {
-  //     await launch(fallbackUrl, forceSafariVC: false, forceWebView: false);
-  //   }
-  // }
-
-
-
-  void launchGoogleMaps() async {
-    final lat = order!.address?['lat'];
-    final lng = order!.address?['lng'];
-
-    if (lat == null || lng == null) return;
-
-    final url = 'google.navigation:q=$lat,$lng&mode=d';
-    final fallbackUrl = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
-
-    try {
-      final bool launched = await launch(
-        url,
-        forceSafariVC: false,
-        forceWebView: false,
-      );
-      if (!launched) {
-        await launch(
-          fallbackUrl,
-          forceSafariVC: false,
-          forceWebView: false,
-        );
-      }
-    } catch (e) {
-      await launch(
-        fallbackUrl,
-        forceSafariVC: false,
-        forceWebView: false,
-      );
-    }
-  }
 
   void isCloseToDeliveryPosition() {
     _distanceBetween = Geolocator.distanceBetween(_position.latitude, _position.longitude, order!.address?['lat'], order!.address?['lng']);

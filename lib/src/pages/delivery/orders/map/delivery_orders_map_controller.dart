@@ -93,7 +93,8 @@ class DeliveryOrdersMapController {
     try {
       await _determinePosition(); //solicitar permisos y hallar la posición actual
       _position = (await Geolocator
-          .getLastKnownPosition())!; //latitud y longitud actual
+          .getLastKnownPosition())!; //se obtiene latitud y longitud actual
+      saveLocation(); //se guarda en la BD las coordenadas del repartidor la primera vez que entra al mapa
       /// Mueve la cámara del mapa a la latitud y longitud especificada.
       animateCameraToPosition(_position.latitude, _position.longitude);
 
@@ -378,6 +379,12 @@ class DeliveryOrdersMapController {
         forceWebView: false,
       );
     }
+  }
+
+  Future<void> saveLocation() async {
+    order?.lat = _position.latitude;
+    order?.lng = _position.longitude;
+    await _ordersProvider.updateLatLng(order!);
   }
 
   void isCloseToDeliveryPosition() {
