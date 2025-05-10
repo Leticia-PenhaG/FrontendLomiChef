@@ -90,6 +90,8 @@ class ClientAddressListController {
     
     ResponseApi? responseApi = await _ordersProvider.createOrder(order);
 
+    Navigator.pushNamed(context!, 'client/payments/create');
+
     Fluttertoast.showToast(msg: 'ORDEN CREADA CORRECTAMENTE');
 
     print('Respuesta orden: ${responseApi?.message}');
