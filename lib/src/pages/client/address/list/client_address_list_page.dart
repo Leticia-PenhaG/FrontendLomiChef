@@ -133,7 +133,7 @@ class _ClientAddressListPageState extends State<ClientAddressListPage> {
             ),
           ),
           child: const Text(
-            'Aceptar',
+            'Pagar',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
