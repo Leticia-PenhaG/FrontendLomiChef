@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "15285256268",
-    "project_id": "fast-food-delivery-app-6a754",
-    "storage_bucket": "fast-food-delivery-app-6a754.firebasestorage.app"
+    "project_number": "560195080389",
+    "project_id": "fast-food-v2",
+    "storage_bucket": "fast-food-v2.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:15285256268:android:dc574bb31f6ce8789874e9",
+        "mobilesdk_app_id": "1:560195080389:android:0b005ad9dabed8530d20ac",
         "android_client_info": {
           "package_name": "com.example.lomi_chef_to_go"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCj4dm06Ycn5OnDyGJNRFPI5uCJr-HrJGo"
+          "current_key": "AIzaSyBMfedZs5_mWLP49TIgzR2LfLI8RZU-3Qg"
         }
       ],
       "services": {
