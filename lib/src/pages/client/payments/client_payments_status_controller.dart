@@ -12,8 +12,7 @@ class ClientPaymentsStatusController {
   }
 
   void finishShopping() {
-    // Lógica para finalizar la compra
-    print('Finalizar compra presionado');
+    Navigator.pushNamedAndRemoveUntil(context!, 'client/products/list', (route) => false);
   }
 }
 

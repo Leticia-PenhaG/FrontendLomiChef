@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-
 import 'client_payments_status_controller.dart';
 
 class ClientPaymentsSuccessfulPage extends StatefulWidget {
