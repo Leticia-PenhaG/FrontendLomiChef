@@ -162,7 +162,8 @@ class ClientAddressListController {
 
     if (responseApi?.success == true) {
       Fluttertoast.showToast(msg: 'ORDEN CREADA CORRECTAMENTE');
-      Navigator.pushNamed(context!, 'client/payments/create');
+      //Navigator.pushNamed(context!, 'client/payments/create');
+      Navigator.pushNamed(context!, 'client/payments/successful_page');
       print('Respuesta orden: ${responseApi?.message}');
     } else {
       SnackbarHelper.show(

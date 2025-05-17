@@ -6,6 +6,7 @@ import 'package:lomi_chef_to_go/src/pages/client/address/map/client_address_map_
 import 'package:lomi_chef_to_go/src/pages/client/orders/create/client_orders_create_page.dart';
 import 'package:lomi_chef_to_go/src/pages/client/orders/list/client_orders_list_page.dart';
 import 'package:lomi_chef_to_go/src/pages/client/orders/map/client_orders_map_page.dart';
+import 'package:lomi_chef_to_go/src/pages/client/payments/client_payments_successful_page.dart';
 import 'package:lomi_chef_to_go/src/pages/client/payments/create/cilent_payments_create_page.dart';
 import 'package:lomi_chef_to_go/src/pages/client/products/list/client_products_list_page.dart';
 import 'package:lomi_chef_to_go/src/pages/client/update/client_update_page.dart';
@@ -61,7 +62,8 @@ class _LomiChefDeliveryAppState extends State<LomiChefDeliveryApp> {
         'client/orders/list': (BuildContext context) => ClientOrdersListPage(),
         'client/orders/map': (BuildContext context) => ClientOrdersMapPage(),
         'client/address/map': (BuildContext context) => ClientAddressMapPage(),
-        'client/payments/create': (BuildContext context) => ClientPaymentsCreatePage(),
+        //'client/payments/create': (BuildContext context) => ClientPaymentsCreatePage(),
+        'client/payments/successful_page': (BuildContext context) => ClientPaymentsSuccessfulPage(),
         'delivery/orders/map': (BuildContext context) => DeliveryOrdersMapPage(),
       },
       theme: ThemeData(
