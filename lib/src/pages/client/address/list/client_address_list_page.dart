@@ -14,12 +14,26 @@ class ClientAddressListPage extends StatefulWidget {
 class _ClientAddressListPageState extends State<ClientAddressListPage> {
   final ClientAddressListController _controller = ClientAddressListController();
   String? _selectedAddressId;
+  double total = 0;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   SchedulerBinding.instance.addPostFrameCallback((_) {
+  //     _controller.init(context, refresh);
+  //   });
+  // }
 
   @override
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      _controller.init(context, refresh);
+      // Obtener el total desde los argumentos
+      final args = ModalRoute.of(context!)?.settings.arguments;
+      if (args != null && args is double) {
+        total = args; // 👈 guardamos el monto
+        _controller.init(context, refresh, total); // le pasamos al controller también
+      }
     });
   }
 
@@ -129,7 +143,11 @@ class _ClientAddressListPageState extends State<ClientAddressListPage> {
           onPressed: _controller.selectedAddressId == null
               ? null
               //: () => _controller.paymentSheetInitialization("5", "USD"),
-              : () => _controller.paymentSheetInitialization("38000", "PYG"),
+              //: () => _controller.paymentSheetInitialization("38000", "PYG"),
+              : () => _controller.paymentSheetInitialization(
+            _controller.total.toInt().toString(), // o _controller.total.toStringAsFixed(0)
+            "PYG",
+          ),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primaryColor,
             shape: RoundedRectangleBorder(

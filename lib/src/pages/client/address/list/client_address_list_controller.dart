@@ -24,6 +24,8 @@ class ClientAddressListController {
   Function? refresh;
   String? selectedAddressId;
   List<my_address.Address> address = [];
+  double _total = 0;
+  double get total => _total;
 
   AddressProvider _addressProvider = new AddressProvider();
   OrdersProvider _ordersProvider = new OrdersProvider();
@@ -33,9 +35,10 @@ class ClientAddressListController {
   late ProgressDialog _progressDialog;
 
 
-  Future init(BuildContext context, Function refresh) async {
+  Future init(BuildContext context, Function refresh, double total) async {
     this.context = context;
     this.refresh = refresh;
+    this._total = total;
     user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
 
     _addressProvider.init(context, user);
@@ -207,7 +210,7 @@ class ClientAddressListController {
         const SnackBar(content: Text("Pago realizado con éxito!")),
       );
 
-      createOrder();
+      createOrder(); // como ya se pagó el pedido, se crea la orden
 
     } on StripeException catch (e) {
       print("Pago cancelado: $e");
