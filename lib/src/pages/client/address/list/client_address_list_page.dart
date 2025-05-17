@@ -143,31 +143,6 @@ class _ClientAddressListPageState extends State<ClientAddressListPage> {
       ),
     );
   }
-
-/*  Widget _buttonNewAddress() {
-    return SizedBox(
-      height: 45,
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: _controller.goToNewAddress,
-        icon: const Icon(Icons.location_on, color: Colors.white),
-        label: const Text(
-          'Agregar nueva dirección',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blueAccent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-    );
-  }*/
 }
 
 
