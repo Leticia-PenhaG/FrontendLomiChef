@@ -93,8 +93,8 @@ import '../models/stripe_transactions_response.dart';
 class StripeProvider {
   late final BuildContext context;
 
-  final String secretKey = 'sk_test_51RNO98QiPvfAEWukK4lWbRcv6s0Gh2OgdD0n8lQBhPf'; // ¡No compartas esto públicamente!
-  final String publishableKey = 'pk_test_51RNO98QiPvfAEWukdYLmw408HaX0kXH3uardB';
+  final String secretKey = 'sk_test_51RNO98QiPvfAEWukLiTVX3uLB8mEtN094nL1zi9JJepRZREsZ2Pi9lPUuAtiI7ZcuYzutsjFs88julp5HJoFlGI7003pRpEOPU'; // ¡No compartas esto públicamente!
+  final String publishableKey = 'pk_test_51RNO98QiPvfAEWukxFVYjilehGCmMt0zuEl71YtBFHYrlpKzgCSxViTmF1XR79guYEBqIfK1n5BXsWNL8FzyeMIp00RGXNfwmm';
 
   void init(BuildContext context) {
     this.context = context;

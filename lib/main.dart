@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:lomi_chef_to_go/src/pages/client/address/create/client_address_create_page.dart';
 import 'package:lomi_chef_to_go/src/pages/client/address/list/client_address_list_page.dart';
 import 'package:lomi_chef_to_go/src/pages/client/address/map/client_address_map_page.dart';
@@ -16,9 +17,17 @@ import 'package:lomi_chef_to_go/src/pages/restaurant/categories/create/restauran
 import 'package:lomi_chef_to_go/src/pages/restaurant/orders/list/restaurant_orders_list_page.dart';
 import 'package:lomi_chef_to_go/src/pages/restaurant/products/create/restaurant_products_create_page.dart';
 import 'package:lomi_chef_to_go/src/roles/roles_page.dart';
+import 'keys.dart';
 import 'src/utils/app_colors.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  Stripe.publishableKey = publishableKey;
+  await Stripe.instance.applySettings();
+
   runApp(const LomiChefDeliveryApp());
 }
 
