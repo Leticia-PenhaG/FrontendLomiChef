@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'client_payments_status_controller.dart';
+import 'package:lomi_chef_to_go/src/utils/app_colors.dart';
 
 class ClientPaymentsSuccessfulPage extends StatefulWidget {
   const ClientPaymentsSuccessfulPage({Key? key}) : super(key: key);
@@ -15,9 +16,7 @@ class _ClientPaymentsSuccessfulPageState extends State<ClientPaymentsSuccessfulP
   @override
   void initState() {
     super.initState();
-    // TODO: implement initState
-    super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       _con.init(context, refresh);
     });
   }
@@ -26,120 +25,91 @@ class _ClientPaymentsSuccessfulPageState extends State<ClientPaymentsSuccessfulP
     setState(() {});
   }
 
-  Widget _clipPathOval() {
-    return ClipPath(
-      clipper: OvalBottomBorderClipper(),
-      child: Container(
-        height: 250,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Container(
         width: double.infinity,
-        color: MyColors.primaryColor,
-        child: SafeArea(
-          child: Column(
-            children: [
-              const Icon(Icons.check_circle, color: Colors.green, size: 150),
-              const Text(
-                'Gracias por tu compra',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                ),
-              ),
-            ],
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFE9F5F2), Color(0xFFFFFFFF)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _textCardDetail() {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-      child: const Text(
-        'Tu orden fue procesada exitosamente',
-        style: TextStyle(
-          fontSize: 17,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
-  Widget _textCardStatus() {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-      child: const Text(
-        'Mira el estado de tu compra en la seccion de MIS PEDIDOS',
-        style: TextStyle(
-          fontSize: 17,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
-  Widget _buttonNext() {
-    return Container(
-      margin: const EdgeInsets.all(20),
-      child: ElevatedButton(
-        onPressed: _con.finishShopping,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: MyColors.primaryColor,
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: Stack(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                height: 50,
-                alignment: Alignment.center,
-                child: const Text(
-                  'FINALIZAR COMPRA',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.green.shade100,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.green.shade200,
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
                   ),
-                ),
+                ],
+              ),
+              padding: const EdgeInsets.all(25),
+              child: const Icon(Icons.check, color: Colors.green, size: 80),
+            ),
+            const SizedBox(height: 30),
+            const Text(
+              '¡Pago exitoso!',
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
             ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                margin: const EdgeInsets.only(left: 50, top: 2),
-                height: 30,
-                child: const Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.white,
-                  size: 30,
-                ),
+            const SizedBox(height: 15),
+            const Text(
+              'Gracias por tu compra',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.black54,
               ),
+              textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 10),
+            const Text(
+              'Podés seguir el estado de tu pedido en la sección "Mis Pedidos".',
+              style: TextStyle(fontSize: 16, color: Colors.black45),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 50),
+            _buildFinishButton(),
           ],
         ),
       ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _clipPathOval(),
-          _textCardDetail(),
-          _textCardStatus(),
-        ],
-      ),
-      bottomNavigationBar: Container(
-        height: 100,
-        child: _buttonNext(),
+  Widget _buildFinishButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: ElevatedButton(
+        onPressed: _con.finishShopping,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          elevation: 4,
+        ),
+        child: const Text(
+          'Finalizar',
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
