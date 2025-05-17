@@ -128,7 +128,8 @@ class _ClientAddressListPageState extends State<ClientAddressListPage> {
           //onPressed: _controller.createOrder,
           onPressed: _controller.selectedAddressId == null
               ? null
-              : () => _controller.paymentSheetInitialization("20", "USD"),
+              //: () => _controller.paymentSheetInitialization("5", "USD"),
+              : () => _controller.paymentSheetInitialization("38000", "PYG"),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primaryColor,
             shape: RoundedRectangleBorder(

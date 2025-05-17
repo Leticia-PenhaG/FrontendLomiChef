@@ -90,44 +90,81 @@ class ClientAddressListController {
   }
 
   /// Crea una orden después de procesar el pago con Stripe
+  // void createOrder() async {
+  //   _progressDialog.show(max: 100, msg: 'Esperá un momento');
+  //
+  //   //var response = await _stripeProvider.payWithCard('${10 * 100}', 'USD');
+  //   var response = await _stripeProvider.payWithCard('10000', 'PYG');
+  //
+  //   _progressDialog.close();
+  //
+  //   // Verificá primero si response no es null
+  //   if (response != null) {
+  //     SnackbarHelper.show(context: context!, message: response.message ?? '');
+  //
+  //     if (response.success == true) {
+  //       my_address.Address a = my_address.Address.fromJson(await _sharedPreferencesHelper.readSessionToken('address'));
+  //       List<Product> selectedProducts = Product.fromJsonList(await _sharedPreferencesHelper.readSessionToken('order')).toList;
+  //
+  //       Order order = Order(
+  //         id: '',
+  //         idDelivery: '',
+  //         idClient: user.id!,
+  //         idAddress: a.id!,
+  //         status: 'CREATED',
+  //         products: selectedProducts,
+  //         lat: 0.0,
+  //         lng: 0.0,
+  //         timeStamp: DateTime.now().millisecondsSinceEpoch,
+  //       );
+  //
+  //       ResponseApi? responseApi = await _ordersProvider.createOrder(order);
+  //
+  //       Navigator.pushNamed(context!, 'client/payments/create');
+  //       Fluttertoast.showToast(msg: 'ORDEN CREADA CORRECTAMENTE');
+  //       print('Respuesta orden: ${responseApi?.message}');
+  //     }
+  //   } else {
+  //     // Manejo si response es null (error en la transacción)
+  //     SnackbarHelper.show(
+  //       context: context!,
+  //       message: 'Error al procesar el pago',
+  //       isError: true,
+  //     );
+  //   }
+  // }
+
+  /// Crea una orden después de procesar el pago con Stripe
   void createOrder() async {
     _progressDialog.show(max: 100, msg: 'Esperá un momento');
 
-    var response = await _stripeProvider.payWithCard('${10 * 100}', 'USD');
+    my_address.Address a = my_address.Address.fromJson(await _sharedPreferencesHelper.readSessionToken('address'));
+    List<Product> selectedProducts = Product.fromJsonList(await _sharedPreferencesHelper.readSessionToken('order')).toList;
+
+    Order order = Order(
+      id: '',
+      idDelivery: '',
+      idClient: user.id!,
+      idAddress: a.id!,
+      status: 'CREATED',
+      products: selectedProducts,
+      lat: 0.0,
+      lng: 0.0,
+      timeStamp: DateTime.now().millisecondsSinceEpoch,
+    );
+
+    ResponseApi? responseApi = await _ordersProvider.createOrder(order);
 
     _progressDialog.close();
 
-    // Verificá primero si response no es null
-    if (response != null) {
-      SnackbarHelper.show(context: context!, message: response.message ?? '');
-
-      if (response.success == true) {
-        my_address.Address a = my_address.Address.fromJson(await _sharedPreferencesHelper.readSessionToken('address'));
-        List<Product> selectedProducts = Product.fromJsonList(await _sharedPreferencesHelper.readSessionToken('order')).toList;
-
-        Order order = Order(
-          id: '',
-          idDelivery: '',
-          idClient: user.id!,
-          idAddress: a.id!,
-          status: 'CREATED',
-          products: selectedProducts,
-          lat: 0.0,
-          lng: 0.0,
-          timeStamp: DateTime.now().millisecondsSinceEpoch,
-        );
-
-        ResponseApi? responseApi = await _ordersProvider.createOrder(order);
-
-        Navigator.pushNamed(context!, 'client/payments/create');
-        Fluttertoast.showToast(msg: 'ORDEN CREADA CORRECTAMENTE');
-        print('Respuesta orden: ${responseApi?.message}');
-      }
+    if (responseApi?.success == true) {
+      Fluttertoast.showToast(msg: 'ORDEN CREADA CORRECTAMENTE');
+      Navigator.pushNamed(context!, 'client/payments/create');
+      print('Respuesta orden: ${responseApi?.message}');
     } else {
-      // Manejo si response es null (error en la transacción)
       SnackbarHelper.show(
         context: context!,
-        message: 'Error al procesar el pago',
+        message: responseApi?.message ?? 'Error al crear la orden',
         isError: true,
       );
     }
@@ -170,7 +207,6 @@ class ClientAddressListController {
         const SnackBar(content: Text("Pago realizado con éxito!")),
       );
 
-      // Aquí podrías llamar a createOrder() si el pago fue exitoso
       createOrder();
 
     } on StripeException catch (e) {
@@ -190,8 +226,9 @@ class ClientAddressListController {
   Future<Map<String, dynamic>?> _createPaymentIntent(String amount, String currency) async {
     try {
       Map<String, dynamic> body = {
-        'amount': (int.parse(amount) * 100).toString(),
-        'currency': currency,
+        //'amount': (int.parse(amount) * 100).toString(), //USD
+        'amount': amount,
+        'currency': currency, // "PYG"
         'payment_method_types[]': 'card',
       };
 
