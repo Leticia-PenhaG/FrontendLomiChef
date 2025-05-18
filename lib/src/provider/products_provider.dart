@@ -80,6 +80,36 @@ class ProductsProvider {
     }
   }
 
+  Future<List<Product>> getProductByCategoryAndProduct(String idCategory, String productName) async {
+    try {
+      Uri url = Uri.parse('http://$_url$_api/findByCategoryAndProduct/$idCategory/$productName');
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Authorization': sessionUser.sessionToken ?? ''
+      };
+
+      final res = await http.get(url, headers: headers);
+
+      if (res.statusCode == 401) {
+        Fluttertoast.showToast(msg: 'Sesión expirada');
+        new SharedPreferencesHelper().logout(context, sessionUser.id!);
+      }
+
+      // final List<dynamic> data = json.decode(res.body); // Asegurar que es una lista
+      // List<Category> categories = data.map((item) => Category.fromJson(item)).toList();
+
+      final data = json.decode(res.body); // Asegurar que es una lista
+      Product product = Product.fromJsonList(data);
+
+      //print("Categorías obtenidas en frontend: $categories");
+
+      return product.toList;
+    } catch (e) {
+      print('Error: $e');
+      return [];
+    }
+  }
+
   Future<http.StreamedResponse?> updateProduct(Product product, List<File> images) async {
     try {
       Uri url = Uri.http(_url, '$_api/update');
