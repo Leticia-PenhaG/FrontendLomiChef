@@ -71,4 +71,53 @@ Future<ResponseApi?> createCategory(Category category) async {
       return null;
     }
   }
+
+  Future<ResponseApi?> updateCategory(Category category) async {
+    try {
+      Uri url = Uri.http(_url, '$_api/update');
+      String bodyParams = json.encode(category);
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Authorization': sessionUser.sessionToken ?? ''
+      };
+
+      final res = await http.put(url, headers: headers, body: bodyParams);
+
+      if (res.statusCode == 401) {
+        Fluttertoast.showToast(msg: 'Sesión expirada');
+        new SharedPreferencesHelper().logout(context, sessionUser.id!);
+      }
+
+      final data = json.decode(res.body);
+      ResponseApi responseApi = ResponseApi.fromJson(data);
+      return responseApi;
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
+  Future<ResponseApi?> deleteCategory(String idCategory) async {
+    try {
+      Uri url = Uri.http(_url, '$_api/delete/$idCategory');
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Authorization': sessionUser.sessionToken ?? ''
+      };
+
+      final res = await http.delete(url, headers: headers);
+
+      if (res.statusCode == 401) {
+        Fluttertoast.showToast(msg: 'Sesión expirada');
+        new SharedPreferencesHelper().logout(context, sessionUser.id!);
+      }
+
+      final data = json.decode(res.body);
+      ResponseApi responseApi = ResponseApi.fromJson(data);
+      return responseApi;
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
 }

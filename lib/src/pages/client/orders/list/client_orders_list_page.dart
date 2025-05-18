@@ -4,18 +4,18 @@ import 'package:flutter/scheduler.dart';
 import '../../../../models/order.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../widgets/no_data_widget.dart';
-import 'delivery_orders_list_controller.dart';
+import 'client_orders_list_controller.dart';
 
-class DeliveryOrdersListPage extends StatefulWidget {
-  const DeliveryOrdersListPage({super.key});
+class ClientOrdersListPage extends StatefulWidget {
+  const ClientOrdersListPage({super.key});
 
   @override
-  State<DeliveryOrdersListPage> createState() => _DeliveryOrdersListPageState();
+  State<ClientOrdersListPage> createState() => _ClientOrdersListPageState();
 }
 
-class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
+class _ClientOrdersListPageState extends State<ClientOrdersListPage> {
 
-  final DeliveryOrdersListController _controllerRestaurant = DeliveryOrdersListController();
+  final ClientOrdersListController _controllerRestaurant = ClientOrdersListController();
   bool _isInitialized = false;
 
   @override
@@ -50,22 +50,20 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(100),
           child: AppBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: Colors.white,
-            // actions: [
-            //   _shoppingBag()
-            // ],
+            title: Text('Mis pedidos'),
+            automaticallyImplyLeading: true,
+            backgroundColor: AppColors.primaryColor,
             flexibleSpace: Column(
               children: [
                 SizedBox(height: 70),
-                _menuDrawer(),
+                // _menuDrawer() eliminado
                 SizedBox(height: 15),
               ],
             ),
             bottom: TabBar(
               indicatorColor: AppColors.primaryColor,
               labelColor: Colors.black,
-              unselectedLabelColor: Colors.grey[400],
+              unselectedLabelColor: Colors.blueGrey,
               isScrollable: true,
               tabs: List<Widget>.generate(_controllerRestaurant.status.length, (index) {
                 return Tab(
@@ -82,7 +80,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
             ),
           ),
         ),
-        drawer: _drawer(),
+        //drawer: _drawer(),
         body: TabBarView(
           children: _controllerRestaurant.status.map((String status) {
             //return _cardOrder(null);
@@ -111,107 +109,6 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
             );
           }).toList(),
         ),
-      ),
-    );
-  }
-
-  Widget _menuDrawer() {
-    return GestureDetector(
-      onTap: _controllerRestaurant.openDrawerBar,
-      child: Container (
-        margin: EdgeInsets.only(left: 20),
-        alignment: Alignment.centerLeft,
-        child: Image.asset('assets/img/menu.png', width: 20, height: 20,),
-      ),
-    );
-
-  }
-
-  Widget _drawer() {
-    return Drawer(
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.only(top: 40.0, left: 16.0, right: 16.0),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.primaryColor,
-                  Color(0xff5cd0b3),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: Colors.white,
-                  backgroundImage: (_controllerRestaurant.user.image != null && _controllerRestaurant.user.image!.isNotEmpty)
-                      ? NetworkImage(_controllerRestaurant.user.image!) as ImageProvider
-                      : const AssetImage('assets/img/no-image-icon.png'),
-                ),
-                const SizedBox(height: 10),
-
-                Text(
-                  '${_controllerRestaurant.user.name ?? ''} ${_controllerRestaurant.user.lastname ?? ''}',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-
-                Text(
-                  _controllerRestaurant.user.email ?? '',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white70,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-                const SizedBox(height: 8),
-
-                Text(
-                  _controllerRestaurant.user.phone ?? '',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white70,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-                const SizedBox(height: 8),
-              ],
-            ),
-          ),
-
-          // Lista de opciones del Drawer
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                if (_controllerRestaurant.user != null &&
-                    _controllerRestaurant.user.roles!.length > 1)
-
-                _buildDrawerItem(
-                  Icons.person,
-                  'Seleccionar rol',
-                  _controllerRestaurant.goToRoles,
-                ) ,
-
-                //const Divider(),
-
-                _buildDrawerItem(Icons.power_settings_new, 'Cerrar sesión', () {
-                  _controllerRestaurant.logout();
-                }, color: Colors.red),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -287,10 +184,10 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
                       child: Text(
                         //'Cliente: ${order?.client?.name ?? ""}',
                         //'Cliente: "Leti"',
-                        'Cliente: ${order?.client?['name'] ?? ''} ${order?.client?['lastname'] ?? ''}',
+                        'Repartidor: ${order?.delivery?['name'] ?? 'No asignado'} ${order?.delivery?['lastname'] ?? ''}',
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey[700],
+                          color: Colors.black,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),

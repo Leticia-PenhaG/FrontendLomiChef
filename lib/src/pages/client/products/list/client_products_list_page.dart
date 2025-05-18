@@ -95,7 +95,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
         body: TabBarView(
           children: _controllerClient.categories.map((Category category) {
              return FutureBuilder(
-               future: _controllerClient.getProducts(category.id!),
+               future: _controllerClient.getProducts(category.id!, _controllerClient.productName),
                builder:(context, AsyncSnapshot<List<Product>> snapshot) {
 
                  if(snapshot.hasData) {
@@ -377,7 +377,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
               padding: EdgeInsets.zero,
               children: [
                 _buildDrawerItem(Icons.edit, 'Actualizar perfil', _controllerClient.goToUpdatePage),
-                _buildDrawerItem(Icons.shopping_cart, 'Mis pedidos', () {}),
+                _buildDrawerItem(Icons.shopping_cart, 'Mis pedidos', _controllerClient.goToOrdersList),
 
                 //se controla que el usuario tenga más de un rol para mostrar la opción 'Seleccionar rol'
                 if (_controllerClient.user != null &&
@@ -461,6 +461,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
         ],
       ),
       child: TextField(
+        onChanged: _controllerClient.onChangedText,
         decoration: InputDecoration(
           hintText: 'Buscar...',
           prefixIcon: Icon(Icons.search, color: Colors.grey[600]),

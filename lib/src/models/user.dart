@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:lomi_chef_to_go/src/models/rol.dart';
+import 'package:lomi_chef_to_go/src/models/user.dart';
 
 class User {
-  String? id; // Cambiar de int? a String?
+  String? id;
   String? email;
   String? password;
   String? phone;
@@ -13,8 +14,10 @@ class User {
   String? sessionToken;
   DateTime? createdAt;
   DateTime? updatedAt;
-  List<Rol>? roles = [];
+  List<Rol>? roles;
+  List<User> toList = [];
 
+  // Constructor principal
   User({
     this.id,
     this.email,
@@ -27,9 +30,10 @@ class User {
     this.sessionToken,
     this.createdAt,
     this.updatedAt,
-    this.roles
+    this.roles,
   });
 
+  // Convertir un JSON a User
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'] is int ? json['id'].toString() : json['id'],
@@ -47,13 +51,23 @@ class User {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
           : null,
-      /*roles: json['roles'] == null ? [] : List<Rol>.from(json['roles'].map((model) => Rol.fromJson(model))) ?? [],*/
-      roles: json['roles'] is String
+      // roles: json['roles'] is String
+      //     ? List<Rol>.from(jsonDecode(json['roles']).map((model) => Rol.fromJson(model)))
+      //     : List<Rol>.from(json['roles'].map((model) => Rol.fromJson(model))), //FORMA ORIGINAL ANTES DE CAMBIAR POR EL CRASH EN SELECCIONAR DELIVERY
+      roles: json['roles'] != null
+          ? (json['roles'] is String
           ? List<Rol>.from(jsonDecode(json['roles']).map((model) => Rol.fromJson(model)))
-          : List<Rol>.from(json['roles'].map((model) => Rol.fromJson(model))),
+          : List<Rol>.from(json['roles'].map((model) => Rol.fromJson(model))))
+          : null,
     );
   }
 
+  // Convertir una lista de JSONs a una lista de User
+  static List<User> fromJsonList(List<dynamic> jsonList) {
+    return jsonList.map((item) => User.fromJson(item)).toList();
+  }
+
+  // Convertir User a Map (para enviar al servidor o guardar)
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -71,6 +85,7 @@ class User {
     };
   }
 
+  // Métodos extra por conveniencia
   static User fromJsonString(String jsonString) {
     final Map<String, dynamic> jsonData = json.decode(jsonString);
     return User.fromJson(jsonData);

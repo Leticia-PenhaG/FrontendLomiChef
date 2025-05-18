@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:lomi_chef_to_go/src/pages/restaurant/orders/detail/restaurant_orders_detail_page.dart';
-import 'package:lomi_chef_to_go/src/provider/orders_provider.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import '../../../../models/order.dart';
 import '../../../../models/user.dart';
+import '../../../../provider/orders_provider.dart';
 import '../../../../utils/shared_preferences_helper.dart';
+import '../detail/client_orders_detail_page.dart';
 
-class RestaurantOrdersListController {
+class ClientOrdersListController {
   BuildContext? context;
   final SharedPreferencesHelper _sharedPreferencesHelper = SharedPreferencesHelper();
   final GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>(); //para poder desplegar el menu de opciones lateral
@@ -44,14 +45,6 @@ class RestaurantOrdersListController {
     Navigator.pushNamedAndRemoveUntil(context!, 'roles', (route) => false);
   }
 
-  void goToCategoriesCreate() {
-    Navigator.pushNamed( context!, 'restaurant/categories/create');
-  }
-
-  void goToProductsCreate() {
-    Navigator.pushNamed( context!, 'restaurant/products/create');
-  }
-
   Future<List<Order>> getOrders(String status) async {
     print('Buscando órdenes con status: $status');
 
@@ -67,7 +60,7 @@ class RestaurantOrdersListController {
 
     print('Status formateado para backend: $formattedStatus');
 
-    return await _ordersProvider.getByStatus(formattedStatus);
+    return await _ordersProvider.getOrdersByClientAndStatus(user.id!, formattedStatus); //pedidos del ciente por estado
   }
 
   //se abre este method cuando se presiona el card para ver el detalle de la orden
@@ -75,7 +68,7 @@ class RestaurantOrdersListController {
     isOrderStatusUpdate = await showMaterialModalBottomSheet
       (
         context: context!,
-        builder: (context) => RestaurantOrdersDetailPage(order: order)
+        builder: (context) => ClientOrdersDetailPage(order: order)
     );
 
     if(isOrderStatusUpdate) {

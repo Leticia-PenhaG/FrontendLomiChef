@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:lomi_chef_to_go/src/models/category.dart';
 import 'package:lomi_chef_to_go/src/pages/client/products/detail/client_products_detail_page.dart';
@@ -15,6 +17,8 @@ class ClientProductsListController {
   final GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>(); //para poder desplegar el menu de opciones lateral
   late User user;
   late Function refresh;
+  Timer? searchOnStoppedTyping;
+  String productName = '';
   CategoriesProvider _categoriesProvider = new CategoriesProvider();
   ProductsProvider _productsProvider = new ProductsProvider();
 
@@ -30,8 +34,27 @@ class ClientProductsListController {
     refresh();
   }
 
-  Future<List<Product>> getProducts(String idCategory) async{
-    return await _productsProvider.getProductByCategory(idCategory);
+  Future<List<Product>> getProducts(String idCategory, String productName) async{
+
+    if(productName.isEmpty) {
+      return await _productsProvider.getProductByCategory(idCategory);
+    }
+    else {
+      return await _productsProvider.getProductByCategoryAndProduct(idCategory, productName);
+    }
+  }
+
+  void onChangedText(String text) {
+    Duration duration = Duration(milliseconds: 800);
+    if(searchOnStoppedTyping != null) {
+      searchOnStoppedTyping?.cancel();
+      refresh();
+    }
+    searchOnStoppedTyping = new Timer(duration, () {
+      productName = text;
+      refresh();
+      print('Texto completo: $productName');
+    });
   }
 
   void logout() {
@@ -68,6 +91,10 @@ class ClientProductsListController {
 
   void goToUpdatePage(){
     Navigator.pushNamed(context!, 'client/update');
+  }
+
+  void goToOrdersList(){
+    Navigator.pushNamed(context!, 'client/orders/list');
   }
 
   void goToOrdersCreatePage(){

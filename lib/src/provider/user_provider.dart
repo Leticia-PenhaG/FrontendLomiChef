@@ -119,6 +119,35 @@ class UserProvider {
     }
   }
 
+  Future<List<User>> loadCouriers() async {
+    try {
+      Uri url = Uri.http(_url, '$_api/loadCouriers');
+
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Authorization': sessionUser?.sessionToken ?? ''
+      };
+
+      final res = await http.get(url, headers: headers);
+
+      if (res.statusCode == 401) {
+        Fluttertoast.showToast(msg: 'La sesión expiró');
+        SharedPreferencesHelper().logout(context, sessionUser?.id ?? '');
+        return [];
+      }
+
+      final data = json.decode(res.body);
+
+      // Si responde con un objeto con clave 'data', usá esto:
+      List<User> userList = User.fromJsonList(data['data']);
+      return userList;
+
+    } catch (e) {
+      print('Error: $e');
+      return [];
+    }
+  }
+
   Future<ResponseApi?> login (String email, String password) async {
     try {
       Uri url = Uri.http(_url, '$_api/login');

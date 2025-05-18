@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:lomi_chef_to_go/src/api/environment.dart';
 import 'package:path/path.dart';
 import '../models/product.dart';
+import '../models/response_api.dart';
 import '../models/user.dart';
 import '../utils/shared_preferences_helper.dart';
 
@@ -76,6 +77,87 @@ class ProductsProvider {
     } catch (e) {
       print('Error: $e');
       return [];
+    }
+  }
+
+  Future<List<Product>> getProductByCategoryAndProduct(String idCategory, String productName) async {
+    try {
+      Uri url = Uri.parse('http://$_url$_api/findByCategoryAndProduct/$idCategory/$productName');
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Authorization': sessionUser.sessionToken ?? ''
+      };
+
+      final res = await http.get(url, headers: headers);
+
+      if (res.statusCode == 401) {
+        Fluttertoast.showToast(msg: 'Sesión expirada');
+        new SharedPreferencesHelper().logout(context, sessionUser.id!);
+      }
+
+      // final List<dynamic> data = json.decode(res.body); // Asegurar que es una lista
+      // List<Category> categories = data.map((item) => Category.fromJson(item)).toList();
+
+      final data = json.decode(res.body); // Asegurar que es una lista
+      Product product = Product.fromJsonList(data);
+
+      //print("Categorías obtenidas en frontend: $categories");
+
+      return product.toList;
+    } catch (e) {
+      print('Error: $e');
+      return [];
+    }
+  }
+
+  Future<http.StreamedResponse?> updateProduct(Product product, List<File> images) async {
+    try {
+      Uri url = Uri.http(_url, '$_api/update');
+      var request = http.MultipartRequest('PUT', url);
+      request.headers['Authorization'] = sessionUser.sessionToken!;
+
+      request.fields['product'] = jsonEncode(product.toJson());
+
+      for (int i = 0; i < images.length; i++) {
+        var stream = http.ByteStream(images[i].openRead());
+        var length = await images[i].length();
+        var multipartFile = http.MultipartFile(
+          'images',
+          stream,
+          length,
+          filename: basename(images[i].path),
+        );
+        request.files.add(multipartFile);
+      }
+
+      return await request.send();
+    } catch (e) {
+      print('Error al actualizar producto: $e');
+      return null;
+    }
+  }
+
+  Future<ResponseApi?> deleteProduct(String idProduct) async {
+    try {
+      Uri url = Uri.http(_url, '$_api/delete/$idProduct');
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Authorization': sessionUser.sessionToken ?? ''
+      };
+
+      final res = await http.delete(url, headers: headers);
+
+      if (res.statusCode == 401) {
+        Fluttertoast.showToast(msg: 'Sesión expirada');
+        new SharedPreferencesHelper().logout(context, sessionUser.id!);
+      }
+
+      final data = json.decode(res.body);
+      ResponseApi responseApi = ResponseApi.fromJson(data);
+      return responseApi;
+    } catch (e) {
+      print('Error: $e');
+      return null;
     }
   }
 
