@@ -37,6 +37,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  pushNotificationsProvider.requestNotificationPermission();
   pushNotificationsProvider.initNotifications();
 
   Stripe.publishableKey = publishableKey;

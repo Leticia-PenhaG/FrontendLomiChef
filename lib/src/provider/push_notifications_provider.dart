@@ -9,17 +9,21 @@ class PushNotificationsProvider {
   PushNotificationsProvider? pushNotificationsProvider;
 
   void initNotifications() async {
-
     channel = const AndroidNotificationChannel(
-      'high_importance_channel', // id
-      'High Importance Notifications', // title
-      description:
-      'This channel is used for important notifications.', // description
+      'high_importance_channel',
+      'High Importance Notifications',
+      description: 'This channel is used for important notifications.',
       importance: Importance.high,
     );
 
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
+    var initializationSettingsAndroid =
+    const AndroidInitializationSettings('launch_background');
+    var initializationSettings =
+    InitializationSettings(android: initializationSettingsAndroid);
+
+    await flutterLocalNotificationsPlugin?.initialize(initializationSettings);
 
     await flutterLocalNotificationsPlugin
         ?.resolvePlatformSpecificImplementation<
@@ -74,4 +78,14 @@ class PushNotificationsProvider {
     });
   }
 
+  void requestNotificationPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    print('Permiso de notificación: ${settings.authorizationStatus}');
+  }
 }
