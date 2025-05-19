@@ -171,6 +171,8 @@ class ClientAddressListController {
         message: responseApi?.message ?? 'Error al crear la orden',
         isError: true,
       );
+      // Redirigir a la pantalla de error
+      Navigator.pushNamed(context!, 'client/payments/error_page');
     }
   }
 
@@ -221,8 +223,40 @@ class ClientAddressListController {
           content: Text("El pago fue cancelado."),
         ),
       );
+      Navigator.pushNamed(context!, 'client/payments/error_page');
     } catch (e, s) {
       print("Error al mostrar PaymentSheet: $e\n$s");
+    }
+  }
+
+  String getErrorMessageFromStripe(String? code, String? declineCode) {
+    if (code == 'card_declined') {
+      switch (declineCode) {
+        case 'insufficient_funds':
+          return 'Tu tarjeta no cuenta con fondos suficientes. Probá con otra tarjeta o medio de pago.';
+        case 'lost_card':
+          return 'La tarjeta fue reportada como extraviada. Intentá con otro medio de pago.';
+        case 'stolen_card':
+          return 'La tarjeta fue reportada como robada. No se puede procesar el pago.';
+        case 'card_velocity_exceeded':
+          return 'Se superó el límite de intentos con esta tarjeta. Esperá un momento e intentá más tarde.';
+        case 'generic_decline':
+        default:
+          return 'Tu tarjeta fue rechazada. Verificá los datos o intentá con otro medio de pago.';
+      }
+    }
+
+    switch (code) {
+      case 'expired_card':
+        return 'Tu tarjeta ha expirado. Verificá la fecha de vencimiento o utilizá una tarjeta válida.';
+      case 'incorrect_cvc':
+        return 'El código de seguridad (CVC) es incorrecto. Asegurate de ingresar los tres dígitos del reverso de tu tarjeta.';
+      case 'processing_error':
+        return 'Hubo un error de procesamiento inesperado. Intentá nuevamente más tarde o utilizá otro método de pago.';
+      case 'incorrect_number':
+        return 'El número de tarjeta es incorrecto. Verificá e ingresá nuevamente.';
+      default:
+        return 'Ocurrió un error al procesar tu pago. Por favor, revisá los datos e intentá nuevamente.';
     }
   }
 
