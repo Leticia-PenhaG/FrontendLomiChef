@@ -12,8 +12,8 @@ dependencies {
 
 android {
     namespace = "com.example.lomi_chef_to_go"
-    //compileSdk = flutter.compileSdkVersion
-    compileSdk = 33
+    compileSdk = flutter.compileSdkVersion
+    //compileSdk = 33
     ndkVersion = flutter.ndkVersion
 
 //    compileOptions {

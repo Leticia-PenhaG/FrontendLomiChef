@@ -6,7 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class PushNotificationsProvider {
   late AndroidNotificationChannel channel;
   FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
-  PushNotificationsProvider? pushNotificationsProvider;
+  //PushNotificationsProvider? pushNotificationsProvider;
 
   void initNotifications() async {
     channel = const AndroidNotificationChannel(
@@ -43,14 +43,18 @@ class PushNotificationsProvider {
         .getInitialMessage()
         .then((RemoteMessage? message) {
       if (message != null) {
-        print('NUEVA NOTIFICACION: ${message.data}');
+         print('NUEVA NOTIFICACION: ${message.data}');
+        // Navigator.pushNamed(context, '/message',
+        //   arguments: MessageArgument(message, true));
+
       }
     });
 
+    //RECIBIR NOTIFICACIONES EN PRIMER PLANO
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
-      if (notification != null && android != null && !kIsWeb) {
+      if (notification != null && android != null /*&& !kIsWeb*/) {
         flutterLocalNotificationsPlugin?.show(
           notification.hashCode,
           notification.title,
