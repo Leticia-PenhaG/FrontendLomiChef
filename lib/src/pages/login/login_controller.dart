@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lomi_chef_to_go/src/provider/push_notifications_provider.dart';
+import 'package:lomi_chef_to_go/src/provider/push_notifications_provider.dart';
 import 'package:lomi_chef_to_go/src/provider/user_provider.dart';
 
 import '../../models/response_api.dart';
@@ -12,6 +14,8 @@ class LoginController {
   TextEditingController passwordController = TextEditingController();
 
   UserProvider usersProvider = new UserProvider();
+  PushNotificationsProvider pushNotificationsProvider = new PushNotificationsProvider();
+
   final SharedPreferencesHelper _sharedPreferencesHelper =
   SharedPreferencesHelper();
 
@@ -29,6 +33,9 @@ class LoginController {
 
     // Si el token de sesión no es nulo, redirige al usuario al home
     if (user.sessionToken != null) {
+
+      pushNotificationsProvider.saveToken(user, context); //SE GUARDA EL TOKEN PUSH NOTIFICATIONS
+
       if (user.roles!.length > 1) {
         // Si tiene más de un rol, lo redirigimos a la pantalla de selección de roles
         Navigator.pushNamedAndRemoveUntil(context, 'roles', (route) => false);
@@ -75,6 +82,8 @@ class LoginController {
 
         // Guarda los datos del usuario en sharedpreferences clave 'user'.
         _sharedPreferencesHelper.saveSessionToken('user', user.toJson());
+
+        pushNotificationsProvider.saveToken(user, context); //SE GUARDA EL TOKEN PUSH NOTIFICATIONS
 
         print('Usuario logueado: ${user.toJson()}');
 

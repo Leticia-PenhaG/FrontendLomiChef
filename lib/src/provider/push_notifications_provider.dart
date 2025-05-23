@@ -1,7 +1,11 @@
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:lomi_chef_to_go/src/provider/user_provider.dart';
+
+import '../models/user.dart';
 
 class PushNotificationsProvider {
   late AndroidNotificationChannel channel;
@@ -92,4 +96,26 @@ class PushNotificationsProvider {
 
     print('Permiso de notificación: ${settings.authorizationStatus}');
   }
+
+  //1
+  void saveToken(User user, BuildContext context) async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    UserProvider usersProvider = new UserProvider();
+    usersProvider.init(context,sessionUser: user);
+    usersProvider.updateNotificationToken(user.id!, token!);
+
+  }
+
+  // void saveToken(User user, BuildContext context) async {
+  //   String? token = await FirebaseMessaging.instance.getToken();
+  //
+  //   if (token == null) {
+  //     print('Token de notificaciones es null. No se actualizará.');
+  //     return;
+  //   }
+  //
+  //   UserProvider usersProvider = UserProvider();
+  //   usersProvider.init(context, sessionUser: user);
+  //   usersProvider.updateNotificationToken(user.id, token);
+  // }
 }
