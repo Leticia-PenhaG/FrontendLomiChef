@@ -39,6 +39,7 @@ void main() async {
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
+  PushNotificationsProvider notificationsProvider = PushNotificationsProvider();
   pushNotificationsProvider.requestNotificationPermission();
   pushNotificationsProvider.initNotifications();
 

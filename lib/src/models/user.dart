@@ -12,6 +12,7 @@ class User {
   bool isAvailable;
   String lastname;
   String? sessionToken;
+  String? notificationToken;
   DateTime? createdAt;
   DateTime? updatedAt;
   List<Rol>? roles;
@@ -28,6 +29,7 @@ class User {
     this.isAvailable = false,
     required this.lastname,
     this.sessionToken,
+    this.notificationToken,
     this.createdAt,
     this.updatedAt,
     this.roles,
@@ -45,6 +47,7 @@ class User {
       isAvailable: json['is_available'] ?? false,
       lastname: json['lastname'] ?? '',
       sessionToken: json['session_token'] ?? '',
+      notificationToken: json['notification_token'] ?? '',
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,
@@ -79,6 +82,7 @@ class User {
       'is_available': isAvailable,
       'lastname': lastname,
       'session_token': sessionToken,
+      'notification_token': notificationToken,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
       'roles': roles?.map((rol) => rol.toJson()).toList(),

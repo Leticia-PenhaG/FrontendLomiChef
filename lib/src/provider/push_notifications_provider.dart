@@ -1,16 +1,19 @@
 
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/services.dart' show rootBundle;
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:lomi_chef_to_go/src/provider/user_provider.dart';
-
+import 'package:googleapis_auth/auth_io.dart';
 import '../models/user.dart';
-
+import 'package:http/http.dart' as http;
 class PushNotificationsProvider {
   late AndroidNotificationChannel channel;
   FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
-  //PushNotificationsProvider? pushNotificationsProvider;
 
   void initNotifications() async {
     channel = const AndroidNotificationChannel(
@@ -47,7 +50,7 @@ class PushNotificationsProvider {
         .getInitialMessage()
         .then((RemoteMessage? message) {
       if (message != null) {
-         print('NUEVA NOTIFICACION: ${message.data}');
+        print('NUEVA NOTIFICACION: ${message.data}');
         // Navigator.pushNamed(context, '/message',
         //   arguments: MessageArgument(message, true));
 
@@ -58,11 +61,26 @@ class PushNotificationsProvider {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
-      if (notification != null && android != null /*&& !kIsWeb*/) {
+
+      if (notification != null && android != null) {
         flutterLocalNotificationsPlugin?.show(
           notification.hashCode,
           notification.title,
           notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              channelDescription: channel.description,
+              icon: 'launch_background',
+            ),
+          ),
+        );
+      } else if (message.data.isNotEmpty) {
+        flutterLocalNotificationsPlugin?.show(
+          DateTime.now().millisecondsSinceEpoch ~/ 1000,
+          message.data['title'],
+          message.data['body'],
           NotificationDetails(
             android: AndroidNotificationDetails(
               channel.id,
@@ -106,16 +124,87 @@ class PushNotificationsProvider {
 
   }
 
-  // void saveToken(User user, BuildContext context) async {
-  //   String? token = await FirebaseMessaging.instance.getToken();
+  //VID
+  // Future<void> sendMessage(String to, Map<String, dynamic> data, String title, String body) async {
+  //   Uri uri = Uri.https('fcm.googleapis.com', '/fcm/send');
   //
-  //   if (token == null) {
-  //     print('Token de notificaciones es null. No se actualizará.');
-  //     return;
-  //   }
-  //
-  //   UserProvider usersProvider = UserProvider();
-  //   usersProvider.init(context, sessionUser: user);
-  //   usersProvider.updateNotificationToken(user.id, token);
+  //   await http.post(
+  //     uri,
+  //     headers: <String, String>{
+  //       'Content-Type': 'application/json',
+  //       'Authorization': 'key=AAAAaJGw12Q:APA91bGMfuT0QFCJd6e7Evg6iaoXWRx1Xrgell3VPRIN535BFxQfr33t1Ak',
+  //     },
+  //     body: jsonEncode(
+  //       <String, dynamic>{
+  //         'notification': <String, dynamic>{
+  //           'body': body,
+  //           'title': title,
+  //         },
+  //         'priority': 'high',
+  //         'ttl': '4500s',
+  //         'data': data,
+  //         'to': to,
+  //       },
+  //     ),
+  //   );
   // }
+
+  Future<void> sendMessageFCMV1({
+    required String fcmToken,
+    required String title,
+    required String body,
+    Map<String, String>? data,
+  }) async {
+    final accessToken = await getAccessTokenFromServiceAccount(); // Debes implementarlo
+
+    final uri = Uri.parse('https://fcm.googleapis.com/v1/projects/fast-food-v2/messages:send');
+
+    final messagePayload = {
+      'message': {
+        'token': fcmToken,
+        'notification': {
+          'title': title,
+          'body': body,
+        },
+        'data': data ?? {},
+      }
+    };
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      },
+      body: jsonEncode(messagePayload),
+    );
+
+    if (response.statusCode == 200) {
+      print('Notification sent successfully');
+    } else {
+      print('Failed to send notification: ${response.body}');
+    }
+  }
+
+  Future<String> getAccessTokenFromServiceAccount() async {
+    // Carga el archivo de la cuenta de servicio
+    //final serviceAccountJson = File('assets/credentials/service_account.json').readAsStringSync();
+    final serviceAccountJson = await rootBundle.loadString('assets/credentials/service-account.json');
+
+    final credentials = ServiceAccountCredentials.fromJson(serviceAccountJson);
+
+    // Define los alcances requeridos para FCM v1
+    const scopes = ['https://www.googleapis.com/auth/firebase.messaging'];
+
+    // Crea un cliente autenticado
+    final client = await clientViaServiceAccount(credentials, scopes);
+
+    // Extrae el access token
+    final accessToken = client.credentials.accessToken.data;
+
+    // Cierra el cliente después del uso
+    client.close();
+
+    return accessToken;
+  }
 }

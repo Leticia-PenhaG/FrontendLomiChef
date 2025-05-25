@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lomi_chef_to_go/src/models/response_api.dart';
 import 'package:lomi_chef_to_go/src/models/user.dart';
 import 'package:lomi_chef_to_go/src/provider/orders_provider.dart';
+import 'package:lomi_chef_to_go/src/provider/push_notifications_provider.dart';
 import 'package:lomi_chef_to_go/src/provider/user_provider.dart';
 import 'package:lomi_chef_to_go/src/utils/shared_preferences_helper.dart';
 import 'package:lomi_chef_to_go/src/utils/snackbar_helper.dart';
@@ -30,17 +31,24 @@ class RestaurantOrdersDetailController {
 
   UserProvider _userProvider = new UserProvider();
   OrdersProvider _ordersProvider = new OrdersProvider();
+  PushNotificationsProvider pushNotificationsProvider = new PushNotificationsProvider();
 
   void init(BuildContext context, Function refresh, Order order) async{
     this.context = context;
     this.refresh = refresh;
     this.order = order;
 
-    user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user'));
+    user = User.fromJson(await _sharedPreferencesHelper.readSessionToken('user')) ;
     _userProvider.init(context, sessionUser: user);
     _ordersProvider.init(context,  user!);
 
-    selectedProducts = Product.fromJsonList(await _sharedPreferencesHelper.readSessionToken('order')).toList; //trae del sharepreference la orden    //PARA CONTROLAR QUÉ PRODUCTOS YA FUERON AÑADIDOS Y NO PERDER LA LISTA AL AGREGAR NUEVOS PRODUCTOS
+    var orderData = await _sharedPreferencesHelper.readSessionToken('order') ?? [];
+    if (orderData != null) {
+      selectedProducts = Product.fromJsonList(orderData).toList;
+    } else {
+      selectedProducts = [];
+    }
+
 
     getTotal();
     await getUsers();
@@ -93,8 +101,8 @@ class RestaurantOrdersDetailController {
 
   Future<void> getUsers() async {
     users = await _userProvider.loadCouriers();
-     print('REPARTIDORES OBTENIDOS: ${users.length}');
-     print('NOMBRES: ${users.map((e) => e.name).toList()}');
+    print('REPARTIDORES OBTENIDOS: ${users.length}');
+    print('NOMBRES: ${users.map((e) => e.name).toList()}');
   }
 
   void updateOrder() async {
@@ -103,8 +111,17 @@ class RestaurantOrdersDetailController {
 
       ResponseApi? responseApi = await _ordersProvider.markOrderAsReadyToDeliver(order!);
 
+      // Aseguramos que idDelivery no sea null
+      User? deliveryUser = await _userProvider.getUserById(order!.idDelivery!);
+
+      if (deliveryUser != null && deliveryUser.notificationToken != null) {
+        print('TOKEN DE NOTIFICACIÓN DEL DELIVERY: ${deliveryUser.notificationToken}');
+        sendNotification(deliveryUser.notificationToken!);
+      } else {
+        print('No se pudo obtener el usuario delivery o no tiene token de notificación.');
+      }
+
       if (responseApi != null) {
-        //SnackbarHelper.show(context: context!, message: responseApi.message);
         Fluttertoast.showToast(msg: responseApi.message, toastLength: Toast.LENGTH_LONG);
         Navigator.pop(context!, true);
       } else {
@@ -116,4 +133,20 @@ class RestaurantOrdersDetailController {
     }
   }
 
+  void sendNotification(String tokenDelivery) {
+    if (tokenDelivery.isEmpty) {
+      print('Token de notificación vacío, se omite el envío');
+      return;
+    }
+
+    pushNotificationsProvider.sendMessageFCMV1(
+      fcmToken: tokenDelivery,
+      title: 'Pedido asignado',
+      body: 'Se te asignó un nuevo pedido',
+      data: {
+        'click_action': 'FLUTTER_NOTIFICATION_CLICK'//,
+        //'type': 'pedido_asignado',
+      },
+    );
+  }
 }
