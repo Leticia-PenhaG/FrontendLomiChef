@@ -1,11 +1,8 @@
 
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:lomi_chef_to_go/src/provider/user_provider.dart';
 import 'package:googleapis_auth/auth_io.dart';
@@ -123,31 +120,6 @@ class PushNotificationsProvider {
     usersProvider.updateNotificationToken(user.id!, token!);
 
   }
-
-  //VID
-  // Future<void> sendMessage(String to, Map<String, dynamic> data, String title, String body) async {
-  //   Uri uri = Uri.https('fcm.googleapis.com', '/fcm/send');
-  //
-  //   await http.post(
-  //     uri,
-  //     headers: <String, String>{
-  //       'Content-Type': 'application/json',
-  //       'Authorization': 'key=AAAAaJGw12Q:APA91bGMfuT0QFCJd6e7Evg6iaoXWRx1Xrgell3VPRIN535BFxQfr33t1Ak',
-  //     },
-  //     body: jsonEncode(
-  //       <String, dynamic>{
-  //         'notification': <String, dynamic>{
-  //           'body': body,
-  //           'title': title,
-  //         },
-  //         'priority': 'high',
-  //         'ttl': '4500s',
-  //         'data': data,
-  //         'to': to,
-  //       },
-  //     ),
-  //   );
-  // }
 
   Future<void> sendMessageFCMV1({
     required String fcmToken,
