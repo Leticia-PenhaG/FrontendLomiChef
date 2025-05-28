@@ -185,6 +185,46 @@ class UserProvider {
     }
   }
 
+  Future<List<String>> getAdminsNotificationTokens() async {
+    try {
+      Uri url = Uri.http(_url, '$_api/getAdminsNotificationTokens');
+
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Authorization': sessionUser?.sessionToken ?? ''
+      };
+
+      final res = await http.get(url, headers: headers);
+
+      if (res.statusCode == 401) {
+        Fluttertoast.showToast(msg: 'La sesión expiró');
+        SharedPreferencesHelper().logout(context, sessionUser?.id ?? '');
+        return [];
+      }
+
+      final Map<String, dynamic> body = json.decode(res.body);
+
+      if (body.containsKey('data') && body['data'] is List) {
+        final List<dynamic> rawTokens = body['data'] ?? [];
+
+        final tokens = rawTokens
+            .where((e) => e != null && e is String)
+            .map((e) => e as String)
+            .toList();
+
+        print('TOKENS PARA NOTIFICACIÓN: $tokens');
+        return tokens;
+      } else {
+        print('Formato inesperado: ${res.body}');
+        return [];
+      }
+
+    } catch (e) {
+      print('Error al obtener tokens: $e');
+      return [];
+    }
+  }
+
   Future<ResponseApi?> login (String email, String password) async {
     try {
       Uri url = Uri.http(_url, '$_api/login');

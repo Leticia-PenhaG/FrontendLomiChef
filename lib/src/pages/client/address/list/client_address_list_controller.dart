@@ -15,7 +15,10 @@ import 'package:lomi_chef_to_go/src/provider/orders_provider.dart';
 import 'package:lomi_chef_to_go/src/utils/shared_preferences_helper.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
 import '../../../../../keys.dart';
+import '../../../../../main.dart';
 import '../../../../models/user.dart';
+import '../../../../provider/push_notifications_provider.dart';
+import '../../../../provider/user_provider.dart';
 import '../../../../utils/snackbar_helper.dart';
 
 class ClientAddressListController {
@@ -30,9 +33,11 @@ class ClientAddressListController {
   AddressProvider _addressProvider = new AddressProvider();
   OrdersProvider _ordersProvider = new OrdersProvider();
   StripeProvider _stripeProvider = new StripeProvider();
+  UserProvider _userProvider = new UserProvider();
   late User user;
   SharedPreferencesHelper _sharedPreferencesHelper = new SharedPreferencesHelper();
   late ProgressDialog _progressDialog;
+  List<String> tokens = [];
 
 
   Future init(BuildContext context, Function refresh, double total) async {
@@ -93,51 +98,6 @@ class ClientAddressListController {
   }
 
   /// Crea una orden después de procesar el pago con Stripe
-  // void createOrder() async {
-  //   _progressDialog.show(max: 100, msg: 'Esperá un momento');
-  //
-  //   //var response = await _stripeProvider.payWithCard('${10 * 100}', 'USD');
-  //   var response = await _stripeProvider.payWithCard('10000', 'PYG');
-  //
-  //   _progressDialog.close();
-  //
-  //   // Verificá primero si response no es null
-  //   if (response != null) {
-  //     SnackbarHelper.show(context: context!, message: response.message ?? '');
-  //
-  //     if (response.success == true) {
-  //       my_address.Address a = my_address.Address.fromJson(await _sharedPreferencesHelper.readSessionToken('address'));
-  //       List<Product> selectedProducts = Product.fromJsonList(await _sharedPreferencesHelper.readSessionToken('order')).toList;
-  //
-  //       Order order = Order(
-  //         id: '',
-  //         idDelivery: '',
-  //         idClient: user.id!,
-  //         idAddress: a.id!,
-  //         status: 'CREATED',
-  //         products: selectedProducts,
-  //         lat: 0.0,
-  //         lng: 0.0,
-  //         timeStamp: DateTime.now().millisecondsSinceEpoch,
-  //       );
-  //
-  //       ResponseApi? responseApi = await _ordersProvider.createOrder(order);
-  //
-  //       Navigator.pushNamed(context!, 'client/payments/create');
-  //       Fluttertoast.showToast(msg: 'ORDEN CREADA CORRECTAMENTE');
-  //       print('Respuesta orden: ${responseApi?.message}');
-  //     }
-  //   } else {
-  //     // Manejo si response es null (error en la transacción)
-  //     SnackbarHelper.show(
-  //       context: context!,
-  //       message: 'Error al procesar el pago',
-  //       isError: true,
-  //     );
-  //   }
-  // }
-
-  /// Crea una orden después de procesar el pago con Stripe
   void createOrder() async {
     _progressDialog.show(max: 100, msg: 'Esperá un momento');
 
@@ -163,6 +123,14 @@ class ClientAddressListController {
     if (responseApi?.success == true) {
       Fluttertoast.showToast(msg: 'ORDEN CREADA CORRECTAMENTE');
       //Navigator.pushNamed(context!, 'client/payments/create');
+
+      //SI SE CREÓ LA ORDEN CORRECTAMENTE, SE LE REDIRIGE A LA PÁGINA DE PEDIDO EXITOSO Y SE ENVÍA LA NOTIFICACIÓN
+      _userProvider.init(context!,sessionUser: user);
+      tokens = await _userProvider.getAdminsNotificationTokens();
+      print('TOKENS PARA NOTIFICACIÓN: $tokens');
+
+      sendNotification();
+
       Navigator.pushNamed(context!, 'client/payments/successful_page');
       print('Respuesta orden: ${responseApi?.message}');
     } else {
@@ -285,5 +253,26 @@ class ClientAddressListController {
       print("Error al crear PaymentIntent: $e");
       return null;
     }
+  }
+
+  void sendNotification() {
+
+    List<String> registration_ids = [];
+
+    tokens.forEach((token) {
+      if (token != null) {
+        registration_ids.add(token);
+      }
+    });
+
+    pushNotificationsProvider.sendMessageFCMV1MultipleUsers(
+      fcmTokenList: registration_ids,
+      title: 'COMPRA EXITOSA',
+      body: 'Un cliente realizó un pedido',
+      data: {
+        'click_action': 'FLUTTER_NOTIFICATION_CLICK'//,
+        //'type': 'pedido_asignado',
+      },
+    );
   }
 }
