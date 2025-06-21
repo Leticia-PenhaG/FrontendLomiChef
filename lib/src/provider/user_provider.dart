@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 class UserProvider {
   final String _url = Environment.API_DELIVERY;
   final String _api = '/api/users';
+  bool logoutAlreadyCalled = false;
 
   late BuildContext context;
   User? sessionUser;
@@ -45,6 +46,42 @@ class UserProvider {
       return response.stream.transform(utf8.decoder);
     } catch (e) {
       print('Error al enviar imagen: $e');
+      return null;
+    }
+  }
+
+  Future<ResponseApi?> updateNotificationToken(String idUser, String token) async {
+    try {
+      Uri url = Uri.http(_url, '$_api/updateNotificationToken');
+      String bodyParams = json.encode({
+        'id':idUser,
+        'notification_token':token
+      });
+
+      if (sessionUser?.sessionToken == null) {
+        Fluttertoast.showToast(msg: 'Token de sesión no disponible');
+        return null;
+      }
+
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Authorization': sessionUser!.sessionToken!,
+      };
+
+      final response = await http.put(url, headers: headers, body: bodyParams);
+
+      if(response.statusCode == 401) {        //Respuesta no autorizada
+        Fluttertoast.showToast(msg: 'Sesión expirada');
+        new SharedPreferencesHelper().logout(context, sessionUser!.id!);
+      }
+
+      final data = json.decode(response.body);
+
+      ResponseApi responseApi = ResponseApi.fromJson(data);
+
+      return responseApi;
+    } catch (e) {
+      print('Error: $e');
       return null;
     }
   }
@@ -144,6 +181,46 @@ class UserProvider {
 
     } catch (e) {
       print('Error: $e');
+      return [];
+    }
+  }
+
+  Future<List<String>> getAdminsNotificationTokens() async {
+    try {
+      Uri url = Uri.http(_url, '$_api/getAdminsNotificationTokens');
+
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Authorization': sessionUser?.sessionToken ?? ''
+      };
+
+      final res = await http.get(url, headers: headers);
+
+      if (res.statusCode == 401) {
+        Fluttertoast.showToast(msg: 'La sesión expiró');
+        SharedPreferencesHelper().logout(context, sessionUser?.id ?? '');
+        return [];
+      }
+
+      final Map<String, dynamic> body = json.decode(res.body);
+
+      if (body.containsKey('data') && body['data'] is List) {
+        final List<dynamic> rawTokens = body['data'] ?? [];
+
+        final tokens = rawTokens
+            .where((e) => e != null && e is String)
+            .map((e) => e as String)
+            .toList();
+
+        print('TOKENS PARA NOTIFICACIÓN: $tokens');
+        return tokens;
+      } else {
+        print('Formato inesperado: ${res.body}');
+        return [];
+      }
+
+    } catch (e) {
+      print('Error al obtener tokens: $e');
       return [];
     }
   }

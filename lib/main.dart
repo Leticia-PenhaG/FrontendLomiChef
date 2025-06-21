@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:lomi_chef_to_go/src/pages/client/address/create/client_address_create_page.dart';
@@ -18,14 +20,28 @@ import 'package:lomi_chef_to_go/src/pages/register/register_page.dart';
 import 'package:lomi_chef_to_go/src/pages/restaurant/categories/create/restaurant_categories_create_page.dart';
 import 'package:lomi_chef_to_go/src/pages/restaurant/orders/list/restaurant_orders_list_page.dart';
 import 'package:lomi_chef_to_go/src/pages/restaurant/products/create/restaurant_products_create_page.dart';
+import 'package:lomi_chef_to_go/src/provider/push_notifications_provider.dart';
 import 'package:lomi_chef_to_go/src/roles/roles_page.dart';
 import 'keys.dart';
 import 'src/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
+PushNotificationsProvider pushNotificationsProvider = new PushNotificationsProvider();
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print('Handling a background message ${message.messageId}');
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  PushNotificationsProvider notificationsProvider = PushNotificationsProvider();
+  pushNotificationsProvider.requestNotificationPermission();
+  pushNotificationsProvider.initNotifications();
 
   Stripe.publishableKey = publishableKey;
   await Stripe.instance.applySettings();
@@ -41,6 +57,14 @@ class LomiChefDeliveryApp extends StatefulWidget {
 }
 
 class _LomiChefDeliveryAppState extends State<LomiChefDeliveryApp> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    pushNotificationsProvider.onMessageListener(); //para escuchar cambios cada vez que se le envíe al usuario una nueva notificación
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
